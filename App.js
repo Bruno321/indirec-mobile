@@ -1,20 +1,52 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import * as SplashScreen from "expo-splash-screen";
+import * as Font from "expo-font";
+
+import Login from './Screens/Login';
+import Home from './Screens/Home';
+
+const Stack = createStackNavigator();
+SplashScreen.preventAutoHideAsync();
+
 
 export default function App() {
+  const [appIsReady, setAppIsReady] = useState(false);
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await Font.loadAsync({
+          'Fredoka-Bold': require('./assets/Fuentes/Fredoka-Bold.ttf'),
+          'Fredoka-Light': require('./assets/Fuentes/Fredoka-Light.ttf'),
+          'Fredoka-Medium': require('./assets/Fuentes/Fredoka-Medium.ttf'),
+          'Fredoka-Regular': require('./assets/Fuentes/Fredoka-Regular.ttf'),
+          'Fredoka-SemiBold': require('./assets/Fuentes/Fredoka-SemiBold.ttf'),
+        })
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setAppIsReady(true);
+      }
+    }
+    prepare();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady) return null;
+  
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer onReady={onLayoutRootView}>
+      <Stack.Navigator screenOptions={{ headerShown: false }} >
+        <Stack.Screen name="Login" component ={Login} />
+        <Stack.Screen name="Home" component={Home}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
