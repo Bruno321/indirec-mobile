@@ -1,13 +1,14 @@
-import { StyleSheet, Text, View, Image, Dimensions, Alert } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, Alert, Modal, Button } from 'react-native';
 import React, { useState, useEffect } from "react";
 import { StatusBar } from 'expo-status-bar';
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { Camera } from 'expo-camera';
-
+import TouchableCmp from '../assetsUI/TouchableCmp';
 
 export default function Home() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
+  const [alerta, setAlerta] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -17,14 +18,7 @@ export default function Home() {
   }, []);
 
   const handleBarCodeScanned = async ({ data }) => {
-    setScanned(true);
-    Alert.alert(
-      "Toma de asistencia",
-      data + " ha sido escaneado",
-      [
-        { text: "OK", onPress: () => { setScanned(false) }}
-      ]
-    );
+    setAlerta(true)
   }
 
   if  (hasPermission === null){
@@ -54,6 +48,25 @@ export default function Home() {
           ratio={'1:1'}
         />
       </View>
+      <Modal 
+        visible={alerta}
+        transparent
+        onRequestClose={()=>setAlerta(false)}
+      >
+        <View style={styles.ModalCentrado}>
+          <View style={styles.ModalAlerta}>
+            <Text style={styles.ModalTitle1}>Toma de asistencia</Text>
+            <Text style={styles.ModalTitle2}>$VARIABLE NOMBRE DEPORTISTA$</Text>
+            <Image style={styles.ModalImage} source={require("../images/ImagenEjemploDeportista.jpg")}></Image>
+            <View style={styles.ModalTouchable}>
+              <TouchableCmp>
+                <Text style={styles.ModalCerrarButton} onPress={() => {setAlerta(false)}}>OK</Text>
+              </TouchableCmp>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      <Button title="Abrir Modal" onPress={() => setAlerta(true)}/>
       <View style={styles.cuadrante3}>
         <Text style={styles.texto4}>{'Centro de Desarrollo \n Facultad de Informática UAQ \n Todos los derechos reservados 2022 (C)'}</Text>
       </View>
@@ -119,6 +132,57 @@ const styles = StyleSheet.create({
   },
   camera:{
     marginTop: Dimensions.get('window').width*0.05,
+  },
+  ModalCentrado:{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  ModalAlerta:{
+    width: 300,
+    // height: 300,
+    paddingVertical: 20,
+    backgroundColor: 'white',
+    borderWidth: 5,
+    borderColor: '#266FB6',
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  ModalTitle1:{
+    textAlign: 'center',
+    fontSize: 12.5,
+    color: '#266FB6',
+    fontFamily: 'Fredoka-Light',
+  },
+  ModalTitle2:{
+    textAlign: 'center',
+    fontSize: 15,
+    color: '#266FB6',
+    fontFamily: 'Fredoka-Medium',
+    marginBottom: 15,
+  },
+  ModalImage:{
+    width: 200,
+    height: 200,
+    resizeMode: 'contain',
+    backgroundColor: 'red',
+  },
+  ModalTouchable:{
+    marginTop: 15,
+    overflow: 'hidden',
+    backgroundColor: 'red',
+    borderRadius: 12.5,
+  },
+  ModalCerrarButton:{
+    width: 100,
+    height: 50,
+    // borderRadius: 0,
+    backgroundColor: '#266FB6',
+    // alignItems: 'center',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    color: 'white',
   }
-
 });
