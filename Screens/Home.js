@@ -4,12 +4,13 @@ import { StatusBar } from 'expo-status-bar';
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { Camera } from 'expo-camera';
 import TouchableCmp from '../assetsUI/TouchableCmp';
+import NetInfo from "@react-native-community/netinfo";
 
 export default function Home() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [alerta, setAlerta] = useState(false);
-
+  var varImg = require('../images/indereq-logo-texto.png');
   useEffect(() => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -18,7 +19,12 @@ export default function Home() {
   }, []);
 
   const handleBarCodeScanned = async ({ data }) => {
-    setAlerta(true)
+    setAlerta(true);
+    NetInfo.fetch().then(networkState => {
+      console.log("Estás conectado a internet?: ", networkState.isConnected);
+      // networkState.isConnected
+    });
+    setScanned(true);
   }
 
   if  (hasPermission === null){
@@ -27,13 +33,16 @@ export default function Home() {
   if (hasPermission === false){
     return <Text>No access to camera</Text>
   }
-
+  // NetInfo.addEventListener(networkState => {
+  //   console.log("Is connected?: ", networkState.isConnected);
+  // })
+  
   return(
     <View style={styles.container}>
       <View style={styles.cuadrante1}>
         <Image
           style={styles.logoTexto}
-          source={require('../images/indereq-logo-texto.png')}
+          source={varImg}
         />
       </View>
       <View style={styles.cuadrante2}>
@@ -60,7 +69,10 @@ export default function Home() {
             <Image style={styles.ModalImage} source={require("../images/ImagenEjemploDeportista.jpg")}></Image>
             <View style={styles.ModalTouchable}>
               <TouchableCmp>
-                <Text style={styles.ModalCerrarButton} onPress={() => {setAlerta(false)}}>OK</Text>
+                <Text style={styles.ModalCerrarButton} onPress={() => {
+                  setAlerta(false);
+                  setScanned(false);
+                  }}>OK</Text>
               </TouchableCmp>
             </View>
           </View>
@@ -167,12 +179,12 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     resizeMode: 'contain',
-    backgroundColor: 'red',
+    // backgroundColor: 'red',
   },
   ModalTouchable:{
     marginTop: 15,
     overflow: 'hidden',
-    backgroundColor: 'red',
+    // backgroundColor: 'red',
     borderRadius: 12.5,
   },
   ModalCerrarButton:{
