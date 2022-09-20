@@ -47,8 +47,7 @@ export default function Home() {
       </View>
       <View style={styles.cuadrante2}>
         <Text style={styles.texto1}>Bienvenido</Text>
-        <Text style={styles.texto2}>Jorge Alejandro Bernal Colín</Text>
-        <Text style={styles.texto3}>Escanea el QR de tus deportistas</Text>
+        <Text style={styles.texto2}>Por favor escanea el código QR para tomar la asistencia</Text>
       </View>
       <View style={styles.camera}>
         <Camera
@@ -64,23 +63,38 @@ export default function Home() {
       >
         <View style={styles.ModalCentrado}>
           <View style={styles.ModalAlerta}>
-            <Text style={styles.ModalTitle1}>Toma de asistencia</Text>
-            <Text style={styles.ModalTitle2}>$VARIABLE NOMBRE DEPORTISTA$</Text>
+            <Text style={styles.ModalText1}>Escaneo exitoso</Text>
+            <Text style={styles.ModalText2}>Bienvenido</Text>
+            <Text style={styles.ModalText3}>Jorge Bernal</Text>
             <Image style={styles.ModalImage} source={require("../images/ImagenEjemploDeportista.jpg")}></Image>
+            <Text style={styles.ModalText4}>La hora de entrada ha sido registrada con exito</Text>
             <View style={styles.ModalTouchable}>
               <TouchableCmp>
                 <Text style={styles.ModalCerrarButton} onPress={() => {
                   setAlerta(false);
                   setScanned(false);
-                  }}>OK</Text>
+                  }}>Aceptar</Text>
               </TouchableCmp>
             </View>
           </View>
         </View>
       </Modal>
-      <Button title="Abrir Modal" onPress={() => setAlerta(true)}/>
       <View style={styles.cuadrante3}>
-        <Text style={styles.texto4}>{'Centro de Desarrollo \n Facultad de Informática UAQ \n Todos los derechos reservados 2022 (C)'}</Text>
+        {/* <TouchableCmp onPress={() => {setAlerta(true)}}>
+          <View style={styles.buttonNOQROut}>
+            <View style={styles.buttonNOQR}>
+              <Text style={styles.ButtonText}>No tengo código QR</Text>
+            </View>
+          </View>
+        </TouchableCmp> */}
+        <View style={styles.ModalTouchable}>
+              <TouchableCmp>
+                <Text style={styles.ModalCerrarButton2} onPress={() => {
+                  setAlerta(true);
+                  setScanned(false);
+                  }}>No tengo código QR</Text>
+              </TouchableCmp>
+            </View>
       </View>
     </View>
   );
@@ -89,58 +103,36 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#266FB6',
-    alignItems: 'center',
   },
   logoTexto:{
-    width: Dimensions.get('window').width,
+    width: Dimensions.get('window').width/1.8,
     resizeMode: 'contain',
-    marginTop:Dimensions.get('window').height*0.05
   },
   cuadrante1:{
-    justifyContent: 'center',
-    height: Dimensions.get('window').height*0.20
+    backgroundColor: '#003070',
+    height: Dimensions.get('window').height/6,
+    alignItems: 'center',
   },
   cuadrante2:{
-    height: Dimensions.get('window').height*0.225
+    height: Dimensions.get('window').height*0.2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cuadrante3:{
+    height: Dimensions.get('window').height*0.15,
+    // backgroundColor: 'pink',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   texto1:{
     fontSize: Dimensions.get('window').width*0.03,
     textAlign: 'center',
-    color: 'white',
-    fontFamily:'Fredoka-Light',
-    marginTop:Dimensions.get('window').height*.005,
-    fontSize:20
+    fontWeight: 'bold',
+    fontSize:30
   },
   texto2:{
-    fontSize: Dimensions.get('window').width*0.05,
-    width: Dimensions.get('window').width*1,
-    marginTop: Dimensions.get('window').width*0.01,
-    //marginBottom: Dimensions.get('window').width*0.01,
+    width: Dimensions.get('window').width*0.75,
     textAlign: 'center',
-    color: 'white',
-    fontFamily: 'Fredoka-Regular',
-    fontSize:40,
-    marginTop:Dimensions.get('window').width*0.03,
-  },
-  texto3:{
-    fontSize: Dimensions.get('window').width*0.03,
-    textAlign: 'center',
-    color: 'white',
-    fontFamily:'Fredoka-Light',
-    marginTop:Dimensions.get('window').height*-.01,
-    fontSize:20,
-    marginTop:Dimensions.get('window').width*0.08,
-  },
-  cuadrante3:{
-    height: 'auto',
-  },
-  texto4:{
-    fontSize: Dimensions.get('window').width*0.03,
-    textAlign: 'center',
-    color: '#DDD',
-    marginTop: Dimensions.get('window').width*0.1,
-    fontFamily:'Fredoka-Light',
   },
   camera:{
     marginTop: Dimensions.get('window').width*0.05,
@@ -149,52 +141,88 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.4)',
   },
   ModalAlerta:{
-    width: 300,
-    // height: 300,
+    width: Dimensions.get('window').width*0.9,
     paddingVertical: 20,
     backgroundColor: 'white',
-    borderWidth: 5,
-    borderColor: '#266FB6',
+    // borderWidth: 1,
+    // borderColor: '#266FB6',
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  ModalTitle1:{
+  ModalText1:{
     textAlign: 'center',
-    fontSize: 12.5,
-    color: '#266FB6',
-    fontFamily: 'Fredoka-Light',
+    fontSize: 20,
+    color: '#007505',
+    // fontFamily: 'Fredoka-Light',
   },
-  ModalTitle2:{
+  ModalText2:{
+    // textAlign: 'center',
+    fontSize: 18,
+    // color: '#266FB6',
+    // fontFamily: 'Fredoka-Medium',
+    // marginBottom: 15,
+  },
+  ModalText3:{
     textAlign: 'center',
-    fontSize: 15,
-    color: '#266FB6',
-    fontFamily: 'Fredoka-Medium',
+    fontSize: 25,
+    color: '#003070',
+    fontWeight: 'bold',
+    // fontFamily: 'Fredoka-Medium',
+    marginBottom: 15,
+  },
+  ModalText4:{
+    // backgroundColor: 'red',
+    textAlign: 'center',
+    fontSize: 18,
+    width: Dimensions.get('window').width*0.66,
+    color: '#666666',
+    // fontWeight: 'bold',
+    // fontFamily: 'Fredoka-Medium',
     marginBottom: 15,
   },
   ModalImage:{
     width: 200,
     height: 200,
     resizeMode: 'contain',
-    // backgroundColor: 'red',
   },
   ModalTouchable:{
     marginTop: 15,
     overflow: 'hidden',
-    // backgroundColor: 'red',
     borderRadius: 12.5,
   },
   ModalCerrarButton:{
-    width: 100,
+    width: Dimensions.get('window').width*0.8,
     height: 50,
-    // borderRadius: 0,
-    backgroundColor: '#266FB6',
-    // alignItems: 'center',
+    backgroundColor: '#003070',
     textAlign: 'center',
     textAlignVertical: 'center',
     color: 'white',
+  },
+  ModalCerrarButton2:{
+    width: Dimensions.get('window').width*0.9,
+    height: Dimensions.get('window').height*0.07,
+    backgroundColor: '#FFF',
+    // backgroundColor: '#003070',
+    borderWidth: 1,
+    borderColor: '#003070',
+    borderRadius: 12,
+
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    color: '#0050A0',
+    
+  },
+  buttonNOQROut:{
+    width: Dimensions.get('window').width*1,
+    height: Dimensions.get('window').height*0.1,
+    // backgroundColor: 'green',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // overflow: 'hidden',
+    // backgroundColor: 'red',
   }
 });
