@@ -6,6 +6,7 @@ import * as Font from "expo-font";
 
 import Login from './Screens/Login';
 import Home from './Screens/Home';
+import Registro from './Screens/Registro';
 
 const Stack = createStackNavigator();
 SplashScreen.preventAutoHideAsync();
@@ -44,8 +45,9 @@ export default function App() {
   return (
     <NavigationContainer onReady={onLayoutRootView}>
       <Stack.Navigator screenOptions={{ headerShown: false }} >
-        <Stack.Screen name="Login" component ={Login} />
+        <Stack.Screen name="Registro" component ={Registro} />
         <Stack.Screen name="Home" component={Home}/>
+        <Stack.Screen name="Login" component ={Login} />
       </Stack.Navigator>
     </NavigationContainer>
   );
