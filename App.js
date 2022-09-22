@@ -45,9 +45,9 @@ export default function App() {
   return (
     <NavigationContainer onReady={onLayoutRootView}>
       <Stack.Navigator screenOptions={{ headerShown: false }} >
-        <Stack.Screen name="Registro" component ={Registro} />
-        <Stack.Screen name="Home" component={Home}/>
         <Stack.Screen name="Login" component ={Login} />
+        <Stack.Screen name="Home" component={Home}/>
+        <Stack.Screen name="Registro" component ={Registro} />
       </Stack.Navigator>
     </NavigationContainer>
   );

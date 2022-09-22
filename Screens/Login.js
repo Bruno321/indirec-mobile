@@ -1,41 +1,88 @@
-import { StyleSheet, Text, View, Image, Dimensions, TextInput, Button  } from 'react-native';
-import React, { useState, useEffect, useCallback } from 'react';
-import { StatusBar } from 'expo-status-bar';
+import React, { useState } from 'react';
+import {
+  Dimensions,
+  Image,
+  KeyboardAvoidingView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  View,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import useKeyboard from '../Hooks/Keyboard.hook';
 
+const oInitialState = {
+  email: '',
+  password: '',
+};
 
 export default function Login() {
-  const [text, onChangeText] = useState("");
-  const [number, onChangeNumber] = useState(null);  
+  const [form, setForm] = useState(oInitialState);
+  const isKeyboardOpen = useKeyboard();
   const navigation = useNavigation();
 
+  const getFormData = (value, field) => {
+    if (value !== undefined) {
+      setForm({ ...form, [field]: value });
+    }
+  };
+
+  // ? For the moment, only to visualize form data
+  const handleSubmit = () => {
+    console.log(form);
+    navigation.navigate('Home')
+    setForm(oInitialState);
+  };
+  
   return (
     <View style={styles.container}>
-      <View style={styles.cuadrante1}>
-        <Image
-          style={styles.logoTexto}
-          source={require('../images/indereq-logo-texto.png')}
-        />
-      </View>
+      <KeyboardAvoidingView enabled={true} style={{ flex: 1, alignItems: 'center' }}>
+        <View style={styles.cuadrante1}>
+          <Image
+            style={styles.logoTexto}
+            source={require('../images/indereq-logo-texto.png')}
+          />
+        </View>
+        {!isKeyboardOpen ? (
+          <View>
+            <Image
+              style={styles.loginLogo}
+              source={require('../images/login-logo.png')}
+            />
+          </View>
+        ) : null}
+      </KeyboardAvoidingView>
       <View style={styles.cuadrante2}>
-        <Text style={styles.texto1}>Iniciar sesión</Text>
-      </View>
-      <View>
-        <TextInput
+        <Text style={styles.indereqTexto}>Bienvenido  a INDEREQ</Text>
+        <View style={styles.rowForm}>
+          <Text style={styles.label}>Correo Electronico:</Text>
+          <TextInput
             style={styles.input}
-            onChangeText={onChangeText}
+            onChangeText={value => getFormData(value, 'email')}
+            keyboardType="email-address"
             placeholder="Usuario"
-            value={text}
-        />
-        <TextInput
+            value={form.email}
+          />
+        </View>
+        <View style={styles.rowForm}>
+          <Text style={styles.label}>Contraseña:</Text>
+          <TextInput
             style={styles.input}
-            onChangeText={onChangeNumber}
-            value={number}
+            onChangeText={value => getFormData(value, 'password')}
             placeholder="Contraseña"
-        />
+            secureTextEntry={true}
+            value={form.password}
+          />
+        </View>
       </View>
-      <View>
-        <Button title='Iniciar sesión' style={styles.button} onPress={() => navigation.navigate('Home')}/>
+      <View style={styles.cuadrante3}>
+        <TouchableOpacity
+          onPress={handleSubmit}
+          style={styles.loginButton}
+        >
+          <Text style={styles.loginTexto}>Iniciar Sesión</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -44,55 +91,81 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#266FB6',
+    backgroundColor: '#003070',
     alignItems: 'center',
   },
   logoTexto:{
     width: Dimensions.get('window').width,
-    resizeMode: 'contain',
-    marginTop:Dimensions.get('window').height*0.05
+    resizeMode: 'center',
+    marginTop:Dimensions.get('window').height*0.07
   },
   cuadrante1:{
     justifyContent: 'center',
-    height: Dimensions.get('window').height*0.20,
+    height: Dimensions.get('window').height*0.17,
+  },
+  loginLogo:{
+    width: 300,
+    height: 300,
   },
   cuadrante2:{
-    height: Dimensions.get('window').height*0.225
+    backgroundColor: '#FFF',
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height*0.28,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    alignItems: 'center',
   },
-  texto1:{
-    fontSize: Dimensions.get('window').width*0.03,
+  cuadrante3: {
+    width:Dimensions.get('window').width,
+    height: Dimensions.get('window').height*0.20,
+    paddingTop:Dimensions.get('window').height*0.05,
+		backgroundColor:'#FFF',
+    alignItems: 'center',
+  },
+  indereqTexto: {
+    color: '#003070',
     textAlign: 'center',
-    color: 'white',
     fontFamily:'Fredoka-Light',
-    marginTop:Dimensions.get('window').height*.05,
-    fontSize:30
+    fontWeight: 'bold',
+    marginTop:Dimensions.get('window').height*.04,
+    fontSize:40
+  },
+  rowForm: {
+    marginTop:Dimensions.get('window').height*.02,
+  },
+  label: {
+    marginLeft:Dimensions.get('window').width*.04,
+		fontFamily:'Fredoka-Light',
   },
   input: {
     height: 40,
     margin: 12,
-    borderWidth: 1,
-    borderRadius: 10,
     padding: 10,
+    borderBottomWidth: 1,
+		borderBottomColor:'black',
     color:'#000000',
     fontFamily:'Fredoka-Light',
     backgroundColor:'#ffffff',
-    width: Dimensions.get('window').width * 0.5,
+    width: Dimensions.get('window').width * 0.8,
   },
-  //   texto2:{
-    //     fontSize: Dimensions.get('window').width*0.05,
-    //     width: Dimensions.get('window').width*1,
-    //     marginTop: Dimensions.get('window').width*0.01,
-    //     marginBottom: Dimensions.get('window').width*0.01,
-    //     textAlign: 'center',
-    //     color: 'white',
-    //     //fontFamily: 'Fredoka-Regular',
-    //     fontSize:40
-    //   },
-    
-    // button:{
-    //   color: '#266FB6',
-    //   backgroundColor: 'FFFFFF',
-    //   marginTop: '50px',
-    // }
-  });
-  
+  loginButton:{
+    width: Dimensions.get('window').width * 0.8,
+    height: 55,
+    borderRadius: 10,
+    backgroundColor:'#003070',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.23,
+		shadowRadius: 2.62,
+		elevation: 4,
+  },
+  loginTexto: {
+    fontSize: 20,
+    color: '#FFF',
+  },
+});
