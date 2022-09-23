@@ -1,30 +1,37 @@
 import { StyleSheet, Text, View, Image, Dimensions, StatusBar, Modal } from 'react-native';
-import React, { useState, useEffect } from "react"
-import { BarCodeScanner } from "expo-barcode-scanner";
-import { Camera } from 'expo-camera';
-import TouchableCmp from '../assetsUI/TouchableCmp';
-import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from '@react-navigation/native';
+import { BarCodeScanner } from "expo-barcode-scanner";
+import React, { useState, useEffect } from "react"
+import NetInfo from "@react-native-community/netinfo";
+import TouchableCmp from '../assetsUI/TouchableCmp';
 import Header from "../components/Header"
-
 
 export default function Home() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [alerta, setAlerta] = useState(false);
+  const [dataScaneo, setDataScaneo] = useState("{}");
   const [registroCheck, setRegistroCheck] = useState(true);
-  const [scanData, setScanData] = useState(null);
+  const [EntradaSalida, setEntradaSalida] = useState(0);
   
   const navigation = useNavigation();
 
+  var mostrarHora = () => {
+    try{
+      return JSON.parse(dataScaneo).fecha.slice(14,19)
+    } catch (error) {}
+  }
+  /* A function that returns a view depending on the value of the variable `registroCheck` */
   var GenerarModal = () => {
     if(registroCheck == true){
     return <View style={styles.ModalAlerta}>
       <Text style={styles.Modal1Text1}>Escaneo exitoso</Text>
-      <Text style={styles.Modal1Text2}>Bienvenido</Text>
-      <Text style={styles.Modal1Text3}>Jorge Bernal</Text>
+      <Text style={styles.Modal1Text2}>{EntradaSalida == 1 ? "Bienvenido" : "Hasta luego"}</Text>
+      <Text style={styles.Modal1Text3}>{JSON.parse(dataScaneo).nombreC}</Text>
       <Image style={styles.Modal1Image} source={require("../images/ImagenEjemploDeportista.jpg")}></Image>
-      <Text style={styles.Modal1Text4}>La hora de entrada ha sido registrada con exito</Text>
+      <Text style={styles.Modal1Text4}>{EntradaSalida == 1 ? "Entrada - " : "Salida - "}{mostrarHora()}</Text>
+
+      <Text style={styles.Modal1Text4}>{EntradaSalida == 1 ? "La hora de entrada ha sido registrada con exito" : "La hora de salida ha sido registrada con éxito"}</Text>
       <View style={styles.ModalTouchable}>
         <TouchableCmp>
           <Text style={styles.ModalCerrarButton} onPress={() => {
@@ -50,35 +57,69 @@ export default function Home() {
     }
   }
 
-  var varImg = require('../images/indereq-logo-texto.png');
   useEffect(() => {
-    (async () => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setScanned(false);
+      setHasPermission(null);
+      (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
-    })();
-  }, []);
+      setHasPermission(status === "granted"); 
+      })();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
   
   const handleBarCodeScanned = ({ data }) => {
+    setDataScaneo(data);
     setScanned(true);
     setAlerta(true);
     // PASOS AL LEER QR
-    // 0 GUARDAR LA INFO DEL QR EN UN STATE Y VERIFICAR QUE SEA JSON
-    var DataParsed = JSON.parse(data)
-    setScanData(DataParsed);
-    console.log("DATA 1 : " + data)
-    console.log("DATA 2 : " + JSON.stringify(scanData));
-    // 1 CHECAR QUE COINCIDA EL NUMERO DE LLAVES DEL JSON (3)
-    Object.keys(scanData).length == 3 ? console.log("HOLA") : console.log("NO HOLA");
-    // 2 CHECAR QUE LAS LLAVES SEAN LAS QUE PEDIMOS (id, nombre y hora)
-    // 3 CHECAR SI HAY INTERNET
-    // NetInfo.fetch().then(networkState => {
-    //   console.log("Estás conectado a internet?: ", networkState.isConnected);
-    // });
-    //      PARA MOSTRAR LA IMAGEN, VERIFICAR CUAL CONEXIÓN TIENE:
-    //      1. INTERNET - LLAMAR IMAGEN DE LA BDD
-    //      2. DATOS - PREGUNTAR SI QUIERE BAJAR IMAGEN CON DATOS O MOSTRAR IMAGEN DEFAULT
-    //      3. NO INTERNET - MOSTRAR IMAGEN DEFAULT
-    // 4 
+    // 0 GUARDAR LA INFO DEL QR Y VERIFICAR QUE SEA JSON
+    try {
+      let datos = JSON.parse(data);
+      console.log("✔ SI ES UN JSON");
+      // 1 CHECAR QUE COINCIDA EL NUMERO DE LLAVES DEL JSON (3)
+      if(Object.keys(datos).length == 3){
+       console.log("✔ JSON CON 3 LLAVES");
+       // 2 CHECAR QUE LAS LLAVES SEAN LAS QUE PEDIMOS (id, nombre y fecha)
+       if(datos.hasOwnProperty('id') && datos.hasOwnProperty('nombreC') && datos.hasOwnProperty('fecha') == true){
+        console.log("✔ JSON CON LLAVES CORRECTAS");
+        setRegistroCheck(true);
+        // 3 CHECAR SI HAY INTERNET
+        const unsubscribe = NetInfo.addEventListener(state => {
+            //      PARA MOSTRAR LA IMAGEN, VERIFICAR CUAL CONEXIÓN TIENE:
+            switch (state.type) {
+              //      1. INTERNET - LLAMAR IMAGEN DE LA BDD
+              case "wifi":
+                console.log("✔ Conexión wifi");
+                break;
+              //      2. DATOS - PREGUNTAR SI QUIERE BAJAR IMAGEN CON DATOS O MOSTRAR IMAGEN DEFAULT
+              case "cellular":
+                console.log("✔ Conexión con datos");
+                break;
+              //      3. NO INTERNET - MOSTRAR IMAGEN DEFAULT
+              case "none":
+                console.log("✔ Sin conexión");
+                break;
+              default:
+                break;
+            }
+        });
+        unsubscribe();
+        } else {
+        setRegistroCheck(false);
+        console.log("✖ JSON CON LLAVES INCORRECTAS");
+        }
+      } else {
+        setRegistroCheck(false);
+        console.log("✖ JSON CON MÁS O MENOS DE 3 LLAVES -> " + Object.keys(datos).length);
+      }
+    } catch (error) {
+      // MOSTRAR MODAL DE ERROR
+      setRegistroCheck(false);
+      console.log("✖ NO ES UN JSON");
+    }
   }
 
   if  (hasPermission === null){
@@ -95,21 +136,14 @@ export default function Home() {
         barStyle={"light-content"}
         hidden={false} />
       <Header/>
-      {/* <View style={styles.cuadrante1}>
-        <Image
-          style={styles.logoTexto}
-          source={varImg}
-        />
-      </View> */}
       <View style={styles.cuadrante2}>
         <Text style={styles.texto1}>Bienvenido</Text>
         <Text style={styles.texto2}>Por favor escanea el código QR para tomar la asistencia</Text>
       </View>
-      <View style={styles.camera}>
-        <Camera
+      <View style={styles.cameraView}>
+        <BarCodeScanner
           onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-          style = {{height:Dimensions.get('window').height*0.5, width:Dimensions.get('window').width}}
-          ratio={'1:1'}
+          height = {Dimensions.get('window').height}
         />
       </View>
       <Modal 
@@ -126,9 +160,9 @@ export default function Home() {
         <View style={styles.ModalTouchable}>
               <TouchableCmp>
                 <Text style={styles.botonRegistrarDeportista} onPress={() => {
-                  setAlerta(true);
-                  setScanned(false);
-                  // navigation.navigate("Registro");
+                  // setAlerta(true);
+                  // setScanned(false);
+                  navigation.navigate("Registro");
                   }}>Registrar Deportista</Text>
               </TouchableCmp>
             </View>
@@ -157,12 +191,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  camera:{
+  cameraView:{
     height: Dimensions.get('window').height*0.5,
+    justifyContent: 'center',
+    overflow: 'hidden',
+    backgroundColor: '#F0F0F0'
   },
   cuadrante3:{
     height: Dimensions.get('window').height*0.16,
-    // backgroundColor: 'red',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -170,7 +206,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Fredoka-Medium',
     fontSize: Dimensions.get('window').width*0.03,
     textAlign: 'center',
-    // fontWeight: 'bold',
     fontSize:30
   },
   texto2:{
@@ -208,7 +243,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 25,
     color: '#003070',
-    // fontWeight: 'bold',
   },
   Modal1Text4:{
     fontFamily: 'Fredoka-Light',
