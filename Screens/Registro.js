@@ -6,6 +6,8 @@ import SelectDropdown from 'react-native-select-dropdown'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import TouchableCmp from '../assetsUI/TouchableCmp';
+import Header from "../components/Header"
+
 
 export default function Registro(){
 	const sexo = ["Masculino", "Femenino"];
@@ -13,12 +15,7 @@ export default function Registro(){
 	const seleccionado=["Sí","No"]
 	return(
 		<ScrollView style={styles.general} showsVerticalScrollIndicator={false}>
-			<View style={styles.header}>
-				<Image
-					style={styles.logoTexto}
-					source={require('../images/indereq-logo-texto.png')}
-				/>
-			</View>
+			<Header/>
 			<View style={styles.center}>
 				<View style={styles.viewTitulo}>
 					<Text style={styles.titulo}>Registro de un deportista</Text>
