@@ -38,7 +38,7 @@ export default function Login() {
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView enabled={true} style={{ flex: 1, alignItems: 'center' }}>
-        <View style={styles.cuadrante1}>
+        <View>
           <Image
             style={styles.logoTexto}
             source={require('../images/indereq-logo-texto.png')}
@@ -54,7 +54,7 @@ export default function Login() {
         ) : null}
       </KeyboardAvoidingView>
       <View style={styles.cuadrante2}>
-        <Text style={styles.indereqTexto}>Bienvenido  a INDEREQ</Text>
+        <Text style={styles.indereqTexto}>Bienvenido a INDEREQ</Text>
         <View style={styles.rowForm}>
           <Text style={styles.label}>Correo Electronico:</Text>
           <TextInput
@@ -75,14 +75,14 @@ export default function Login() {
             value={form.password}
           />
         </View>
-      </View>
-      <View style={styles.cuadrante3}>
-        <TouchableOpacity
-          onPress={handleSubmit}
-          style={styles.loginButton}
-        >
-          <Text style={styles.loginTexto}>Iniciar Sesión</Text>
-        </TouchableOpacity>
+        <View style={styles.rowForm}>
+          <TouchableOpacity
+            onPress={handleSubmit}
+            style={styles.loginButton}
+          >
+            <Text style={styles.loginTexto}>Iniciar Sesión</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -96,30 +96,24 @@ const styles = StyleSheet.create({
   },
   logoTexto:{
     width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height * 0.15,
     resizeMode: 'center',
-    marginTop:Dimensions.get('window').height*0.07
+    marginTop:Dimensions.get('window').height*0.04
   },
   cuadrante1:{
     justifyContent: 'center',
     height: Dimensions.get('window').height*0.17,
   },
   loginLogo:{
-    width: 300,
-    height: 300,
+    width: Dimensions.get('window').width*0.5,
+    height: Dimensions.get('window').height*0.3,
   },
   cuadrante2:{
     backgroundColor: '#FFF',
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height*0.28,
+    height: Dimensions.get('window').height*0.45,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
-    alignItems: 'center',
-  },
-  cuadrante3: {
-    width:Dimensions.get('window').width,
-    height: Dimensions.get('window').height*0.20,
-    paddingTop:Dimensions.get('window').height*0.05,
-		backgroundColor:'#FFF',
     alignItems: 'center',
   },
   indereqTexto: {
@@ -128,29 +122,30 @@ const styles = StyleSheet.create({
     fontFamily:'Fredoka-Light',
     fontWeight: 'bold',
     marginTop:Dimensions.get('window').height*.04,
-    fontSize:40
+    fontSize:Dimensions.get('window').width*.07,
   },
   rowForm: {
-    marginTop:Dimensions.get('window').height*.02,
+    marginTop:Dimensions.get('window').height*.025,
   },
   label: {
-    marginLeft:Dimensions.get('window').width*.04,
+    marginLeft:Dimensions.get('window').width*.02,
 		fontFamily:'Fredoka-Light',
+    fontSize:Dimensions.get('window').width*.05,
   },
   input: {
-    height: 40,
-    margin: 12,
-    padding: 10,
+    width: Dimensions.get('window').width * 0.8,
+    height: Dimensions.get('window').height*0.04,
+    margin: Dimensions.get('window').height*0.01,
     borderBottomWidth: 1,
 		borderBottomColor:'black',
     color:'#000000',
     fontFamily:'Fredoka-Light',
     backgroundColor:'#ffffff',
-    width: Dimensions.get('window').width * 0.8,
+    fontSize:Dimensions.get('window').width*.04,
   },
   loginButton:{
     width: Dimensions.get('window').width * 0.8,
-    height: 55,
+    height: Dimensions.get('window').height * 0.05,
     borderRadius: 10,
     backgroundColor:'#003070',
     alignItems: 'center',
@@ -165,7 +160,7 @@ const styles = StyleSheet.create({
 		elevation: 4,
   },
   loginTexto: {
-    fontSize: 20,
+    fontSize:Dimensions.get('window').width * 0.04,
     color: '#FFF',
   },
 });
