@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import useKeyboard from '../Hooks/Keyboard.hook';
+import { AuthContext } from '../components/context';
+
 
 const oInitialState = {
   email: '',
@@ -21,6 +23,8 @@ export default function Login() {
   const [form, setForm] = useState(oInitialState);
   const isKeyboardOpen = useKeyboard();
   const navigation = useNavigation();
+
+  const { signIn } = React.useContext(AuthContext);
 
   const getFormData = (value, field) => {
     if (value !== undefined) {
@@ -34,6 +38,10 @@ export default function Login() {
     navigation.navigate('Home')
     setForm(oInitialState);
   };
+
+  const loginHandle= (username,passowrd)=>{
+    signIn(username,passowrd)
+  }
   
   return (
     <View style={styles.container}>
@@ -77,7 +85,7 @@ export default function Login() {
         </View>
         <View style={styles.rowForm}>
           <TouchableOpacity
-            onPress={handleSubmit}
+            onPress={()=>{loginHandle(form.email,form.password)}}
             style={styles.loginButton}
           >
             <Text style={styles.loginTexto}>Iniciar Sesión</Text>

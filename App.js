@@ -8,12 +8,64 @@ import Login from './Screens/Login';
 import Home from './Screens/Home';
 import Registro from './Screens/Registro';
 
+import { AuthContext } from './components/context';
+
 const Stack = createStackNavigator();
 SplashScreen.preventAutoHideAsync();
 
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
+  // const [userToken,setUserToken] = useState(null);
+
+  const initialLoginState={
+    userName:null,
+    userToken:null,
+  }
+
+  loginReducer = (prevState,action) =>{
+    switch(action.type){
+      case 'RETREIVE_TOKEN':
+        return{
+          ... prevState,
+          userToken:action.token,
+        }
+      case 'LOGIN':
+        return{
+          ... prevState,
+          userName:action.id,
+          userToken:action.token,
+        }
+      case 'LOGOUT':
+        return{
+          ... prevState,
+          userName:null,
+          userToken:null,
+        }
+    }
+  }
+
+  const [loginState, dispatch] = React.useReducer(loginReducer,initialLoginState);
+
+  const authContext = React.useMemo(()=>({
+    signIn:(userName,password)=>{
+      // setUserToken('fgkj');
+      let userToken;
+      userToken=null;
+      if(userName=='user' && password == 'pass'){
+        userToken= 'dfgdfg';
+      }
+      dispatch({type:'LOGIN',id:userName, token:userToken})
+    },
+    signOut:()=>{
+      setUserToken(null);
+      dispatch({type:'LOGOUT'})
+
+    },
+    signUp:()=>{
+      setUserToken('fgkj');
+    },
+  }),[]);
 
   useEffect(() => {
     async function prepare() {
@@ -43,12 +95,20 @@ export default function App() {
   if (!appIsReady) return null;
   
   return (
-    <NavigationContainer onReady={onLayoutRootView}>
-      <Stack.Navigator screenOptions={{ headerShown: false }} >
-        <Stack.Screen name="Login" component ={Login} />
-        <Stack.Screen name="Home" component={Home}/>
-        <Stack.Screen name="Registro" component ={Registro} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthContext.Provider value={authContext}>
+      <NavigationContainer onReady={onLayoutRootView}>
+        { loginState.userToken !== null ? (
+          <Stack.Navigator screenOptions={{ headerShown: false }} >
+            <Stack.Screen name="Home" component={Home}/>
+            <Stack.Screen name="Registro" component ={Registro} />
+          </Stack.Navigator>
+        )
+        :
+          <Stack.Navigator screenOptions={{ headerShown: false }} >
+            <Stack.Screen name="Login" component ={Login} />
+          </Stack.Navigator>
+        }
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 }
