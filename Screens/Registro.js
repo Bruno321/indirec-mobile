@@ -7,12 +7,18 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import Header from "../components/Header"
+import { AuthContext } from '../components/context';
 
 
 export default function Registro(){
+	const { signOut } = React.useContext(AuthContext);
 	const sexo = ["Masculino", "Femenino"];
 	const facultades=["Informática","Ingeniería","Ciencias"]
 	const seleccionado=["Sí","No"]
+
+	const logoutHandle= ()=>{
+		signOut();
+	  }
 
 	const navigation = useNavigation();
 
@@ -156,7 +162,7 @@ export default function Registro(){
 				<View style={styles.viewButton}>
 					<TouchableCmp>
 						<View style={styles.viewRegistrar}>
-							<Text style={styles.registrar} onPress={() => {navigation.goBack()}}>Registrar deportista</Text>
+							<Text style={styles.registrar} onPress={() => {logoutHandle()}}>Registrar deportista</Text>
 						</View>
 					</TouchableCmp>
 				</View>

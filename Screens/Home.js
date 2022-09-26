@@ -12,7 +12,7 @@ export default function Home() {
   const [alerta, setAlerta] = useState(false);
   const [dataScaneo, setDataScaneo] = useState("{}");
   const [registroCheck, setRegistroCheck] = useState(true);
-  const [EntradaSalida, setEntradaSalida] = useState(1);
+  const [EntradaSalida, setEntradaSalida] = useState(0);
   
   const navigation = useNavigation();
 

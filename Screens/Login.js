@@ -127,8 +127,8 @@ const styles = StyleSheet.create({
   indereqTexto: {
     color: '#003070',
     textAlign: 'center',
-    fontFamily:'Fredoka-Light',
-    fontWeight: 'bold',
+    fontFamily:'Fredoka-Medium',
+    //fontWeight: 'bold',
     marginTop:Dimensions.get('window').height*.04,
     fontSize:Dimensions.get('window').width*.07,
   },
@@ -170,5 +170,6 @@ const styles = StyleSheet.create({
   loginTexto: {
     fontSize:Dimensions.get('window').width * 0.04,
     color: '#FFF',
+    fontFamily:'Fredoka-Medium'
   },
 });
