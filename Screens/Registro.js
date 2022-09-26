@@ -13,6 +13,9 @@ export default function Registro(){
 	const sexo = ["Masculino", "Femenino"];
 	const facultades=["Informática","Ingeniería","Ciencias"]
 	const seleccionado=["Sí","No"]
+
+	const navigation = useNavigation();
+
 	return(
 		<ScrollView style={styles.general} showsVerticalScrollIndicator={false}>
 			<Header/>
@@ -153,7 +156,7 @@ export default function Registro(){
 				<View style={styles.viewButton}>
 					<TouchableCmp>
 						<View style={styles.viewRegistrar}>
-							<Text style={styles.registrar}>Registrar deportista</Text>
+							<Text style={styles.registrar} onPress={() => {navigation.goBack()}}>Registrar deportista</Text>
 						</View>
 					</TouchableCmp>
 				</View>

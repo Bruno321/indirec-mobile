@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Dimensions, StatusBar, Modal } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, StatusBar, Modal, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { BarCodeScanner } from "expo-barcode-scanner";
 import React, { useState, useEffect } from "react"
@@ -12,7 +12,7 @@ export default function Home() {
   const [alerta, setAlerta] = useState(false);
   const [dataScaneo, setDataScaneo] = useState("{}");
   const [registroCheck, setRegistroCheck] = useState(true);
-  const [EntradaSalida, setEntradaSalida] = useState(0);
+  const [EntradaSalida, setEntradaSalida] = useState(1);
   
   const navigation = useNavigation();
 
@@ -20,6 +20,10 @@ export default function Home() {
     try{
       return JSON.parse(dataScaneo).fecha.slice(14,19)
     } catch (error) {}
+  }
+
+  var getEntradaSalida = (inORout) => {
+    inORout == 1 ? setEntradaSalida(1) : setEntradaSalida(0);
   }
   /* A function that returns a view depending on the value of the variable `registroCheck` */
   var GenerarModal = () => {
@@ -60,7 +64,7 @@ export default function Home() {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       setScanned(false);
-      setHasPermission(null);
+      setHasPermission(false);
       (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
       setHasPermission(status === "granted"); 
@@ -75,6 +79,7 @@ export default function Home() {
     setScanned(true);
     setAlerta(true);
     // PASOS AL LEER QR
+    console.log("✔ =========== ESCANEO =========== ✔");
     // 0 GUARDAR LA INFO DEL QR Y VERIFICAR QUE SEA JSON
     try {
       let datos = JSON.parse(data);
@@ -165,6 +170,8 @@ export default function Home() {
                   navigation.navigate("Registro");
                   }}>Registrar Deportista</Text>
               </TouchableCmp>
+                  {/* <Button title="Entrada" onPress={() => getEntradaSalida(1)}></Button> */}
+                  {/* <Button title="Salida" onPress={() => getEntradaSalida(0)}></Button> */}
             </View>
       </View>
     </View>
