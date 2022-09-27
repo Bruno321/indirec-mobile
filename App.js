@@ -72,7 +72,7 @@ export default function App() {
       // setUserToken('fgkj');
       let userToken;
       userToken=null;
-      if(userName=='user' && password == 'pass'){
+      if(userName=='a@b.com' && password == 'pass'){
         userToken= 'dfgdfg';
         try{
           await AsyncStorage.setItem('userToken', userToken)

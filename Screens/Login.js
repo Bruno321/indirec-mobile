@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Text,
   View,
+  Alert
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import useKeyboard from '../Hooks/Keyboard.hook';
@@ -23,12 +24,20 @@ export default function Login() {
   const [form, setForm] = useState(oInitialState);
   const isKeyboardOpen = useKeyboard();
   const navigation = useNavigation();
+  const  mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+  const [data, setData] = React.useState({
+    email:'',
+    password:'',
+    isValidUser:true,
+    isValidPassword:true
+  })
 
   const { signIn } = React.useContext(AuthContext);
 
   const getFormData = (value, field) => {
     if (value !== undefined) {
-      setForm({ ...form, [field]: value });
+      setData({ ...data, [field]: value });
     }
   };
 
@@ -39,7 +48,59 @@ export default function Login() {
     setForm(oInitialState);
   };
 
+  const handleEmailChange = (value) =>{
+    if(value.trim().length >= 0 && value.trim().match(mailformat)){
+      setData({
+        ...data,
+        email:value,
+        isValidUser:true
+      })
+    }else{
+      setData({
+        ...data,
+        email:value,
+        isValidUser:false
+      })
+    }
+  }
+
+  const handlePassChange = (value) =>{
+    if(value.trim().length > 0){
+      setData({
+        ...data,
+        password:value,
+        isValidPassword:true
+      })
+    }else{
+      setData({
+        ...data,
+        password:value,
+        isValidPassword:false
+      })
+    }
+  }
+
+  const handleValidPass = (value) =>{
+    if(value.trim().length > 0){
+      setData({
+        ... data,
+        isValidPassword: true
+      })
+    }else{
+      setData({
+        ... data,
+        isValidPassword: false
+      })
+    }
+  }
+
   const loginHandle= (username,passowrd)=>{
+    if(username !== 'a@b.com' || passowrd !== 'pass'){
+      Alert.alert('Usuario invalido', 'Usuario o contraseña incorrectos',[
+        {text:'Okay'}
+      ]);
+      return;
+    }
     signIn(username,passowrd)
   }
   
@@ -67,25 +128,33 @@ export default function Login() {
           <Text style={styles.label}>Correo Electronico:</Text>
           <TextInput
             style={styles.input}
-            onChangeText={value => getFormData(value, 'email')}
+            onChangeText={(value) => handleEmailChange(value)}
             keyboardType="email-address"
             placeholder="Usuario"
-            value={form.email}
+            value={data.email}
+            // onEndEditing={(e)=>h(e.nativeEvent.text)}
           />
         </View>
+        { data. isValidUser ? null : 
+          <Text style={styles.error}>El usuario está incompleto</Text>
+        }
         <View style={styles.rowForm}>
           <Text style={styles.label}>Contraseña:</Text>
           <TextInput
             style={styles.input}
-            onChangeText={value => getFormData(value, 'password')}
+            onChangeText={value => handlePassChange(value)}
             placeholder="Contraseña"
             secureTextEntry={true}
-            value={form.password}
+            value={data.password}
+            // onEndEditing={(e)=>handleValidPass(e.nativeEvent.text)}
           />
         </View>
+        { data. isValidPassword ? null : 
+          <Text style={styles.error}>La contraseña está vacía</Text>
+        }
         <View style={styles.rowForm}>
           <TouchableOpacity
-            onPress={()=>{loginHandle(form.email,form.password)}}
+            onPress={()=>{loginHandle(data.email,data.password)}}
             style={styles.loginButton}
           >
             <Text style={styles.loginTexto}>Iniciar Sesión</Text>
@@ -172,4 +241,8 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontFamily:'Fredoka-Medium'
   },
+  error:{
+    fontFamily:'Fredoka-Light',
+    color: '#BA1200'
+  }
 });
