@@ -13,7 +13,8 @@ export default function Registro(){
 	const { signOut } = React.useContext(AuthContext);
 	const sexo = ["Masculino", "Femenino"];
 	const facultades=["Informática","Ingeniería","Ciencias"]
-	const seleccionado=["Sí","No"]
+	const [isEnabled, setIsEnabled] = useState(false);
+	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
 	const logoutHandle= ()=>{
 		signOut();
@@ -81,27 +82,21 @@ export default function Registro(){
 						rowTextStyle={styles.dropdown1RowTxtStyle}
 					/>
 					<Text style={styles.campos}>{"¿Eres jugador seleccionado?"}</Text>
-					<SelectDropdown 
-						data={seleccionado}
-						onSelect={(selectedItem, index) => {
-							console.log(selectedItem, index)
-						}}
-						defaultButtonText={'Selecciona una opción'}
-						buttonTextAfterSelection={(selectedItem, index) => {
-							// text represented after item is selected
-							// if data array is an array of objects then return selectedItem.property to render after item is selected
-							return selectedItem
-						}}
-						buttonStyle={styles.dropdown1BtnStyle}
-						buttonTextStyle={styles.dropdown1BtnTxtStyle}
-						renderDropdownIcon={isOpened => {
-						return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={18} />;
-						}}
-						dropdownIconPosition={'right'}
-						dropdownStyle={styles.dropdown1DropdownStyle}
-						rowStyle={styles.dropdown1RowStyle}
-						rowTextStyle={styles.dropdown1RowTxtStyle}
-					/>
+					<View style={styles.switch}>
+						<View style={styles.switch2}> 
+							<Text style={{fontFamily:'Fredoka-Light'}}>No</Text>
+						</View>
+						<Switch 
+							trackColor={{ false: "#DBDBDB", true: "#CFDBD5" }}
+							thumbColor={isEnabled ? "#09418C" : "#767577"}
+							ios_backgroundColor="#3e3e3e"
+							onValueChange={toggleSwitch}
+							value={isEnabled}
+						/>
+						<View style={styles.switch2}> 
+							<Text style={{fontFamily:'Fredoka-Light'}}>Si</Text>
+						</View>
+					</View>
 					<Text style={styles.campos}>No. Seguro Social:</Text>
 					<TextInput placeholder='12345678' style={styles.input}/>
 					<Text style={styles.campos}>Correo electrónico:</Text>
@@ -218,6 +213,7 @@ const styles = StyleSheet.create({
 		borderBottomColor:'black',
 		marginBottom:15,
 		fontFamily:'Fredoka-Light',
+		// height:28.5
 	},
 	dropdown1BtnStyle: {
 		width: '100%',
@@ -235,7 +231,7 @@ const styles = StyleSheet.create({
 	},
   	dropdown1DropdownStyle: {
 		backgroundColor: '#EFEFEF',
-		marginTop:-35
+		marginTop:-1.5
 	},
   	dropdown1RowStyle: {
 		backgroundColor: '#EFEFEF', 
@@ -332,5 +328,19 @@ const styles = StyleSheet.create({
 		shadowRadius: 2.62,
 
 		elevation: 4,
+	},
+	switch:{
+		//backgroundColor:'green',
+		flexDirection:'row',
+		marginBottom:15,
+		borderBottomWidth:1,
+		borderBottomColor:'black',
+		justifyContent:'space-evenly',
+		paddingRight:200,
+		height:28.5,
+		marginTop:3
+	},
+	switch2:{
+		justifyContent:'center'
 	}
 })
