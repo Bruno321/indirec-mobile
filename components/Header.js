@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, Image, Dimensions, Alert, Modal, Button,StatusBar } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
+import { useNavigation } from '@react-navigation/native';
 
-export default function Header(){
+export default function Header({navigation}){
 	return(
 		<View style={styles.main}>
 			<StatusBar 
@@ -16,7 +17,7 @@ export default function Header(){
 				/>
 			</View>
 			<View style={styles.menu}>
-				<Feather name={'menu'} size={35} color={'white'}/>
+				<Feather name={'menu'} size={35} color={'white'} onPress={() => navigation.openDrawer()}/>
 			</View>
 		</View>
 )}

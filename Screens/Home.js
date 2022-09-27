@@ -140,7 +140,7 @@ export default function Home() {
         backgroundColor="#000"
         barStyle={"light-content"}
         hidden={false} />
-      <Header/>
+      <Header navigation={navigation}/>
       <View style={styles.cuadrante2}>
         <Text style={styles.texto1}>Bienvenido</Text>
         <Text style={styles.texto2}>Por favor escanea el código QR para tomar la asistencia</Text>

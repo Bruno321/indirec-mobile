@@ -4,6 +4,13 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import CustomDrawer from './components/CustomDrawer';
+import {FontAwesome, AntDesign} from 'react-native-vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons'
+// import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+import sports from './assets/icons/clock.png'
 
 import Login from './Screens/Login';
 import Home from './Screens/Home';
@@ -122,16 +129,35 @@ export default function App() {
 
   if (!appIsReady) return null;
   
+
+  const Drawer = createDrawerNavigator();
+
   return (
     // AuthContext es importado desde context.js, authContext utiliza useMemo
     <AuthContext.Provider value={authContext}>
       {/* Cuando carga NavigationContainer, llama la función onLayoutRootView*/}
       <NavigationContainer onReady={onLayoutRootView}>
         { loginState.userToken !== null ? ( // Si hay un token guardado
-          <Stack.Navigator screenOptions={{ headerShown: false }} >
-            <Stack.Screen name="Home" component={Home}/>
-            <Stack.Screen name="Registro" component ={Registro} />
-          </Stack.Navigator>
+          <Drawer.Navigator
+            drawerContent={props => <CustomDrawer {...props}/>}
+            screenOptions={{ 
+              headerShown: false,
+              drawerLabelStyle: {marginLeft: -15, color: '#fff'}
+            }}
+          >
+              <Drawer.Screen name="Home" component={Home} 
+                options={{
+                  drawerIcon: () => <AntDesign name='home' size={25} color='#fff'/>,
+                  title: 'Home'
+                }}
+              />
+              <Drawer.Screen name="Registro" component ={Registro} 
+                options={{
+                  drawerIcon: () => <AntDesign name='checkcircleo' size={25} color='#fff'/>,
+                  title: 'Registro'
+                }}
+              />
+          </Drawer.Navigator>
         )
         : // Si no hay un token guardado
           <Stack.Navigator screenOptions={{ headerShown: false }} >

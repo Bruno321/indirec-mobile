@@ -9,7 +9,6 @@ import TouchableCmp from '../assetsUI/TouchableCmp';
 import Header from "../components/Header"
 import { AuthContext } from '../components/context';
 
-
 export default function Registro(){
 	const { signOut } = React.useContext(AuthContext);
 	const sexo = ["Masculino", "Femenino"];
@@ -24,10 +23,11 @@ export default function Registro(){
 
 	return(
 		<ScrollView style={styles.general} showsVerticalScrollIndicator={false}>
-			<Header/>
+			<Header navigation={navigation}/>
 			<View style={styles.center}>
 				<View style={styles.viewTitulo}>
 					<Text style={styles.titulo}>Registro de un deportista</Text>
+					{/* <FontAwesome name='soccer-ball-o' size={25} color='blue'/> */}
 				</View>
 				<View style={styles.viewForm}>
 					<Text style={styles.campos}>Expediente:</Text>
