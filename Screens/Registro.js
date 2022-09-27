@@ -157,7 +157,7 @@ export default function Registro(){
 				<View style={styles.viewButton}>
 					<TouchableCmp>
 						<View style={styles.viewRegistrar}>
-							<Text style={styles.registrar} onPress={() => {logoutHandle()}}>Registrar deportista</Text>
+							<Text style={styles.registrar} onPress={() => {navigation.goBack()}}>Registrar deportista</Text>
 						</View>
 					</TouchableCmp>
 				</View>
