@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Dimensions, TextInput, Button, ScrollView, Switch  } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, TextInput, Button, ScrollView, Switch, SafeAreaView  } from 'react-native';
 import React, { useState, useEffect, useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
@@ -24,6 +24,7 @@ export default function Registro(){
 
 	return(
 		<ScrollView style={styles.general} showsVerticalScrollIndicator={false}>
+		<SafeAreaView />
 			<Header navigation={navigation}/>
 			<View style={styles.center}>
 				<View style={styles.viewTitulo}>

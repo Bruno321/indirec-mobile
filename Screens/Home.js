@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Dimensions, StatusBar, Modal, Button } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, StatusBar, Modal, Button, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { BarCodeScanner } from "expo-barcode-scanner";
 import React, { useState, useEffect } from "react"
@@ -50,11 +50,11 @@ export default function Home() {
       <Text style={styles.Modal2Text1}>Escaneo fallido, algo ha ocurrido</Text>
       <Text style={styles.Modal2Text2}>Por favor vuelva a pasar el código QR</Text>
       <View style={styles.ModalTouchable}>
-        <TouchableCmp>
-          <Text style={styles.ModalCerrarButton} onPress={() => {
+        <TouchableCmp onPress={() => {
             setAlerta(false);
             setScanned(false);
-            }}>Aceptar</Text>
+            }}>
+          <Text style={styles.ModalCerrarButton}>Aceptar</Text>
         </TouchableCmp>
       </View>
     </View>
@@ -181,31 +181,27 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
     backgroundColor: 'white',
   },
   logoTexto:{
     width: Dimensions.get('window').width*0.5,
     resizeMode: 'contain',
   },
-  cuadrante1:{
-    backgroundColor: '#003070',
-    height: Dimensions.get('window').height*0.125,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   cuadrante2:{
-    height: Dimensions.get('window').height*0.24,
+    height: 170,
     alignItems: 'center',
     justifyContent: 'center',
   },
   cameraView:{
+    width: '100%',
     height: Dimensions.get('window').height*0.5,
     justifyContent: 'center',
     overflow: 'hidden',
     backgroundColor: '#F0F0F0'
   },
   cuadrante3:{
-    height: Dimensions.get('window').height*0.16,
+    height: 160,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -213,7 +209,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Fredoka-Medium',
     fontSize: Dimensions.get('window').width*0.03,
     textAlign: 'center',
-    fontSize:30
+    fontSize:30,
+    marginBottom: 12
   },
   texto2:{
     fontFamily: 'Fredoka-Light',
@@ -227,7 +224,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.4)',
   },
   ModalAlerta:{
-    height: Dimensions.get('window').height*0.65,
+    height: 400,
     justifyContent: 'space-between',
     width: Dimensions.get('window').width*0.9,
     paddingVertical: Dimensions.get('window').height*0.025,
@@ -266,7 +263,10 @@ const styles = StyleSheet.create({
   Modal2Text1:{
     fontFamily: 'Fredoka-Medium',
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 32,
+    paddingLeft: 60,
+    paddingRight: 60,
+    paddingTop: 20,
     color: '#FA8018',
   },
   Modal2Text2:{
@@ -284,16 +284,23 @@ const styles = StyleSheet.create({
   ModalCerrarButton:{
     fontFamily: 'Fredoka-Light',
     width: Dimensions.get('window').width*0.8,
-    height: 50,
+    height: 60,
     backgroundColor: '#003070',
     textAlign: 'center',
     textAlignVertical: 'center',
+    textAlignVertical: 'center',
+    ...Platform.select({
+        ios: {
+            lineHeight: 60 // as same as height
+        },
+        android: {}
+    }),
     color: 'white',
   },
   botonRegistrarDeportista:{
     fontFamily: 'Fredoka-Medium',
     width: Dimensions.get('window').width*0.9,
-    height: Dimensions.get('window').height*0.07,
+    height: 60,
     backgroundColor: '#FFF',
     borderWidth: 1,
     borderColor: '#003070',
@@ -301,8 +308,13 @@ const styles = StyleSheet.create({
 
     textAlign: 'center',
     textAlignVertical: 'center',
+    ...Platform.select({
+        ios: {
+            lineHeight: 60 // as same as height
+        },
+        android: {}
+    }),
     color: '#0050A0',
-    
   },
   buttonNOQROut:{
     width: Dimensions.get('window').width*1,

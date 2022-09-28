@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   cuadrante2:{
     backgroundColor: '#FFF',
     width: Dimensions.get('window').width,
-    height: 426,
+    height: 430,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     alignItems: 'center',

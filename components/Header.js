@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View, Image, Dimensions, Alert, Modal, Button,StatusBar } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, Alert, Modal, Button,StatusBar, SafeAreaView } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 
 export default function Header({navigation}){
 	return(
 		<View style={styles.main}>
+			<SafeAreaView />
 			<StatusBar 
 					backgroundColor={"black"}
 					barStyle={"light-content"}
@@ -25,10 +26,10 @@ export default function Header({navigation}){
 const styles = StyleSheet.create({
 	main:{
 		backgroundColor: '#003070',
-		height:Dimensions.get('window').height/10,
+		height: 126,
 	},
 	header:{
-		height:Dimensions.get('window').height/10,
+		height: 80,
 		alignItems:'center',
 		justifyContent:'center',
 	},
