@@ -8,11 +8,13 @@ import {
   TouchableOpacity,
   Text,
   View,
-  Alert
+  Alert,
+  SafeAreaView
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import useKeyboard from '../Hooks/Keyboard.hook';
 import { AuthContext } from '../components/context';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
 const oInitialState = {
@@ -106,6 +108,9 @@ export default function Login() {
   
   return (
     <View style={styles.container}>
+    <SafeAreaView />
+      <KeyboardAwareScrollView>
+
       <KeyboardAvoidingView enabled={true} style={{ flex: 1, alignItems: 'center' }}>
         <View>
           <Image
@@ -136,7 +141,7 @@ export default function Login() {
           />
         </View>
         { data. isValidUser ? null : 
-          <Text style={styles.error}>El usuario está incompleto</Text>
+          <Text style={styles.error}>El correo está incompleto</Text>
         }
         <View style={styles.rowForm}>
           <Text style={styles.label}>Contraseña:</Text>
@@ -161,6 +166,7 @@ export default function Login() {
           </TouchableOpacity>
         </View>
       </View>
+      </KeyboardAwareScrollView>
     </View>
   );
 }
@@ -175,11 +181,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height * 0.15,
     resizeMode: 'center',
-    marginTop:Dimensions.get('window').height*0.04
-  },
-  cuadrante1:{
-    justifyContent: 'center',
-    height: Dimensions.get('window').height*0.17,
+    marginTop: 20
   },
   loginLogo:{
     width: Dimensions.get('window').width*0.5,
@@ -188,7 +190,7 @@ const styles = StyleSheet.create({
   cuadrante2:{
     backgroundColor: '#FFF',
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height*0.45,
+    height: 426,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     alignItems: 'center',
@@ -198,11 +200,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily:'Fredoka-Medium',
     //fontWeight: 'bold',
-    marginTop:Dimensions.get('window').height*.04,
+    marginTop: 40,
+    marginBottom: 30,
     fontSize:Dimensions.get('window').width*.07,
   },
   rowForm: {
-    marginTop:Dimensions.get('window').height*.025,
+    marginTop: 12,
   },
   label: {
     marginLeft:Dimensions.get('window').width*.02,
@@ -211,7 +214,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: Dimensions.get('window').width * 0.8,
-    height: Dimensions.get('window').height*0.04,
+    height: 32,
     margin: Dimensions.get('window').height*0.01,
     borderBottomWidth: 1,
 		borderBottomColor:'black',
@@ -221,8 +224,9 @@ const styles = StyleSheet.create({
     fontSize:Dimensions.get('window').width*.04,
   },
   loginButton:{
+    marginTop: 30,
     width: Dimensions.get('window').width * 0.8,
-    height: Dimensions.get('window').height * 0.05,
+    height: 50,
     borderRadius: 10,
     backgroundColor:'#003070',
     alignItems: 'center',
