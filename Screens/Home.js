@@ -9,7 +9,6 @@ import Header from "../components/Header"
 export default function Home() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const [alerta, setAlerta] = useState(false);
   const [dataScaneo, setDataScaneo] = useState("{}");
   const [registroCheck, setRegistroCheck] = useState(true);
   const [EntradaSalida, setEntradaSalida] = useState(0);
@@ -39,7 +38,6 @@ export default function Home() {
       <View style={styles.ModalTouchable}>
         <TouchableCmp>
           <Text style={styles.ModalCerrarButton} onPress={() => {
-            setAlerta(false);
             setScanned(false);
             }}>Aceptar</Text>
         </TouchableCmp>
@@ -50,11 +48,10 @@ export default function Home() {
       <Text style={styles.Modal2Text1}>Escaneo fallido, algo ha ocurrido</Text>
       <Text style={styles.Modal2Text2}>Por favor vuelva a pasar el código QR</Text>
       <View style={styles.ModalTouchable}>
-        <TouchableCmp onPress={() => {
-            setAlerta(false);
+        <TouchableCmp>
+          <Text style={styles.ModalCerrarButton} onPress={() => {
             setScanned(false);
-            }}>
-          <Text style={styles.ModalCerrarButton}>Aceptar</Text>
+            }}>Aceptar</Text>
         </TouchableCmp>
       </View>
     </View>
@@ -77,7 +74,6 @@ export default function Home() {
   const handleBarCodeScanned = ({ data }) => {
     setDataScaneo(data);
     setScanned(true);
-    setAlerta(true);
     // PASOS AL LEER QR
     console.log("✔ =========== ESCANEO =========== ✔");
     // 0 GUARDAR LA INFO DEL QR Y VERIFICAR QUE SEA JSON
@@ -146,16 +142,17 @@ export default function Home() {
         <Text style={styles.texto2}>Por favor escanea el código QR para tomar la asistencia</Text>
       </View>
       <View style={styles.cameraView}>
+        {scanned? null : 
         <BarCodeScanner
           onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
           height = {Dimensions.get('window').height}
-        />
+        />}
       </View>
       <Modal 
         animationType={'fade'}
-        visible={alerta}
+        visible={scanned}
         transparent
-        onRequestClose={()=>setAlerta(false)}
+        onRequestClose={()=>setScanned(false)}
       >
         <View style={styles.ModalCentrado}>
           {GenerarModal()}
@@ -165,7 +162,6 @@ export default function Home() {
         <View style={styles.ModalTouchable}>
               <TouchableCmp>
                 <Text style={styles.botonRegistrarDeportista} onPress={() => {
-                  // setAlerta(true);
                   // setScanned(false);
                   navigation.navigate("Registro");
                   }}>Registrar Deportista</Text>
