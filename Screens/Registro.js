@@ -362,9 +362,9 @@ export default function Registro(){
 					</View>
 				</View>
 				<View style={styles.viewButton}>
-					<TouchableCmp>
+					<TouchableCmp onPress={()=>{handleSubmit()}}>
 						<View style={styles.viewRegistrar}>
-							<Text style={styles.registrar} onPress={() => {handleSubmit()}}>Registrar deportista</Text>
+							<Text style={styles.registrar}>Registrar deportista</Text>
 						</View>
 					</TouchableCmp>
 				</View>
