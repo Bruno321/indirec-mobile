@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Dimensions, TextInput, Button, ScrollView, Switch, SafeAreaView  } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, TextInput, Button, ScrollView, Switch, SafeAreaView, Alert  } from 'react-native';
 import React, { useState, useEffect, useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
@@ -9,16 +9,183 @@ import TouchableCmp from '../assetsUI/TouchableCmp';
 import Header from "../components/Header"
 import { AuthContext } from '../components/context';
 
+
 export default function Registro(){
+	const onInitialState ={
+		expediente: '',
+		nombres:'',
+		apellidos:'',
+		sexo:'',
+		facultad:'',
+		seleccionado:'',
+		seguro:'',
+		email:'',
+		telefono:'',
+		telEmergencia:'',
+		isValidExp:true,
+		isValidNomb:true,
+		isValidApe:true,
+		isValidSex:true,
+		isValidFac:true,
+		isValidSeg:true,
+		isValidEmail:true,
+		isValidTel:true,
+		isValidEmer:true,
+	}
 	const { signOut } = React.useContext(AuthContext);
 	const sexo = ["Masculino", "Femenino"];
 	const facultades=["Informática","Ingeniería","Ciencias"]
 	const [isEnabled, setIsEnabled] = useState(false);
 	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+	const [form,setForm] = useState(onInitialState)
+	const  mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+	const  numberformat = /(\+?( |-|\.)?\d{1,2}( |-|\.)?)?(\(?\d{3}\)?|\d{3})( |-|\.)?(\d{3}( |-|\.)?\d{4})/g;
+
+	const [data, setData] = React.useState({
+		expediente: '',
+		nombres:'',
+		apellidos:'',
+		sexo:'',
+		facultad:'',
+		seleccionado:'',
+		seguro:'',
+		email:'',
+		telefono:'',
+		telEmergencia:'',
+		isValidExp:true,
+		isValidNomb:true,
+		isValidApe:true,
+		isValidSex:true,
+		isValidFac:true,
+		isValidSeg:true,
+		isValidEmail:true,
+		isValidTel:true,
+		isValidEmer:true,
+	})
 
 	const logoutHandle= ()=>{
 		signOut();
 	  }
+
+	const handleExpChange = (value) =>{
+	if(value.trim().length > 0){
+		setData({
+		...data,
+		expediente:value,
+		isValidExp:true
+		})
+	}else{
+		setData({
+			...data,
+			expediente:value,
+			isValidExp:false
+		})
+	}
+	}
+	const handleNomChange = (value) =>{
+	if(value.trim().length > 0){
+		setData({
+		...data,
+		nombres:value,
+		isValidNomb:true
+		})
+	}else{
+		setData({
+			...data,
+			nombres:value,
+			isValidNomb:false
+		})
+	}
+	}
+	const handleApellChange = (value) =>{
+	if(value.trim().length > 0){
+		setData({
+		...data,
+		apellidos:value,
+		isValidApe:true
+		})
+	}else{
+		setData({
+			...data,
+			apellidos:value,
+			isValidApe:false
+		})
+	}
+	}
+	const handleSegChange = (value) =>{
+	if(value.trim().length > 0){
+		setData({
+		...data,
+		seguro:value,
+		isValidSeg:true
+		})
+	}else{
+		setData({
+			...data,
+			seguro:value,
+			isValidSeg:false
+		})
+	}
+	}
+	const handleEmailChange = (value) =>{
+	if(value.trim().length > 0 && value.trim().match(mailformat)){
+		setData({
+		...data,
+		email:value,
+		isValidEmail:true
+		})
+	}else{
+		setData({
+			...data,
+			email:value,
+			isValidEmail:false
+		})
+	}
+	}
+	const handleTelChange = (value) =>{
+	if(value.trim().length > 0 && value.trim().match(numberformat)){
+		setData({
+		...data,
+		telefono:value,
+		isValidTel:true
+		})
+	}else{
+		setData({
+			...data,
+			telefono:value,
+			isValidTel:false
+		})
+	}
+	}
+	const handleEmeChange = (value) =>{
+	if(value.trim().length > 0 && value.trim().match(numberformat)){
+		setData({
+		...data,
+		telEmergencia:value,
+		isValidEmer:true
+		})
+	}else{
+		setData({
+			...data,
+			telEmergencia:value,
+			isValidEmer:false
+		})
+	}
+	}
+
+	const handleSubmit = ()=>{
+		if(!(data.isValidExp&&data.isValidNomb&&data.isValidApe&&data.isValidSeg&&data.isValidEmail&&data.isValidTel&&data.isValidEmer
+			&& data.expediente.trim().length >0 && data.nombres.trim().length >0 && data.apellidos.trim().length >0
+			&& data.seguro.trim().length >0 && data.email.trim().length >0 && data.telefono.trim().length >0 && data.telEmergencia.trim().length >0)){
+			Alert.alert('Información incorrecta', 'Uno o más campos son incorrectos',[
+				{text:'Okay'}
+			 ]);
+		}else{
+			console.log("YA")
+			navigation.navigate("Home")
+			setData(onInitialState);
+		}
+	}
 
 	const navigation = useNavigation();
 
@@ -33,11 +200,30 @@ export default function Registro(){
 				</View>
 				<View style={styles.viewForm}>
 					<Text style={styles.campos}>Expediente:</Text>
-					<TextInput placeholder='123456' style={styles.input}/>
+					<TextInput 
+						placeholder='123456' style={styles.input}
+						onChangeText={(value) => handleExpChange(value)}
+						value={data.expediente}
+						/>
+					{ data. isValidExp ? null : 
+						<Text style={styles.error}>Campo vacío</Text>
+					}
 					<Text style={styles.campos}>{"Nombre(s):"}</Text>
-					<TextInput placeholder='Jorge Alejandro' style={styles.input}/>
+					<TextInput 
+						placeholder='Jorge Alejandro' style={styles.input}
+						onChangeText={(value) => handleNomChange(value)}
+						value={data.nombres}
+					/>
+					{ data. isValidNomb ? null : 
+						<Text style={styles.error}>Campo vacío</Text>
+					}
 					<Text style={styles.campos}>{"Apellidos:"}</Text>
-					<TextInput placeholder='Bernal Colín' style={styles.input}/>
+					<TextInput placeholder='Bernal Colín' style={styles.input}
+					onChangeText={(value) => handleApellChange(value)}
+					value={data.apellidos}/>
+					{ data. isValidApe ? null : 
+						<Text style={styles.error}>Campo vacío</Text>
+					}
 					<Text style={styles.campos}>Sexo:</Text>
 					<SelectDropdown 
 						data={sexo}
@@ -99,13 +285,33 @@ export default function Registro(){
 						</View>
 					</View>
 					<Text style={styles.campos}>No. Seguro Social:</Text>
-					<TextInput placeholder='12345678' style={styles.input}/>
+					<TextInput placeholder='12345678' style={styles.input}
+					onChangeText={(value) => handleSegChange(value)}
+					value={data.seguro}/>
+					{ data. isValidSeg ? null : 
+						<Text style={styles.error}>Campo vacío</Text>
+					}
 					<Text style={styles.campos}>Correo electrónico:</Text>
-					<TextInput placeholder='ejemplo@mail.com' style={styles.input}/>
+					<TextInput placeholder='ejemplo@mail.com' style={styles.input}
+					onChangeText={(value) => handleEmailChange(value)}
+					value={data.email}/>
+					{ data. isValidEmail ? null : 
+						<Text style={styles.error}>Campo invalido</Text>
+					}
 					<Text style={styles.campos}>Teléfono:</Text>
-					<TextInput placeholder='442-123-4567' style={styles.input}/>
+					<TextInput placeholder='442-123-4567' style={styles.input}
+					onChangeText={(value) => handleTelChange(value)}
+					value={data.telefono}/>
+					{ data. isValidTel ? null : 
+						<Text style={styles.error}>Campo vacío</Text>
+					}
 					<Text style={styles.campos}>Teléfono de emergencias:</Text>
-					<TextInput placeholder='442-765-4321' style={styles.input}/>
+					<TextInput placeholder='442-765-4321' style={styles.input}
+					onChangeText={(value) => handleEmeChange(value)}
+					value={data.telEmergencia}/>
+					{ data. isValidEmer ? null : 
+						<Text style={styles.error}>Campo vacío</Text>
+					}
 					<Text style={styles.campos2}>Kárdex:</Text>
 					<View style={styles.subir}>
 						<View style={styles.viewTouch}>
@@ -158,7 +364,7 @@ export default function Registro(){
 				<View style={styles.viewButton}>
 					<TouchableCmp>
 						<View style={styles.viewRegistrar}>
-							<Text style={styles.registrar} onPress={() => {navigation.goBack()}}>Registrar deportista</Text>
+							<Text style={styles.registrar} onPress={() => {handleSubmit()}}>Registrar deportista</Text>
 						</View>
 					</TouchableCmp>
 				</View>
@@ -202,17 +408,18 @@ const styles = StyleSheet.create({
 	},
 	campos:{
 		fontFamily:'Fredoka-Light',
+		marginTop:15
 	},
 	campos2:{
 		fontFamily:'Fredoka-Light',
-		marginTop:30
+		marginTop:30,
 	},
 	input:{
 		width:Dimensions.get('window').width/1.25,
 		paddingLeft:5,
 		borderBottomWidth:1,
 		borderBottomColor:'black',
-		marginBottom:15,
+		//marginBottom:15,
 		fontFamily:'Fredoka-Light',
 		// height:28.5
 	},
@@ -222,7 +429,7 @@ const styles = StyleSheet.create({
 		backgroundColor:'white',
 		borderBottomWidth: 1,
 		borderColor: 'black',
-		marginBottom:15,
+		//marginBottom:15,
 	},
 	dropdown1BtnTxtStyle: {
 		color: 'black', 
@@ -333,15 +540,20 @@ const styles = StyleSheet.create({
 	switch:{
 		//backgroundColor:'green',
 		flexDirection:'row',
-		marginBottom:15,
+		//marginBottom:15,
 		borderBottomWidth:1,
 		borderBottomColor:'black',
 		justifyContent:'space-evenly',
 		paddingRight:200,
 		height:28.5,
-		marginTop:3
+		marginTop:3,
 	},
 	switch2:{
-		justifyContent:'center'
-	}
+		justifyContent:'center',
+	},
+	error:{
+		fontFamily:'Fredoka-Light',
+		color: '#BA1200',
+		//marginBottom:15
+	  }
 })
