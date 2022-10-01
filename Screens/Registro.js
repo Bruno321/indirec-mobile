@@ -17,6 +17,8 @@ export default function Registro(){
 		apellidos:'',
 		sexo:'',
 		facultad:'',
+		sexoText:'Selecciona una opción',
+		facultadText:'Selecciona una facultad',
 		seleccionado:'',
 		seguro:'',
 		email:'',
@@ -36,10 +38,17 @@ export default function Registro(){
 	const sexo = ["Masculino", "Femenino"];
 	const facultades=["Informática","Ingeniería","Ciencias"]
 	const [isEnabled, setIsEnabled] = useState(false);
+	const [check, setCheck] = useState(false);
 	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 	const [form,setForm] = useState(onInitialState)
-	const  mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-	const  numberformat = /(\+?( |-|\.)?\d{1,2}( |-|\.)?)?(\(?\d{3}\)?|\d{3})( |-|\.)?(\d{3}( |-|\.)?\d{4})/g;
+	const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+	const numberformat = /(\+?( |-|\.)?\d{1,2}( |-|\.)?)?(\(?\d{3}\)?|\d{3})( |-|\.)?(\d{3}( |-|\.)?\d{4})$/g;
+	const numberformat2 = /(\+?( |-|\.)?\d{1,2}( |-|\.)?)?(\(?\d{3}\)?|\d{3})( |-|\.)?(\d{4}( |-|\.)?\d{3})$/g;
+	const numberformat3 = /(\+?( |-|\.)?\d{1,2}( |-|\.)?)?(\(?\d{3}\)?|\d{3})( |-|\.)?(\d{2}( |-|\.)?\d{2}( |-|\.)?\d{3})$/g;
+	const numberformat4 = /(\+?( |-|\.)?\d{1,2}( |-|\.)?)?(\(?\d{3}\)?|\d{3})( |-|\.)?(\d{3}( |-|\.)?\d{2}( |-|\.)?\d{2})$/g;
+	const nameformat = /^([A-ZÁÉÍÓÚ]['-]?[a-záéíóúü]+([ ]?[a-z]?['-]?[A-ZÁÉÍÓÚ]['-]?[a-záéíóúü]+)*)$/
+	const expformat = /^([0-9]{5,7})$/
+	const seguroformat = /^^([0-9]{2}-?[0-9]{2}-?[0-9]{2}-?[0-9]{4}-?[0-9]{1})$$/
 
 	const [data, setData] = React.useState({
 		expediente: '',
@@ -47,7 +56,9 @@ export default function Registro(){
 		apellidos:'',
 		sexo:'',
 		facultad:'',
-		seleccionado:'',
+		sexoText:'Selecciona una opción',
+		facultadText:'Selecciona una facultad',
+		seleccionado:'No',
 		seguro:'',
 		email:'',
 		telefono:'',
@@ -68,7 +79,7 @@ export default function Registro(){
 	  }
 
 	const handleExpChange = (value) =>{
-	if(value.trim().length > 0){
+	if(value.length > 0 && value.match(expformat)){
 		setData({
 		...data,
 		expediente:value,
@@ -83,7 +94,7 @@ export default function Registro(){
 	}
 	}
 	const handleNomChange = (value) =>{
-	if(value.trim().length > 0){
+	if(value.length > 0 && value.match(nameformat)){
 		setData({
 		...data,
 		nombres:value,
@@ -98,7 +109,7 @@ export default function Registro(){
 	}
 	}
 	const handleApellChange = (value) =>{
-	if(value.trim().length > 0){
+	if(value.length > 0 && value.match(nameformat)){
 		setData({
 		...data,
 		apellidos:value,
@@ -113,7 +124,7 @@ export default function Registro(){
 	}
 	}
 	const handleSegChange = (value) =>{
-	if(value.trim().length > 0){
+	if(value.length > 0 && value.match(seguroformat)){
 		setData({
 		...data,
 		seguro:value,
@@ -128,7 +139,7 @@ export default function Registro(){
 	}
 	}
 	const handleEmailChange = (value) =>{
-	if(value.trim().length > 0 && value.trim().match(mailformat)){
+	if(value.length > 0 && value.match(mailformat)){
 		setData({
 		...data,
 		email:value,
@@ -143,7 +154,7 @@ export default function Registro(){
 	}
 	}
 	const handleTelChange = (value) =>{
-	if(value.trim().length > 0 && value.trim().match(numberformat)){
+	if(value.length > 0 && (value.match(numberformat)||value.match(numberformat2)||value.match(numberformat3)||value.match(numberformat4))){
 		setData({
 		...data,
 		telefono:value,
@@ -158,7 +169,7 @@ export default function Registro(){
 	}
 	}
 	const handleEmeChange = (value) =>{
-	if(value.trim().length > 0 && value.trim().match(numberformat)){
+		if(value.length > 0 && (value.match(numberformat)||value.match(numberformat2)||value.match(numberformat3)||value.match(numberformat4))){
 		setData({
 		...data,
 		telEmergencia:value,
@@ -172,19 +183,43 @@ export default function Registro(){
 		})
 	}
 	}
+	const handleSexChange = (value) =>{
+		setData({
+		...data,
+		sexo:value,
+		})
+	}
+	const handleFacChange = (value) =>{
+		setData({
+		...data,
+		facultad:value,
+		})
+	}
 
 	const handleSubmit = ()=>{
-		if(!(data.isValidExp&&data.isValidNomb&&data.isValidApe&&data.isValidSeg&&data.isValidEmail&&data.isValidTel&&data.isValidEmer
+		if(!(data.isValidExp&&data.isValidNomb&&data.isValidApe&&data.isValidSeg&&data.isValidEmail&&data.isValidTel&&data.isValidEmer&&data.isValidSex&&data.isValidFac
 			&& data.expediente.trim().length >0 && data.nombres.trim().length >0 && data.apellidos.trim().length >0
-			&& data.seguro.trim().length >0 && data.email.trim().length >0 && data.telefono.trim().length >0 && data.telEmergencia.trim().length >0)){
+			&& data.seguro.trim().length >0 && data.email.trim().length >0 && data.telefono.trim().length >0 && data.telEmergencia.trim().length >0
+			)){
 			Alert.alert('Información incorrecta', 'Uno o más campos son incorrectos',[
 				{text:'Okay'}
 			 ]);
+			console.log("NO ESTA BIEN")
 		}else{
-			console.log("YA")
-			navigation.navigate("Home")
 			setData(onInitialState);
+			navigation.navigate("Home")
 		}
+	}
+
+	const CheckAll = () =>{
+		if((data.isValidExp&&data.isValidNomb&&data.isValidApe&&data.isValidSeg&&data.isValidEmail&&data.isValidTel&&data.isValidEmer
+			&& data.expediente.trim().length >0 && data.nombres.trim().length >0 && data.apellidos.trim().length >0
+			&& data.seguro.trim().length >0 && data.email.trim().length >0 && data.telefono.trim().length >0 && data.telEmergencia.trim().length >0
+			)){
+				return true
+			}else{
+				return false
+			}
 	}
 
 	const navigation = useNavigation();
@@ -202,6 +237,7 @@ export default function Registro(){
 					<Text style={styles.campos}>Expediente:</Text>
 					<TextInput 
 						placeholder='123456' style={styles.input}
+						keyboardType='number-pad'
 						onChangeText={(value) => handleExpChange(value)}
 						value={data.expediente}
 						/>
@@ -228,9 +264,10 @@ export default function Registro(){
 					<SelectDropdown 
 						data={sexo}
 						onSelect={(selectedItem, index) => {
-							console.log(selectedItem, index)
+							// console.log(selectedItem, index)
+							handleSexChange(selectedItem);
 						}}
-						defaultButtonText={'Selecciona una opción'}
+						defaultButtonText={data.sexoText}
 						buttonTextAfterSelection={(selectedItem, index) => {
 							// text represented after item is selected
 							// if data array is an array of objects then return selectedItem.property to render after item is selected
@@ -246,13 +283,16 @@ export default function Registro(){
 						rowStyle={styles.dropdown1RowStyle}
 						rowTextStyle={styles.dropdown1RowTxtStyle}
 					/>
+					{ data. isValidSex ? null : 
+						<Text style={styles.error}>Campo vacío</Text>
+					}
 					<Text style={styles.campos}>Facultad:</Text>
 					<SelectDropdown 
 						data={facultades}
 						onSelect={(selectedItem, index) => {
-							console.log(selectedItem, index)
+							handleFacChange(selectedItem);
 						}}
-						defaultButtonText={'Selecciona una facultad'}
+						defaultButtonText={data.facultadText}
 						buttonTextAfterSelection={(selectedItem, index) => {
 							// text represented after item is selected
 							// if data array is an array of objects then return selectedItem.property to render after item is selected
@@ -268,6 +308,9 @@ export default function Registro(){
 						rowStyle={styles.dropdown1RowStyle}
 						rowTextStyle={styles.dropdown1RowTxtStyle}
 					/>
+					{ data. isValidFac ? null : 
+						<Text style={styles.error}>Campo vacío</Text>
+					}
 					<Text style={styles.campos}>{"¿Eres jugador seleccionado?"}</Text>
 					<View style={styles.switch}>
 						<View style={styles.switch2}> 
@@ -287,12 +330,14 @@ export default function Registro(){
 					<Text style={styles.campos}>No. Seguro Social:</Text>
 					<TextInput placeholder='12345678' style={styles.input}
 					onChangeText={(value) => handleSegChange(value)}
+					keyboardType='numeric'
 					value={data.seguro}/>
 					{ data. isValidSeg ? null : 
 						<Text style={styles.error}>Campo vacío</Text>
 					}
 					<Text style={styles.campos}>Correo electrónico:</Text>
 					<TextInput placeholder='ejemplo@mail.com' style={styles.input}
+					keyboardType='email-address'
 					onChangeText={(value) => handleEmailChange(value)}
 					value={data.email}/>
 					{ data. isValidEmail ? null : 
@@ -300,6 +345,7 @@ export default function Registro(){
 					}
 					<Text style={styles.campos}>Teléfono:</Text>
 					<TextInput placeholder='442-123-4567' style={styles.input}
+					keyboardType='phone-pad'
 					onChangeText={(value) => handleTelChange(value)}
 					value={data.telefono}/>
 					{ data. isValidTel ? null : 
@@ -307,6 +353,7 @@ export default function Registro(){
 					}
 					<Text style={styles.campos}>Teléfono de emergencias:</Text>
 					<TextInput placeholder='442-765-4321' style={styles.input}
+					keyboardType='phone-pad'
 					onChangeText={(value) => handleEmeChange(value)}
 					value={data.telEmergencia}/>
 					{ data. isValidEmer ? null : 
@@ -363,9 +410,13 @@ export default function Registro(){
 				</View>
 				<View style={styles.viewButton}>
 					<TouchableCmp onPress={()=>{handleSubmit()}}>
-						<View style={styles.viewRegistrar}>
-							<Text style={styles.registrar}>Registrar deportista</Text>
-						</View>
+						{(CheckAll())
+						?<View style={styles.viewRegistrar}>
+							<Text style={styles.registrar} onPress={()=>{handleSubmit()}}>Registrar deportista</Text>
+						</View>:
+						<View style={styles.viewRegistrarFalse}>
+							<Text style={styles.registrar} onPress={()=>{handleSubmit()}}>Registrar deportista</Text>
+						</View>}
 					</TouchableCmp>
 				</View>
 			</View>
@@ -508,7 +559,13 @@ const styles = StyleSheet.create({
 		fontFamily:'Fredoka-Regular',
 		fontSize:16,
 		color:'white',
-		textAlign:'center'
+		textAlign:'center',
+	},
+	registrarFalse:{
+		fontFamily:'Fredoka-Regular',
+		fontSize:16,
+		color:'#DEDEDE',
+		textAlign:'center',
 	},
 	viewRegistrar:{
 		width:Dimensions.get('window').width/1.25,
@@ -516,9 +573,18 @@ const styles = StyleSheet.create({
 		borderRadius:10,
 		backgroundColor:'#003070',
 		justifyContent:'center',
-		overflow:'hidden'
+		overflow:'hidden',
+	},
+	viewRegistrarFalse:{
+		width:Dimensions.get('window').width/1.25,
+		height:55,
+		borderRadius:10,
+		backgroundColor:'#777777',
+		justifyContent:'center',
+		overflow:'hidden',
 	},
 	viewButton:{
+		backgroundColor:'red',
 		width:Dimensions.get('window').width/1.25,
 		height:55,
 		borderRadius:10,
@@ -536,6 +602,7 @@ const styles = StyleSheet.create({
 		shadowRadius: 2.62,
 
 		elevation: 4,
+		backgroundColor:'red',
 	},
 	switch:{
 		//backgroundColor:'green',
