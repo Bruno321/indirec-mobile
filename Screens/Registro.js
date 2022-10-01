@@ -197,10 +197,7 @@ export default function Registro(){
 	}
 
 	const handleSubmit = ()=>{
-		if(!(data.isValidExp&&data.isValidNomb&&data.isValidApe&&data.isValidSeg&&data.isValidEmail&&data.isValidTel&&data.isValidEmer&&data.isValidSex&&data.isValidFac
-			&& data.expediente.trim().length >0 && data.nombres.trim().length >0 && data.apellidos.trim().length >0
-			&& data.seguro.trim().length >0 && data.email.trim().length >0 && data.telefono.trim().length >0 && data.telEmergencia.trim().length >0
-			)){
+		if(!CheckAll()){
 			Alert.alert('Información incorrecta', 'Uno o más campos son incorrectos',[
 				{text:'Okay'}
 			 ]);
@@ -328,7 +325,7 @@ export default function Registro(){
 						</View>
 					</View>
 					<Text style={styles.campos}>No. Seguro Social:</Text>
-					<TextInput placeholder='12345678' style={styles.input}
+					<TextInput placeholder='12345678912' style={styles.input}
 					onChangeText={(value) => handleSegChange(value)}
 					keyboardType='numeric'
 					value={data.seguro}/>
@@ -352,7 +349,7 @@ export default function Registro(){
 						<Text style={styles.error}>Campo vacío</Text>
 					}
 					<Text style={styles.campos}>Teléfono de emergencias:</Text>
-					<TextInput placeholder='442-765-4321' style={styles.input}
+					<TextInput placeholder='+51-442-123-12-12' style={styles.input}
 					keyboardType='phone-pad'
 					onChangeText={(value) => handleEmeChange(value)}
 					value={data.telEmergencia}/>
