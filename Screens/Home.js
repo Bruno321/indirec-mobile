@@ -5,34 +5,61 @@ import React, { useState, useEffect } from "react"
 import NetInfo from "@react-native-community/netinfo";
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import Header from "../components/Header"
+import moment from 'moment/moment';
+import axios from 'axios';
 
 export default function Home() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const [dataScaneo, setDataScaneo] = useState("{}");
+  const [dataScaneo, setDataScaneo] = useState({});
+  //porq el default es true?
   const [registroCheck, setRegistroCheck] = useState(true);
   const [EntradaSalida, setEntradaSalida] = useState(0);
   
   const navigation = useNavigation();
 
-  var mostrarHora = () => {
-    try{
-      return JSON.parse(dataScaneo).fecha.slice(14,19)
-    } catch (error) {}
-  }
-
   var getEntradaSalida = (inORout) => {
     inORout == 1 ? setEntradaSalida(1) : setEntradaSalida(0);
   }
   /* A function that returns a view depending on the value of the variable `registroCheck` */
-  var GenerarModal = () => {
+  const GenerarModal = () => {
     if(registroCheck == true){
+      
+    //Aqui se mandaria el post
+    // configurar MAMADAS PORQUE SOMOS HTTP NO HTTPS Zzzzz
+    // https://github.com/facebook/react-native/issues/32931
+  //   axios({
+  //     method: "POST",
+  //     url: "http://127.0.0.1:3000/api/deportistas/asistencias",
+  //     data: {
+  //       deportistaId: dataScaneo.id,
+  //       fecha:dataScaneo.fecha
+  //     },
+  //     headers: { 
+  //     'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoxLCJpYXQiOjE2NjQ0ODg4MTJ9.h8R_akeAfxWju_T6e6C_Le5NXQ-qFp_--chGXpg7sv4`,
+  //     "Content-Type": "application/json",
+  //     "Access-Control-Allow-Origin":null ,
+  //     "Accept":"*/*"
+  //   },
+  //     mode: 'cors',
+  // })
+  // .then((response)=>{
+  //   console.log(response)
+  // })
+  // .catch((e)=>{
+  //   console.log(e)
+  //   // console.log(e.response)
+  //   // console.log(e.response.data)
+  // })
+    //si el return es exitoso ya devuelve el alert
+
     return <View style={styles.ModalAlerta}>
       <Text style={styles.Modal1Text1}>Escaneo exitoso</Text>
       <Text style={styles.Modal1Text2}>{EntradaSalida == 1 ? "Bienvenido" : "Hasta luego"}</Text>
-      <Text style={styles.Modal1Text3}>{JSON.parse(dataScaneo).nombreC}</Text>
+      <Text style={styles.Modal1Text3}>{dataScaneo.nombreC}</Text>
       <Image style={styles.Modal1Image} source={require("../images/ImagenEjemploDeportista.jpg")}></Image>
-      <Text style={styles.Modal1Text4}>{EntradaSalida == 1 ? "Entrada - " : "Salida - "}{mostrarHora()}</Text>
+      {/* <Text style={styles.Modal1Text4}>{EntradaSalida == 1 ? "Entrada - " : "Salida - "}{dataScaneo.fecha}</Text> */}
+      <Text style={styles.Modal1Text4}>{EntradaSalida == 1 ? "Entrada - " : "Salida - "}{moment(dataScaneo.fecha).format('h:mm:ss a')}</Text>
 
       <Text style={styles.Modal1Text4}>{EntradaSalida == 1 ? "La hora de entrada ha sido registrada con exito" : "La hora de salida ha sido registrada con éxito"}</Text>
       <View style={styles.ModalTouchable}>
@@ -72,20 +99,23 @@ export default function Home() {
   }, [navigation]);
   
   const handleBarCodeScanned = ({ data }) => {
-    setDataScaneo(data);
+    
+    let parsed_data = JSON.parse(data)
+    setDataScaneo(parsed_data);
+    
     setScanned(true);
     // PASOS AL LEER QR
-    console.log("✔ =========== ESCANEO =========== ✔");
+    // console.log("✔ =========== ESCANEO =========== ✔");
     // 0 GUARDAR LA INFO DEL QR Y VERIFICAR QUE SEA JSON
     try {
       let datos = JSON.parse(data);
-      console.log("✔ SI ES UN JSON");
+      // console.log("✔ SI ES UN JSON");
       // 1 CHECAR QUE COINCIDA EL NUMERO DE LLAVES DEL JSON (3)
       if(Object.keys(datos).length == 3){
-       console.log("✔ JSON CON 3 LLAVES");
+      //  console.log("✔ JSON CON 3 LLAVES");
        // 2 CHECAR QUE LAS LLAVES SEAN LAS QUE PEDIMOS (id, nombre y fecha)
        if(datos.hasOwnProperty('id') && datos.hasOwnProperty('nombreC') && datos.hasOwnProperty('fecha') == true){
-        console.log("✔ JSON CON LLAVES CORRECTAS");
+        // console.log("✔ JSON CON LLAVES CORRECTAS");
         setRegistroCheck(true);
         // 3 CHECAR SI HAY INTERNET
         const unsubscribe = NetInfo.addEventListener(state => {
@@ -93,15 +123,15 @@ export default function Home() {
             switch (state.type) {
               //      1. INTERNET - LLAMAR IMAGEN DE LA BDD
               case "wifi":
-                console.log("✔ Conexión wifi");
+                // console.log("✔ Conexión wifi");
                 break;
               //      2. DATOS - PREGUNTAR SI QUIERE BAJAR IMAGEN CON DATOS O MOSTRAR IMAGEN DEFAULT
               case "cellular":
-                console.log("✔ Conexión con datos");
+                // console.log("✔ Conexión con datos");
                 break;
               //      3. NO INTERNET - MOSTRAR IMAGEN DEFAULT
               case "none":
-                console.log("✔ Sin conexión");
+                // console.log("✔ Sin conexión");
                 break;
               default:
                 break;
