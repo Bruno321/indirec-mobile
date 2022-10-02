@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as SplashScreen from "expo-splash-screen";
@@ -15,6 +16,8 @@ import sports from './assets/icons/clock.png'
 import Login from './Screens/Login';
 import Home from './Screens/Home';
 import Registro from './Screens/Registro';
+import Deportistas from './Screens/Deportistas';
+import Asistencias from './Screens/Asistencias';
 
 import { AuthContext } from './components/context';
 
@@ -145,16 +148,28 @@ export default function App() {
               drawerLabelStyle: {marginLeft: -15, color: '#fff'}
             }}
           >
-              <Drawer.Screen name="Home" component={Home} 
+              <Drawer.Screen name="Deportistas" component={Deportistas} 
                 options={{
-                  drawerIcon: () => <AntDesign name='home' size={25} color='#fff'/>,
-                  title: 'Home'
+                  drawerIcon: () => <Image source={require('./assets/icons/sports.png')}/>,
+                  title: 'Deportistas'
+                }}
+              />
+              <Drawer.Screen name="Asistencias" component={Asistencias} 
+                options={{
+                  drawerIcon: () => <Image source={require('./assets/icons/clock.png')}/>,
+                  title: 'Asistencias'
                 }}
               />
               <Drawer.Screen name="Registro" component ={Registro} 
                 options={{
-                  drawerIcon: () => <AntDesign name='checkcircleo' size={25} color='#fff'/>,
-                  title: 'Registro'
+                  drawerIcon: () => <Image source={require('./assets/icons/register.png')}/>,
+                  title: 'Registrar deportista'
+                }}
+              />
+              <Drawer.Screen name="Home" component={Home} 
+                options={{
+                  drawerIcon: () => <Image source={require('./assets/icons/list.png')}/>,
+                  title: 'Pase de lista'
                 }}
               />
           </Drawer.Navigator>

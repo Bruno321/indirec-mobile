@@ -16,7 +16,8 @@ const CustomDrawer = (props) => {
         <View style={{flex: 1, backgroundColor:'#003070'}}>
             <DrawerContentScrollView {...props} >
                 <DrawerItemList {...props}/>
-                <DrawerItem 
+            </DrawerContentScrollView>
+            <DrawerItem 
                     label={ () => <Text style={{color: '#fff', marginLeft: -15, fontWeight: '600'}}>Cerrar Sesion</Text>}
                     onPress={() => {
                         logoutHandle()}
@@ -26,7 +27,6 @@ const CustomDrawer = (props) => {
                         () => <Entypo name='log-out' size={25} color='white'/>
                     }
                 />
-            </DrawerContentScrollView>
         </View>
     )
 }
