@@ -59,7 +59,7 @@ export default function Home() {
       <Text style={styles.Modal1Text3}>{dataScaneo.nombreC}</Text>
       <Image style={styles.Modal1Image} source={require("../images/ImagenEjemploDeportista.jpg")}></Image>
       {/* <Text style={styles.Modal1Text4}>{EntradaSalida == 1 ? "Entrada - " : "Salida - "}{dataScaneo.fecha}</Text> */}
-      <Text style={styles.Modal1Text4}>{EntradaSalida == 1 ? "Entrada - " : "Salida - "}{moment(dataScaneo.fecha).format('h:mm:ss a')}</Text>
+      <Text style={styles.Modal1Text4}>{EntradaSalida == 1 ? "Entrada - " : "Salida - "}{moment(dataScaneo.fecha).format('h:mm a')}</Text>
 
       <Text style={styles.Modal1Text4}>{EntradaSalida == 1 ? "La hora de entrada ha sido registrada con exito" : "La hora de salida ha sido registrada con éxito"}</Text>
       <View style={styles.ModalTouchable}>
