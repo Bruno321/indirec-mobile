@@ -28,30 +28,46 @@ export default function Home() {
     //Aqui se mandaria el post
     // configurar MAMADAS PORQUE SOMOS HTTP NO HTTPS Zzzzz
     // https://github.com/facebook/react-native/issues/32931
-  //   axios({
-  //     method: "POST",
-  //     url: "http://127.0.0.1:3000/api/deportistas/asistencias",
-  //     data: {
-  //       deportistaId: dataScaneo.id,
-  //       fecha:dataScaneo.fecha
-  //     },
-  //     headers: { 
-  //     'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoxLCJpYXQiOjE2NjQ0ODg4MTJ9.h8R_akeAfxWju_T6e6C_Le5NXQ-qFp_--chGXpg7sv4`,
-  //     "Content-Type": "application/json",
-  //     "Access-Control-Allow-Origin":null ,
-  //     "Accept":"*/*"
-  //   },
-  //     mode: 'cors',
-  // })
-  // .then((response)=>{
-  //   console.log(response)
-  // })
-  // .catch((e)=>{
-  //   console.log(e)
-  //   // console.log(e.response)
-  //   // console.log(e.response.data)
-  // })
+
+    axios({
+      method: "POST",
+      url: "http://192.168.0.105:3000/api/deportistas/asistencias",  //NOTA: En el url se debe cambiar con la DIRECCION IP DE TU MAQUINA, no funciona si ponemos localhost ni tampoco 127.0.0.1
+      data: {
+        id: dataScaneo.id,
+        fecha:dataScaneo.fecha
+      },
+      headers: { 
+      'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoxLCJpYXQiOjE2NjQ0ODg4MTJ9.h8R_akeAfxWju_T6e6C_Le5NXQ-qFp_--chGXpg7sv4`,
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin":null ,
+      "Accept":"*/*"
+    },
+      mode: 'cors',
+  })
+  .then((response)=>{
+    console.log(response)
+  })
+  .catch((e)=>{
+    console.log(e.response.data)
+    // console.log(e.response)
+    // console.log(e.response.data)
+  })
     //si el return es exitoso ya devuelve el alert
+
+    // axios.post('http://192.168.0.105:3000/api/deportistas/asistencias', {
+    //   id: dataScaneo.id,
+    //   fecha: dataScaneo.fecha
+    // },
+    // {
+    //   headers: { 
+    //         'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoxLCJpYXQiOjE2NjQ0ODg4MTJ9.h8R_akeAfxWju_T6e6C_Le5NXQ-qFp_--chGXpg7sv4`,
+    //         "Content-Type": "application/json",
+    //         "Access-Control-Allow-Origin":null ,
+    //         "Accept":"*/*"
+    //       },
+    // }).then(response => {
+    //   console.log(response);
+    // }).catch(error => console.log(error));
 
     return <View style={styles.ModalAlerta}>
       <Text style={styles.Modal1Text1}>Escaneo exitoso</Text>
