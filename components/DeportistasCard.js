@@ -7,7 +7,7 @@ const  DeportistasCard = ({props}) => {
             <View style={styles.even1}>
                 <View style={styles.caja1}>
                     <Text style={styles.caja1Text1}>Nombre</Text>
-                    <Text style={styles.caja1Text2} numberOfLines={2}>{props.nombre} {props.apellido}</Text>
+                    <Text style={styles.caja1Text2} numberOfLines={2}>{props.nombres} {props.apellidos}</Text>
                 </View>
                 <View style={styles.caja2}>
                     <Text style={styles.caja2Text1}>Expediente</Text>
