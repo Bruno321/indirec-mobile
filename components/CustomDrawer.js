@@ -1,15 +1,15 @@
-import React from "react";
+import React,{useContext} from "react";
 import { View, Text, Img } from 'react-native';
 import { DrawerContentScrollView, DrawerItemList, DrawerItem } from "@react-navigation/drawer";
 import {Entypo} from 'react-native-vector-icons';
-import { AuthContext } from "./context";
+import { LoginContext } from "../Context/LoginContext";
 
 const CustomDrawer = (props) => {
 
-    const { signOut } = React.useContext(AuthContext);
+    const {cerrarSesion} = useContext(LoginContext)
 
     const logoutHandle= ()=>{
-		signOut();
+        cerrarSesion()
 	}
 
     return (

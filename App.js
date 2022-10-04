@@ -1,25 +1,23 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import CustomDrawer from './components/CustomDrawer';
 import {FontAwesome, AntDesign} from 'react-native-vector-icons';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 // import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
+import {LoginContext} from './Context/LoginContext';
 import sports from './assets/icons/clock.png'
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Login from './Screens/Login';
 import Home from './Screens/Home';
 import Registro from './Screens/Registro';
 import Deportistas from './Screens/Deportistas';
 import Asistencias from './Screens/Asistencias';
 
-import { AuthContext } from './components/context';
 
 const Stack = createStackNavigator();
 SplashScreen.preventAutoHideAsync();
@@ -28,82 +26,32 @@ SplashScreen.preventAutoHideAsync();
 export default function App() {
   // Para saber cuando las fuentes hayan cargado y ocultar la pantalla de carga
   const [appIsReady, setAppIsReady] = useState(false);
-  // const [userToken,setUserToken] = useState(null);
 
-  // La primera vez que se abre la aplicación, no tiene usuario ni token
-  const initialLoginState={
-    userName:null,
-    userToken:null,
-  }
+   
+ 
+  const [isAuth,setIsAuth] = useState(false)
 
-  // Reducer para las acciones, asigna usuario y/o token. Usado para actualizar el estado de la aplicacón
-  loginReducer = (prevState,action) =>{
-    switch(action.type){
-      case 'RETREIVE_TOKEN':
-        return{
-          ... prevState,
-          userToken:action.token,
-        }
-      case 'LOGIN':
-        return{
-          ... prevState,
-          userName:action.id,
-          userToken:action.token,
-        }
-      case 'LOGOUT':
-        return{
-          ... prevState,
-          userName:null,
-          userToken:null,
-        }
-      case 'REGISTER':
-        return{
-          ... prevState,
-          userName:action.id,
-          userToken:action.token,
-        }
+  const loginContext = {
+    iniciarSesion: async (token) => {
+      setIsAuth(true)
+      await AsyncStorage.setItem('token',token)
+    },
+    cerrarSesion: async () => {
+      setIsAuth(false)
+      await AsyncStorage.removeItem('token')
     }
-  }
-
-  // LoginState = estado actual de login para saber si enviar a pantalla Login o a las demás
-  // Dispatch para realizar una acción del reducer
-  const [loginState, dispatch] = React.useReducer(loginReducer,initialLoginState);
-
-  // useMemo solo recalculara el valor "memoizado" cuando una de las dependencias cambió, tendrá los valores para saber si ingresar a la aplicación o ir a las demás pantallas
-  const authContext = React.useMemo(()=>({
-    signIn: async(userName,password)=>{
-      // setUserToken('fgkj');
-      let userToken;
-      userToken=null;
-      if(userName=='a@b.com' && password == 'pass'){
-        userToken= 'dfgdfg';
-        try{
-          await AsyncStorage.setItem('userToken', userToken)
-        }catch(e){
-          console.log(e)
-        }
-      }
-      dispatch({type:'LOGIN',id:userName, token:userToken})
-    },
-    signOut: async()=>{
-      // setUserToken(null);
-      try{
-        await AsyncStorage.removeItem('userToken');
-      }catch(e){
-        console.log(e)
-      }
-      dispatch({type:'LOGOUT'})
-    },
-    signUp:()=>{
-      // setUserToken('fgkj');
-    },
-  }),[]);
+  } 
 
   // Prepara las fuentes que se usarán en la app y cambia la variable para saber que puede ocultar la pantalla de carga
   useEffect(() => {
-    let userToken = null;
     async function prepare () {
       try {
+        let retrieveToken = await AsyncStorage.getItem('token')
+        if(retrieveToken){
+          setIsAuth(true)
+        } else {
+          setIsAuth(false)
+        }
         await Font.loadAsync({
           'Fredoka-Bold': require('./assets/Fuentes/Fredoka-Bold.ttf'),
           'Fredoka-Light': require('./assets/Fuentes/Fredoka-Light.ttf'),
@@ -111,13 +59,12 @@ export default function App() {
           'Fredoka-Regular': require('./assets/Fuentes/Fredoka-Regular.ttf'),
           'Fredoka-SemiBold': require('./assets/Fuentes/Fredoka-SemiBold.ttf'),
         })
-        userToken = await AsyncStorage.getItem('userToken');
       } catch (e) {
         console.warn(e);
       } finally {
         setAppIsReady(true);
       }
-      dispatch({type:'REGISTER', token:userToken})
+    
     }
     prepare();
   }, []);
@@ -137,10 +84,10 @@ export default function App() {
 
   return (
     // AuthContext es importado desde context.js, authContext utiliza useMemo
-    <AuthContext.Provider value={authContext}>
+    <LoginContext.Provider value={loginContext}>
       {/* Cuando carga NavigationContainer, llama la función onLayoutRootView*/}
       <NavigationContainer onReady={onLayoutRootView}>
-        { loginState.userToken !== null ? ( // Si hay un token guardado
+        { isAuth ===true ? ( // Si hay un token guardado
           <Drawer.Navigator
             drawerContent={props => <CustomDrawer {...props}/>}
             screenOptions={{ 
@@ -180,6 +127,6 @@ export default function App() {
           </Stack.Navigator>
         }
       </NavigationContainer>
-    </AuthContext.Provider>
+    </LoginContext.Provider>
   );
 }

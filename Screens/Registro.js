@@ -7,7 +7,6 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import Header from "../components/Header"
-import { AuthContext } from '../components/context';
 
 
 export default function Registro(){
@@ -34,7 +33,6 @@ export default function Registro(){
 		isValidTel:true,
 		isValidEmer:true,
 	}
-	const { signOut } = React.useContext(AuthContext);
 	const sexo = ["Masculino", "Femenino"];
 	const facultades=["Informática","Ingeniería","Ciencias"]
 	const [isEnabled, setIsEnabled] = useState(false);
@@ -75,7 +73,6 @@ export default function Registro(){
 	})
 
 	const logoutHandle= ()=>{
-		signOut();
 	  }
 
 	const handleExpChange = (value) =>{

@@ -31,7 +31,7 @@ export default function Home() {
 
     axios({
       method: "POST",
-      url: "http://192.168.0.105:3000/api/deportistas/asistencias",  //NOTA: En el url se debe cambiar con la DIRECCION IP DE TU MAQUINA, no funciona si ponemos localhost ni tampoco 127.0.0.1
+      url: "http://192.168.100.25:3000/api/deportistas/asistencias",  //NOTA: En el url se debe cambiar con la DIRECCION IP DE TU MAQUINA, no funciona si ponemos localhost ni tampoco 127.0.0.1
       data: {
         id: dataScaneo.id,
         fecha:dataScaneo.fecha

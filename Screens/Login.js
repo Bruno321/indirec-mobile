@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import {
   Dimensions,
   Image,
@@ -13,9 +13,9 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import useKeyboard from '../Hooks/Keyboard.hook';
-import { AuthContext } from '../components/context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-
+import axios from 'axios';
+import { LoginContext } from '../Context/LoginContext';
 
 const oInitialState = {
   email: '',
@@ -27,15 +27,13 @@ export default function Login() {
   const isKeyboardOpen = useKeyboard();
   const navigation = useNavigation();
   const  mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
+  const {iniciarSesion} = useContext(LoginContext)
   const [data, setData] = React.useState({
     email:'',
     password:'',
     isValidUser:true,
     isValidPassword:true
   })
-
-  const { signIn } = React.useContext(AuthContext);
 
   const getFormData = (value, field) => {
     if (value !== undefined) {
@@ -97,13 +95,31 @@ export default function Login() {
   }
 
   const loginHandle= (username,passowrd)=>{
-    if(username !== 'a@b.com' || passowrd !== 'pass'){
-      Alert.alert('Usuario invalido', 'Usuario o contraseña incorrectos',[
-        {text:'Okay'}
-      ]);
-      return;
-    }
-    signIn(username,passowrd)
+    //Inicio de sesion
+    axios({
+      method: "POST",
+      url: "http://192.168.100.25:3000/api/auth",  //NOTA: En el url se debe cambiar con la DIRECCION IP DE TU MAQUINA, no funciona si ponemos localhost ni tampoco 127.0.0.1
+      data: {
+        email: username,
+        password:passowrd
+      },
+      headers: { 
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin":null ,
+      "Accept":"*/*"
+    },
+      mode: 'cors',
+  })
+  .then((response)=>{
+    iniciarSesion(response.data.token)
+  })
+  .catch((e)=>{
+    console.log(e)
+    Alert.alert('Usuario invalido', 'Usuario o contraseña incorrectos',[
+      {text:'Okay'}
+    ]);
+  })
+   
   }
   
   return (
