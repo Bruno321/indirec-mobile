@@ -1,6 +1,5 @@
 import react, { useState,useEffect } from "react";
 import { View, Text ,FlatList} from "react-native";
-import { Extrapolation } from "react-native-reanimated";
 import Header from "../components/Header";
 import DeportistasCard from "../components/DeportistasCard";
 import axios from "axios";
@@ -9,14 +8,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const Deportistas = ({navigation}) => {
     const [data,setData] = useState([])
    
-    let a = {
-        nombres : 'a',
-        apellidos : 'a',
-        expediente : 'a',
-        sexo : 'a',
-        facultad : 'a',
-    }
-
     useEffect(()=>{
         async function fetchData(){
             let token = await AsyncStorage.getItem('token')

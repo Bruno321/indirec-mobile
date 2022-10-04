@@ -55,7 +55,7 @@ export const Item = ({item}, columns) => {
   );
 }
 
-export const FlatListView = ({ dataSource, columns }) => {
+export default  List = ({ dataSource, columns }) => {
   return (
     <View>
       <FlatList 

@@ -7,14 +7,23 @@ import TouchableCmp from '../assetsUI/TouchableCmp';
 import Header from "../components/Header"
 import moment from 'moment/moment';
 import axios from 'axios';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Home() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [dataScaneo, setDataScaneo] = useState({});
   //porq el default es true?
-  const [registroCheck, setRegistroCheck] = useState(true);
+  const [registroCheck, setRegistroCheck] = useState(false);
   const [EntradaSalida, setEntradaSalida] = useState(0);
+  const [token,setToken] = useState()
+  useEffect(()=>{
+    async function getToken (){
+      let retrieveToken = await AsyncStorage.getItem('token') 
+      setToken(retrieveToken)
+    }
+    getToken()
+  },[])
   
   const navigation = useNavigation();
 
@@ -25,69 +34,74 @@ export default function Home() {
   const GenerarModal = () => {
     if(registroCheck == true){
       
-    //Aqui se mandaria el post
-    // configurar MAMADAS PORQUE SOMOS HTTP NO HTTPS Zzzzz
-    // https://github.com/facebook/react-native/issues/32931
+      
 
-    axios({
-      method: "POST",
-      url: "http://192.168.100.25:3000/api/deportistas/asistencias",  //NOTA: En el url se debe cambiar con la DIRECCION IP DE TU MAQUINA, no funciona si ponemos localhost ni tampoco 127.0.0.1
-      data: {
-        id: dataScaneo.id,
-        fecha:dataScaneo.fecha
-      },
-      headers: { 
-      'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoxLCJpYXQiOjE2NjQ0ODg4MTJ9.h8R_akeAfxWju_T6e6C_Le5NXQ-qFp_--chGXpg7sv4`,
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin":null ,
-      "Accept":"*/*"
-    },
-      mode: 'cors',
-  })
-  .then((response)=>{
-    console.log(response)
-  })
-  .catch((e)=>{
-    console.log(e.response.data)
-    // console.log(e.response)
-    // console.log(e.response.data)
-  })
-    //si el return es exitoso ya devuelve el alert
+      //Aqui se mandaria el post
+      // configurar MAMADAS PORQUE SOMOS HTTP NO HTTPS Zzzzz
+      // https://github.com/facebook/react-native/issues/32931
 
-    // axios.post('http://192.168.0.105:3000/api/deportistas/asistencias', {
-    //   id: dataScaneo.id,
-    //   fecha: dataScaneo.fecha
-    // },
-    // {
-    //   headers: { 
-    //         'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoxLCJpYXQiOjE2NjQ0ODg4MTJ9.h8R_akeAfxWju_T6e6C_Le5NXQ-qFp_--chGXpg7sv4`,
-    //         "Content-Type": "application/json",
-    //         "Access-Control-Allow-Origin":null ,
-    //         "Accept":"*/*"
-    //       },
-    // }).then(response => {
-    //   console.log(response);
-    // }).catch(error => console.log(error));
-
-    return <View style={styles.ModalAlerta}>
-      <Text style={styles.Modal1Text1}>Escaneo exitoso</Text>
-      <Text style={styles.Modal1Text2}>{EntradaSalida == 1 ? "Bienvenido" : "Hasta luego"}</Text>
-      <Text style={styles.Modal1Text3}>{dataScaneo.nombreC}</Text>
-      <Image style={styles.Modal1Image} source={require("../images/ImagenEjemploDeportista.jpg")}></Image>
-      {/* <Text style={styles.Modal1Text4}>{EntradaSalida == 1 ? "Entrada - " : "Salida - "}{dataScaneo.fecha}</Text> */}
-      <Text style={styles.Modal1Text4}>{EntradaSalida == 1 ? "Entrada - " : "Salida - "}{moment(dataScaneo.fecha).format('h:mm a')}</Text>
-
-      <Text style={styles.Modal1Text4}>{EntradaSalida == 1 ? "La hora de entrada ha sido registrada con exito" : "La hora de salida ha sido registrada con éxito"}</Text>
-      <View style={styles.ModalTouchable}>
-        <TouchableCmp>
-          <Text style={styles.ModalCerrarButton} onPress={() => {
-            setScanned(false);
-            }}>Aceptar</Text>
-        </TouchableCmp>
-      </View>
-    </View>
+      axios({
+        method: "POST",
+        url: "http://192.168.100.25:3000/api/deportistas/asistencias",  //NOTA: En el url se debe cambiar con la DIRECCION IP DE TU MAQUINA, no funciona si ponemos localhost ni tampoco 127.0.0.1
+        data: {
+          id: dataScaneo.id,
+          fecha:dataScaneo.fecha
+        },
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin":null ,
+          "Accept":"*/*"
+        },
+          mode: 'cors',
+      })
+      .then((response)=>{
+        console.log(response.data)
+        setRegistroCheck(false)
+        return  (
+        <>
+          <View style={styles.ModalAlerta}>
+          <Text style={styles.Modal1Text1}>Escaneo exitoso</Text>
+          <Text style={styles.Modal1Text2}>Bienvendio</Text>
+          <Text style={styles.Modal1Text3}>${response.data.deportista.nombres} ${response.data.deportista.apellidos}</Text>
+          <Image style={styles.Modal1Image} source={url(`http://192.168.100.25:3000/api/${response.data.deportista.foto}`)}></Image>
+          <Text style={styles.Modal1Text4}>Hora: {moment(dataScaneo.fecha).format('h:mm a')}</Text>
+          <Text style={styles.Modal1Text4}>{response.data.message}</Text>
+          <View style={styles.ModalTouchable}>
+            <TouchableCmp>
+              <Text style={styles.ModalCerrarButton} onPress={() => {
+                setScanned(false);
+                }}>Aceptar</Text>
+            </TouchableCmp>
+          </View>
+        </View>
+        </>
+        )
+      })
+      .catch((e)=>{
+        console.log(e)
+        setRegistroCheck(false)
+        return (
+          <>
+            <View style={styles.ModalAlerta}>
+            <Text style={styles.Modal2Text1}>Escaneo fallido, algo ha ocurrido</Text>
+            <Text style={styles.Modal2Text2}>Por favor vuelva a pasar el código QR</Text>
+            <View style={styles.ModalTouchable}>
+              <TouchableCmp>
+                <Text style={styles.ModalCerrarButton} onPress={() => {
+                  setScanned(false);
+                  }}>Aceptar</Text>
+              </TouchableCmp>
+            </View>
+          </View>
+          </>
+        )
+        
+      })
     } else {
-    return <View style={styles.ModalAlerta}>
+    return (
+      <>
+    <View style={styles.ModalAlerta}>
       <Text style={styles.Modal2Text1}>Escaneo fallido, algo ha ocurrido</Text>
       <Text style={styles.Modal2Text2}>Por favor vuelva a pasar el código QR</Text>
       <View style={styles.ModalTouchable}>
@@ -98,6 +112,8 @@ export default function Home() {
         </TouchableCmp>
       </View>
     </View>
+      </>
+    )
     }
   }
 
