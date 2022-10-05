@@ -13,10 +13,11 @@ export default function Home() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [dataScaneo, setDataScaneo] = useState({});
-  //porq el default es true?
-  const [registroCheck, setRegistroCheck] = useState(false);
-  const [EntradaSalida, setEntradaSalida] = useState(0);
+  const [dataResponse, setDataResponse] = useState({});
+  const [registroCheck, setRegistroCheck] = useState(true);
   const [token,setToken] = useState()
+  const navigation = useNavigation();
+
   useEffect(()=>{
     async function getToken (){
       let retrieveToken = await AsyncStorage.getItem('token') 
@@ -25,67 +26,19 @@ export default function Home() {
     getToken()
   },[])
   
-  const navigation = useNavigation();
-
-  var getEntradaSalida = (inORout) => {
-    inORout == 1 ? setEntradaSalida(1) : setEntradaSalida(0);
-  }
-  /* A function that returns a view depending on the value of the variable `registroCheck` */
+  // DOCUMENTACION - Función que regresa un bloque de código dependiendo si la lectura del QR fue correcta o incorrecta -> Regresa los componentes para mostrar un modal correcto/incorrecto
   const GenerarModal = () => {
-    if(registroCheck == true){
-      
-      
-
-      //Aqui se mandaria el post
-      // configurar MAMADAS PORQUE SOMOS HTTP NO HTTPS Zzzzz
-      // https://github.com/facebook/react-native/issues/32931
-
-      axios({
-        method: "POST",
-        url: "http://192.168.100.25:3000/api/deportistas/asistencias",  //NOTA: En el url se debe cambiar con la DIRECCION IP DE TU MAQUINA, no funciona si ponemos localhost ni tampoco 127.0.0.1
-        data: {
-          id: dataScaneo.id,
-          fecha:dataScaneo.fecha
-        },
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin":null ,
-          "Accept":"*/*"
-        },
-          mode: 'cors',
-      })
-      .then((response)=>{
-        console.log(response.data)
-        setRegistroCheck(false)
-        return  (
-        <>
-          <View style={styles.ModalAlerta}>
-          <Text style={styles.Modal1Text1}>Escaneo exitoso</Text>
-          <Text style={styles.Modal1Text2}>Bienvendio</Text>
-          <Text style={styles.Modal1Text3}>${response.data.deportista.nombres} ${response.data.deportista.apellidos}</Text>
-          <Image style={styles.Modal1Image} source={url(`http://192.168.100.25:3000/api/${response.data.deportista.foto}`)}></Image>
-          <Text style={styles.Modal1Text4}>Hora: {moment(dataScaneo.fecha).format('h:mm a')}</Text>
-          <Text style={styles.Modal1Text4}>{response.data.message}</Text>
-          <View style={styles.ModalTouchable}>
-            <TouchableCmp>
-              <Text style={styles.ModalCerrarButton} onPress={() => {
-                setScanned(false);
-                }}>Aceptar</Text>
-            </TouchableCmp>
-          </View>
-        </View>
-        </>
-        )
-      })
-      .catch((e)=>{
-        console.log(e)
-        setRegistroCheck(false)
-        return (
+    try {
+      if(registroCheck == true){
+          return  (
           <>
             <View style={styles.ModalAlerta}>
-            <Text style={styles.Modal2Text1}>Escaneo fallido, algo ha ocurrido</Text>
-            <Text style={styles.Modal2Text2}>Por favor vuelva a pasar el código QR</Text>
+            <Text style={styles.Modal1Text1}>Escaneo exitoso</Text>
+            <Text style={styles.Modal1Text2}>Bienvendio</Text>
+            <Text style={styles.Modal1Text3}>${dataResponse.deportista.nombres} ${dataResponse.deportista.apellidos}</Text>
+            <Image style={styles.Modal1Image} source={{uri: `http://192.168.100.25:3000/api/${dataResponse.deportista.foto}`}}></Image>
+            <Text style={styles.Modal1Text4}>Hora: {moment(dataScaneo.fecha).format('h:mm a')}</Text>
+            <Text style={styles.Modal1Text4}>{dataResponse.message}</Text>
             <View style={styles.ModalTouchable}>
               <TouchableCmp>
                 <Text style={styles.ModalCerrarButton} onPress={() => {
@@ -95,28 +48,30 @@ export default function Home() {
             </View>
           </View>
           </>
+          )
+      } else {
+        return (
+          <>
+        <View style={styles.ModalAlerta}>
+          <Text style={styles.Modal2Text1}>Escaneo fallido, algo ha ocurrido</Text>
+          <Text style={styles.Modal2Text2}>Por favor vuelva a pasar el código QR</Text>
+          <View style={styles.ModalTouchable}>
+            <TouchableCmp>
+              <Text style={styles.ModalCerrarButton} onPress={() => {
+                setScanned(false);
+                }}>Aceptar</Text>
+            </TouchableCmp>
+          </View>
+        </View>
+          </>
         )
-        
-      })
-    } else {
-    return (
-      <>
-    <View style={styles.ModalAlerta}>
-      <Text style={styles.Modal2Text1}>Escaneo fallido, algo ha ocurrido</Text>
-      <Text style={styles.Modal2Text2}>Por favor vuelva a pasar el código QR</Text>
-      <View style={styles.ModalTouchable}>
-        <TouchableCmp>
-          <Text style={styles.ModalCerrarButton} onPress={() => {
-            setScanned(false);
-            }}>Aceptar</Text>
-        </TouchableCmp>
-      </View>
-    </View>
-      </>
-    )
-    }
+      }
+    } catch (e) {}
   }
 
+  // DOCUMENTACION - Cada vez que se entra a la screen:
+  // El valor de "escaneado" se vuelve falso, así, como no hay nada escaneado, la camara se renderíza.
+  // Si hubiera algo escaneado, "escaneado" sería verdadero y la camara no se renderíza
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       setScanned(false);
@@ -130,40 +85,50 @@ export default function Home() {
     return unsubscribe;
   }, [navigation]);
   
+  // DOCUMENTACION - Función que toma lo que leé la camara de un QR y lo trabaja (data)
   const handleBarCodeScanned = ({ data }) => {
-    
-    let parsed_data = JSON.parse(data)
-    setDataScaneo(parsed_data);
-    
-    setScanned(true);
-    // PASOS AL LEER QR
-    // console.log("✔ =========== ESCANEO =========== ✔");
-    // 0 GUARDAR LA INFO DEL QR Y VERIFICAR QUE SEA JSON
     try {
-      let datos = JSON.parse(data);
-      // console.log("✔ SI ES UN JSON");
-      // 1 CHECAR QUE COINCIDA EL NUMERO DE LLAVES DEL JSON (3)
-      if(Object.keys(datos).length == 3){
-      //  console.log("✔ JSON CON 3 LLAVES");
-       // 2 CHECAR QUE LAS LLAVES SEAN LAS QUE PEDIMOS (id, nombre y fecha)
-       if(datos.hasOwnProperty('id') && datos.hasOwnProperty('nombreC') && datos.hasOwnProperty('fecha') == true){
-        // console.log("✔ JSON CON LLAVES CORRECTAS");
-        setRegistroCheck(true);
-        // 3 CHECAR SI HAY INTERNET
+      setScanned(true); // DOCUMENTACION - Al leer algo, renderizar el Modal con la funcion GenerarModal()
+      let datos = JSON.parse(data); // DOCUMENTACION - Guardamos la informacion leída parseada a JSON
+      setDataScaneo(datos); 
+      if(Object.keys(datos).length == 3){ // DOCUMENTACION - Que sean 3 keys del json
+       if(datos.hasOwnProperty('id') && datos.hasOwnProperty('nombreC') && datos.hasOwnProperty('fecha') == true){ // DOCUMENTACION - Que sean las keys que queremos
+
+
+        //Aqui se mandaria el post
+        // configurar MAMADAS PORQUE SOMOS HTTP NO HTTPS Zzzzz
+        // https://github.com/facebook/react-native/issues/32931
+
+        axios({
+          method: "POST",
+          url: "http://192.168.100.25:3000/api/deportistas/asistencias",  //NOTA: En el url se debe cambiar con la DIRECCION IP DE TU MAQUINA, no funciona si ponemos localhost ni tampoco 127.0.0.1
+          data: {
+            id: dataScaneo.id,
+            fecha:dataScaneo.fecha
+          },
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin":null ,
+            "Accept":"*/*"
+          },
+            mode: 'cors',
+        })
+        .then((response)=>{
+          // console.log("Data del response " + JSON.stringify(response.data))
+          setDataResponse(response.data)// DOCUMENTACION - Guardar la info del response para poder usarlo en GenerarModal()
+          setRegistroCheck(true)})// DOCUMENTACION - Lectura del QR válida
+
         const unsubscribe = NetInfo.addEventListener(state => {
-            //      PARA MOSTRAR LA IMAGEN, VERIFICAR CUAL CONEXIÓN TIENE:
             switch (state.type) {
-              //      1. INTERNET - LLAMAR IMAGEN DE LA BDD
               case "wifi":
-                // console.log("✔ Conexión wifi");
+                // DOCUMENTACION - EN CASO DE TENER WIFI...
                 break;
-              //      2. DATOS - PREGUNTAR SI QUIERE BAJAR IMAGEN CON DATOS O MOSTRAR IMAGEN DEFAULT
               case "cellular":
-                // console.log("✔ Conexión con datos");
+                // DOCUMENTACION - EN CASO DE USAR DATOS...
                 break;
-              //      3. NO INTERNET - MOSTRAR IMAGEN DEFAULT
               case "none":
-                // console.log("✔ Sin conexión");
+                // DOCUMENTACION - EN CASO DE NO TENER INTERNET OFFLINEFIRST...
                 break;
               default:
                 break;
@@ -172,16 +137,15 @@ export default function Home() {
         unsubscribe();
         } else {
         setRegistroCheck(false);
-        console.log("✖ JSON CON LLAVES INCORRECTAS");
+        // console.log("✖ JSON CON LLAVES INCORRECTAS");
         }
       } else {
         setRegistroCheck(false);
-        console.log("✖ JSON CON MÁS O MENOS DE 3 LLAVES -> " + Object.keys(datos).length);
+        // console.log("✖ JSON CON MÁS O MENOS DE 3 LLAVES -> " + Object.keys(datos).length);
       }
     } catch (error) {
-      // MOSTRAR MODAL DE ERROR
       setRegistroCheck(false);
-      console.log("✖ NO ES UN JSON");
+      console.log("✖ ERROR DE LECTURA"); // NO ES UN JSON
     }
   }
 
@@ -224,12 +188,9 @@ export default function Home() {
         <View style={styles.ModalTouchable}>
               <TouchableCmp>
                 <Text style={styles.botonRegistrarDeportista} onPress={() => {
-                  // setScanned(false);
                   navigation.navigate("Registro");
                   }}>Registrar Deportista</Text>
               </TouchableCmp>
-                  {/* <Button title="Entrada" onPress={() => getEntradaSalida(1)}></Button> */}
-                  {/* <Button title="Salida" onPress={() => getEntradaSalida(0)}></Button> */}
             </View>
       </View>
     </View>
