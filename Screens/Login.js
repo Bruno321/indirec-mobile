@@ -17,36 +17,19 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import axios from 'axios';
 import { LoginContext } from '../Context/LoginContext';
 
-const oInitialState = {
-  email: '',
-  password: '',
-};
+const { width, height } = Dimensions.get('window');
 
 export default function Login() {
-  const [form, setForm] = useState(oInitialState);
   const isKeyboardOpen = useKeyboard();
   const navigation = useNavigation();
   const  mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  const {iniciarSesion} = useContext(LoginContext)
-  const [data, setData] = React.useState({
+  const {iniciarSesion} = useContext(LoginContext);
+  const [data, setData] = useState({
     email:'',
     password:'',
     isValidUser:true,
     isValidPassword:true
-  })
-
-  const getFormData = (value, field) => {
-    if (value !== undefined) {
-      setData({ ...data, [field]: value });
-    }
-  };
-
-  // ? For the moment, only to visualize form data
-  const handleSubmit = () => {
-    console.log(form);
-    navigation.navigate('Home')
-    setForm(oInitialState);
-  };
+  });
 
   const handleEmailChange = (value) =>{
     if(value.trim().length >= 0 && value.trim().match(mailformat)){
@@ -62,7 +45,7 @@ export default function Login() {
         isValidUser:false
       })
     }
-  }
+  };
 
   const handlePassChange = (value) =>{
     if(value.trim().length > 0){
@@ -78,23 +61,9 @@ export default function Login() {
         isValidPassword:false
       })
     }
-  }
+  };
 
-  const handleValidPass = (value) =>{
-    if(value.trim().length > 0){
-      setData({
-        ... data,
-        isValidPassword: true
-      })
-    }else{
-      setData({
-        ... data,
-        isValidPassword: false
-      })
-    }
-  }
-
-  const loginHandle= (username,passowrd)=>{
+  const handleLogin = (username,passowrd) => {
     //Inicio de sesion
     axios({
       method: "POST",
@@ -119,8 +88,7 @@ export default function Login() {
       {text:'Okay'}
     ]);
   })
-   
-  }
+  };
   
   return (
     <View style={styles.container}>
@@ -175,7 +143,7 @@ export default function Login() {
         }
         <View style={styles.rowForm}>
           <TouchableOpacity
-            onPress={()=>{loginHandle(data.email,data.password)}}
+            onPress={()=>{handleLogin (data.email,data.password )} }
             style={styles.loginButton}
           >
             <Text style={styles.loginTexto}>Iniciar Sesión</Text>
@@ -194,18 +162,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logoTexto:{
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height * 0.15,
+    width: width,
+    height: height * 0.15,
     resizeMode: 'center',
     marginTop: 20
   },
   loginLogo:{
-    width: Dimensions.get('window').width*0.5,
-    height: Dimensions.get('window').height*0.3,
+    width: width*0.5,
+    height: height*0.3,
   },
   cuadrante2:{
     backgroundColor: '#FFF',
-    width: Dimensions.get('window').width,
+    width: width,
     height: 430,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
@@ -215,33 +183,32 @@ const styles = StyleSheet.create({
     color: '#003070',
     textAlign: 'center',
     fontFamily:'Fredoka-Medium',
-    //fontWeight: 'bold',
     marginTop: 40,
     marginBottom: 30,
-    fontSize:Dimensions.get('window').width*.07,
+    fontSize:width*.07,
   },
   rowForm: {
     marginTop: 12,
   },
   label: {
-    marginLeft:Dimensions.get('window').width*.02,
+    marginLeft:width*.02,
 		fontFamily:'Fredoka-Light',
-    fontSize:Dimensions.get('window').width*.05,
+    fontSize:width*.05,
   },
   input: {
-    width: Dimensions.get('window').width * 0.8,
+    width: width * 0.8,
     height: 32,
-    margin: Dimensions.get('window').height*0.01,
+    margin: height*0.01,
     borderBottomWidth: 1,
 		borderBottomColor:'black',
     color:'#000000',
     fontFamily:'Fredoka-Light',
     backgroundColor:'#ffffff',
-    fontSize:Dimensions.get('window').width*.04,
+    fontSize:width*.04,
   },
   loginButton:{
     marginTop: 30,
-    width: Dimensions.get('window').width * 0.8,
+    width: width * 0.8,
     height: 50,
     borderRadius: 10,
     backgroundColor:'#003070',
@@ -257,7 +224,7 @@ const styles = StyleSheet.create({
 		elevation: 4,
   },
   loginTexto: {
-    fontSize:Dimensions.get('window').width * 0.04,
+    fontSize:width * 0.04,
     color: '#FFF',
     fontFamily:'Fredoka-Medium'
   },
