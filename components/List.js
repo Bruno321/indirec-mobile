@@ -14,7 +14,7 @@ const handleRender = valueToRender => {
 
 // TODO: What happens if there are more than 4 columns? (In terms of styling)
 
-export const Item = ({item}, columns) => {
+const Item = ({item}, columns) => {
   let dataColumns = columns.filter(c => c.dataIndex !== 'id');
   let actions = columns.find(c => c.dataIndex === 'id');
 
@@ -46,7 +46,7 @@ export const Item = ({item}, columns) => {
         actions ? (
           <View style={{...styles.row, marginBottom: height * 0.02}}>
             <View style={{...styles.actionColumn, width: width}}>
-              {handleRender(actions.render(item.id, item, styles.actionColumn))}
+              {handleRender(actions.render(item.deportistaId, item, styles.actionColumn))}
             </View>
           </View>
         ) : null
@@ -55,7 +55,7 @@ export const Item = ({item}, columns) => {
   );
 }
 
-export default  List = ({ dataSource, columns }) => {
+export const List = ({ dataSource, columns }) => {
   return (
     <View>
       <FlatList 
