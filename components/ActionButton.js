@@ -9,13 +9,14 @@ export const ActionButton = ({
   handler,
   icon,
   text,
+  style = {},
 }) => {
   return (
-    <View style={styles.buttonContainer}>
+    <View style={{...styles.buttonContainer, ...style}}>
       <FontAwesome.Button
         backgroundColor={backgroundColor}
         color={color}
-        onPress={handler}
+        onPress={handler ? handler : () => console.log('No handler')}
         name={icon}
         style={styles.buttonContent}
       >
@@ -33,5 +34,6 @@ const styles = StyleSheet.create({
   buttonContent: {
     paddingLeft: width * 0.03,
     paddingRight: width * 0.03,
+    justifyContent: 'center',
   }
 });
