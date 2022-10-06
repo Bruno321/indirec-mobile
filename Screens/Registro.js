@@ -2,11 +2,11 @@ import { StyleSheet, Text, View, Image, Dimensions, TextInput, Button, ScrollVie
 import React, { useState, useEffect, useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
+import { Header } from '../components';
 import SelectDropdown from 'react-native-select-dropdown'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import TouchableCmp from '../assetsUI/TouchableCmp';
-import Header from "../components/Header"
 
 
 export default function Registro(){

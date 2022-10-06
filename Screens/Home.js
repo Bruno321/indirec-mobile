@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View, Image, Dimensions, StatusBar, Modal, Button, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { BarCodeScanner } from "expo-barcode-scanner";
+import { Header } from '../components';
 import React, { useState, useEffect } from "react"
 import NetInfo from "@react-native-community/netinfo";
 import TouchableCmp from '../assetsUI/TouchableCmp';
-import Header from "../components/Header"
 import moment from 'moment/moment';
 import axios from 'axios';
 import AsyncStorage from "@react-native-async-storage/async-storage";
