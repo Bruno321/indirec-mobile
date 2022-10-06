@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, Dimensions, Alert, Modal, Button,StatusBar } from 'react-native';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 
-const  DeportistasCard = ({props}) => {
+export const DeportistasCard = ({props}) => {
 	return(
 		<View style={styles.main}>
             <View style={styles.even1}>
@@ -34,12 +34,11 @@ const  DeportistasCard = ({props}) => {
         </View>
 
         
-)}
+)};
 
 {/* <View style={{justifyContent: 'center', alignItems: 'center', height: Dimensions.get('window').height}}>
     <DeportistasCard props={{nombre: "Jorge", apellido: "Bernal", expediente: "259563", sexo: "Hombre", facultad: "Informática"}}/>
     </View> */}
-export default DeportistasCard;
 
 const styles = StyleSheet.create({
     main: {
@@ -63,11 +62,11 @@ const styles = StyleSheet.create({
         marginBottom: 5
     },
     even1:{
-      flex: 0,
+        flex: 0,
     //   bottom: 0,
-      flexDirection: 'row',
+        flexDirection: 'row',
     //   backgroundColor: 'pink',
-      justifyContent: 'space-between',
+        justifyContent: 'space-between',
     //   alignItems: 'center',
     },
     even2:{
@@ -77,7 +76,7 @@ const styles = StyleSheet.create({
         // backgroundColor: 'pink',
         justifyContent: 'space-between',
         alignItems: 'center',
-      },
+    },
     caja1:{
         width: Dimensions.get('window').width*0.46,
         height: 80,
@@ -152,4 +151,3 @@ const styles = StyleSheet.create({
         color: 'white',
     }
 });
-	

@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View, Image, Dimensions, Button } from 'react-native';
 
-
-const registroOnline = (props) =>{
+export const registroOnline = (props) =>{
     return(
         <View>
 					<View>
@@ -22,6 +21,4 @@ const registroOnline = (props) =>{
 					</View>
 				</View>
     )
-}
-
-export default registroOnline;
+};

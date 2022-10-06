@@ -1,7 +1,3 @@
+export const registroOffline = (props) =>{
 
-
-const registroOffline = (props) =>{
-
-}
-
-export default registroOnline;
+};

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image, Dimensions, Alert, Modal, Button,StatusB
 import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 
-export default function Header({navigation}){
+export const Header = ({navigation}) => {
 	return(
 		<View style={styles.main}>
 			<SafeAreaView />
@@ -42,4 +42,4 @@ const styles = StyleSheet.create({
 		marginLeft:20,
 		width:50
 	}
-})
+});

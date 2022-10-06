@@ -4,7 +4,7 @@ import { DrawerContentScrollView, DrawerItemList, DrawerItem } from "@react-navi
 import {Entypo} from 'react-native-vector-icons';
 import { LoginContext } from "../Context/LoginContext";
 
-const CustomDrawer = (props) => {
+export const CustomDrawer = (props) => {
 
     const {cerrarSesion} = useContext(LoginContext)
 
@@ -29,6 +29,5 @@ const CustomDrawer = (props) => {
                 />
         </View>
     )
-}
+};
 
-export default CustomDrawer;
