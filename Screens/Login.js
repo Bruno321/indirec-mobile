@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import useKeyboard from '../Hooks/Keyboard.hook';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import axios from 'axios';
 import { LoginContext } from '../Context/LoginContext';
 
@@ -93,7 +92,6 @@ export default function Login() {
   return (
     <View style={styles.container}>
     <SafeAreaView />
-      <KeyboardAwareScrollView>
 
       <KeyboardAvoidingView enabled={true} style={{ flex: 1, alignItems: 'center' }}>
         <View>
@@ -150,7 +148,6 @@ export default function Login() {
           </TouchableOpacity>
         </View>
       </View>
-      </KeyboardAwareScrollView>
     </View>
   );
 }
