@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import CustomDrawer from './components/CustomDrawer';
+import {CustomDrawer} from './components/CustomDrawer';
 import {FontAwesome, AntDesign} from 'react-native-vector-icons';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 // import FontAwesome from 'react-native-vector-icons/FontAwesome';
