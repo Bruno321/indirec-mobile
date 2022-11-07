@@ -7,6 +7,7 @@ import SelectDropdown from 'react-native-select-dropdown'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import TouchableCmp from '../assetsUI/TouchableCmp';
+import * as ImagePicker from 'expo-image-picker';
 
 
 export default function Registro(){
@@ -37,6 +38,9 @@ export default function Registro(){
 	const facultades=["Informática","Ingeniería","Ciencias"]
 	const [isEnabled, setIsEnabled] = useState(false);
 	const [check, setCheck] = useState(false);
+	const [kardex, setKardex] = useState("Subir archivo");
+	const [identificacion, setIdentificacion] = useState("Subir archivo");
+	const [foto, setFoto] = useState("Subir archivo");
 	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 	const [form,setForm] = useState(onInitialState)
 	const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -73,7 +77,7 @@ export default function Registro(){
 	})
 
 	const logoutHandle= ()=>{
-	  }
+	}
 
 	const handleExpChange = (value) =>{
 	if(value.length > 0 && value.match(expformat)){
@@ -204,6 +208,52 @@ export default function Registro(){
 			navigation.navigate("Home")
 		}
 	}
+
+	const pickKardex = async () => {
+		// No permissions request is necessary for launching the image library
+		let result = await ImagePicker.launchImageLibraryAsync({
+		  mediaTypes: ImagePicker.MediaTypeOptions.All,
+		  allowsEditing: true,
+		  aspect: [1,1],
+		  quality: 1,
+		});
+  
+		console.log(result);
+  
+		if (!result.cancelled) {
+		  setKardex(result.uri);
+		}
+	};
+	const pickId = async () => {
+		// No permissions request is necessary for launching the image library
+		let result = await ImagePicker.launchImageLibraryAsync({
+		  mediaTypes: ImagePicker.MediaTypeOptions.All,
+		  allowsEditing: true,
+		  aspect: [1,1],
+		  quality: 1,
+		});
+  
+		console.log(result);
+  
+		if (!result.cancelled) {
+		  setIdentificacion(result.uri);
+		}
+	};
+	const pickFoto = async () => {
+		// No permissions request is necessary for launching the image library
+		let result = await ImagePicker.launchImageLibraryAsync({
+		  mediaTypes: ImagePicker.MediaTypeOptions.All,
+		  allowsEditing: true,
+		  aspect: [1,1],
+		  quality: 1,
+		});
+  
+		console.log(result);
+  
+		if (!result.cancelled) {
+		  setFoto(result.uri);
+		}
+	};
 
 	const CheckAll = () =>{
 		if((data.isValidExp&&data.isValidNomb&&data.isValidApe&&data.isValidSeg&&data.isValidEmail&&data.isValidTel&&data.isValidEmer
@@ -355,50 +405,41 @@ export default function Registro(){
 					}
 					<Text style={styles.campos2}>Kárdex:</Text>
 					<View style={styles.subir}>
-						<View style={styles.viewTouch}>
-							<TouchableCmp>
+						<View style={kardex=='Subir archivo'?styles.viewTouch:styles.viewTouchCon}>
+							<TouchableCmp onPress={()=>{pickKardex()}}>
 								<View style={styles.viewTouch2}>
 									<View style={styles.viewTouch3}>
 										<Feather name={'upload'} color={'#003070'} size={13}/>
-										<Text style={styles.touch}>Subir archivo</Text>	
+										<Text style={kardex=='Subir archivo'?styles.touch:styles.touchCon}>{kardex=='Subir archivo'?'Subir Archivo':kardex}</Text>	
 									</View>
 								</View>
 							</TouchableCmp>
-						</View>
-						<View style={styles.viewLeyenda}>
-							<Text style={styles.leyenda}>Sin archivos seleccionados</Text>
 						</View>
 					</View>
 					<Text style={styles.campos}>Identificación oficial:</Text>
 					<View style={styles.subir}>
-						<View style={styles.viewTouch}>
-							<TouchableCmp>
+						<View style={identificacion=='Subir archivo'?styles.viewTouch:styles.viewTouchCon}>
+							<TouchableCmp onPress={()=>{pickId()}}>
 								<View style={styles.viewTouch2}>
 									<View style={styles.viewTouch3}>
 										<Feather name={'upload'} color={'#003070'} size={13}/>
-										<Text style={styles.touch}>Subir archivo</Text>	
+										<Text style={identificacion=='Subir archivo'?styles.touch:styles.touchCon}>{identificacion=='Subir archivo'?'Subir Archivo':identificacion}</Text>	
 									</View>
 								</View>
 							</TouchableCmp>
-						</View>
-						<View style={styles.viewLeyenda}>
-							<Text style={styles.leyenda}>Sin archivos seleccionados</Text>
 						</View>
 					</View>
 					<Text style={styles.campos}>Foto del deportista:</Text>
 					<View style={styles.subir}>
-						<View style={styles.viewTouch}>
-							<TouchableCmp>
+						<View style={foto=='Subir archivo'?styles.viewTouch:styles.viewTouchCon}>
+							<TouchableCmp onPress={()=>{pickFoto()}}>
 								<View style={styles.viewTouch2}>
 									<View style={styles.viewTouch3}>
 										<Feather name={'upload'} color={'#003070'} size={13}/>
-										<Text style={styles.touch}>Subir archivo</Text>	
+										<Text style={foto=='Subir archivo'?styles.touch:styles.touchCon}>{foto=='Subir archivo'?'Subir Archivo':foto}</Text>	
 									</View>
 								</View>
 							</TouchableCmp>
-						</View>
-						<View style={styles.viewLeyenda}>
-							<Text style={styles.leyenda}>Sin archivos seleccionados</Text>
 						</View>
 					</View>
 				</View>
@@ -501,9 +542,14 @@ const styles = StyleSheet.create({
 		fontFamily:'Fredoka-Medium',
 		color:'#003070',
 	},
+	touchCon:{
+		fontSize:14,
+		fontFamily:'Fredoka-Medium',
+		color:'white',
+	},
 	viewTouch:{
 		marginTop:7,
-		width:Dimensions.get('window').width/1.8,
+		width:'100%',
 		//width:230,
 		height:Dimensions.get('window').height/21,
 		// height:40,
@@ -515,8 +561,23 @@ const styles = StyleSheet.create({
 		overflow:'hidden',
 		marginBottom:15,
 	},
+	viewTouchCon:{
+		marginTop:7,
+		width:'100%',
+		//width:230,
+		height:Dimensions.get('window').height/21,
+		// height:40,
+		borderRadius:10,
+		borderColor:'#198754',
+		borderWidth:1,
+		alignItems:'center',
+		justifyContent:'center',
+		overflow:'hidden',
+		marginBottom:15,
+		backgroundColor:'5cb85c'
+	},
 	viewTouch2:{
-		width:Dimensions.get('window').width/1.8,
+		width:Dimensions.get('window').width/1.2,
 		//width:230,
 		height:Dimensions.get('window').height/21,
 		// height:40,
@@ -525,6 +586,7 @@ const styles = StyleSheet.create({
 		alignItems:'center',
 		justifyContent:'center',
 		overflow:'hidden',
+		backgroundColor:'white',
 	},
 	viewTouch3:{
 		width:Dimensions.get('window').width/3,
