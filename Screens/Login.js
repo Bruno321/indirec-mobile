@@ -1,92 +1,89 @@
 import React, { useState,useContext } from 'react';
 import {
+  Alert,
+  ActivityIndicator,
   Dimensions,
   Image,
   KeyboardAvoidingView,
+  SafeAreaView,
   StyleSheet,
   TextInput,
   TouchableOpacity,
   Text,
   View,
-  Alert,
-  SafeAreaView
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import useKeyboard from '../Hooks/Keyboard.hook';
-import axios from 'axios';
 import { LoginContext } from '../Context/LoginContext';
+import { login } from '../Service/Api';
+import useKeyboard from '../Hooks/Keyboard.hook';
 
 const { width, height } = Dimensions.get('window');
 
+const oInitState = {
+  email:'',
+  password:'',
+  isValidUser:true,
+  isValidPassword:true
+};
+
 export default function Login() {
-  const isKeyboardOpen = useKeyboard();
-  const navigation = useNavigation();
+  const [data, setData] = useState(oInitState);
+  const [loading, setLoading] = useState(false);
+  const { iniciarSesion } = useContext(LoginContext);
   const  mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  const {iniciarSesion} = useContext(LoginContext);
-  const [data, setData] = useState({
-    email:'',
-    password:'',
-    isValidUser:true,
-    isValidPassword:true
-  });
+  const isKeyboardOpen = useKeyboard();
 
-  const handleEmailChange = (value) =>{
-    if(value.trim().length >= 0 && value.trim().match(mailformat)){
-      setData({
-        ...data,
-        email:value,
-        isValidUser:true
-      })
-    }else{
-      setData({
-        ...data,
-        email:value,
-        isValidUser:false
-      })
-    }
+  const handleEmailChange = email => {
+    setData({
+      ...data,
+      email,
+      isValidUser:email.trim().length >= 0 && !!email.trim().match(mailformat)
+    });
   };
 
-  const handlePassChange = (value) =>{
-    if(value.trim().length > 0){
-      setData({
-        ...data,
-        password:value,
-        isValidPassword:true
-      })
-    }else{
-      setData({
-        ...data,
-        password:value,
-        isValidPassword:false
-      })
-    }
+  const handlePasswordChange = password => {
+    setData({
+      ...data,
+      password,
+      isValidPassword:password.trim().length > 0
+    })
   };
 
-  const handleLogin = (username,passowrd) => {
-    //Inicio de sesion
-    axios({
-      method: "POST",
-      url: "http://192.168.100.25:3000/api/auth",  //NOTA: En el url se debe cambiar con la DIRECCION IP DE TU MAQUINA, no funciona si ponemos localhost ni tampoco 127.0.0.1
-      data: {
-        email: username,
-        password:passowrd
-      },
-      headers: { 
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin":null ,
-      "Accept":"*/*"
-    },
-      mode: 'cors',
-  })
-  .then((response)=>{
-    iniciarSesion(response.data.token)
-  })
-  .catch((e)=>{
-    console.log(e)
-    Alert.alert('Usuario invalido', 'Usuario o contraseña incorrectos',[
-      {text:'Okay'}
-    ]);
-  })
+  const handleLogin = async () => {
+    const { isValidUser, isValidPassword } = data;
+
+    if (isValidUser && isValidPassword) {
+      const { email, password } = data;
+
+      if (email !== '' && password !== '') {
+        setLoading(true);
+        const response = await login(email, password)
+          .catch(error => {
+            console.log(error);
+          });
+
+        if (response?.data?.ok) {
+          iniciarSesion(response.data.token);
+        }
+
+        setLoading(false);
+      } else {
+        Alert.alert(
+          'Datos Incorrectos', 
+          'Los campos no pueden estar vacios',
+          [
+            {text:'Okay'},
+          ]
+        );
+      }
+    } else {
+      Alert.alert(
+        'Datos Incorrectos', 
+        'Revise los campos e intente de nuevo',
+        [
+          {text:'Okay'},
+        ]
+      );
+    };
   };
   
   return (
@@ -115,11 +112,10 @@ export default function Login() {
           <Text style={styles.label}>Correo Electronico:</Text>
           <TextInput
             style={styles.input}
-            onChangeText={(value) => handleEmailChange(value)}
+            onChangeText={handleEmailChange}
             keyboardType="email-address"
             placeholder="Usuario"
             value={data.email}
-            // onEndEditing={(e)=>h(e.nativeEvent.text)}
           />
         </View>
         { data. isValidUser ? null : 
@@ -129,11 +125,10 @@ export default function Login() {
           <Text style={styles.label}>Contraseña:</Text>
           <TextInput
             style={styles.input}
-            onChangeText={value => handlePassChange(value)}
+            onChangeText={handlePasswordChange}
             placeholder="Contraseña"
             secureTextEntry={true}
             value={data.password}
-            // onEndEditing={(e)=>handleValidPass(e.nativeEvent.text)}
           />
         </View>
         { data. isValidPassword ? null : 
@@ -141,10 +136,10 @@ export default function Login() {
         }
         <View style={styles.rowForm}>
           <TouchableOpacity
-            onPress={()=>{handleLogin (data.email,data.password )} }
+            onPress={handleLogin}
             style={styles.loginButton}
           >
-            <Text style={styles.loginTexto}>Iniciar Sesión</Text>
+            {loading ? <ActivityIndicator color="white"/> : <Text style={styles.loginTexto}>Iniciar Sesión</Text>}
           </TouchableOpacity>
         </View>
       </View>
