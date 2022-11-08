@@ -1,6 +1,17 @@
-import { Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
+
+const handleInnerFields = index => {
+  const [val, ...attrs] = index.split('.');
+
+  let innerFields = `['${val}']`;
+  for (const item of attrs) {
+    innerFields += `['${item}']`;
+  }
+
+  return `item${innerFields}`;
+};
 
 const handleRender = valueToRender => {
   const type = typeof valueToRender;
@@ -30,10 +41,15 @@ const Item = ({item}, columns) => {
               </Text>
               {
                 render !== undefined ? (
-                  handleRender(render(item[dataIndex], item)) // ? render(value, record)
+                  handleRender(render(dataIndex.includes('.') ? item[dataIndex.split('.')[0]] : item[dataIndex], item)) // ? render(value, record)
                 ) : (
                   <Text style={styles.contentColumn}>
-                    {item[dataIndex]}
+                    {
+                      dataIndex.includes('.') ? 
+                        eval(handleInnerFields(dataIndex))
+                      :
+                        item[dataIndex]
+                    }
                   </Text>
                 )
               }
@@ -55,18 +71,35 @@ const Item = ({item}, columns) => {
   );
 }
 
-export const List = ({ dataSource, columns }) => {
-  return (
-    <View>
-      <FlatList 
-        data={dataSource}
-        renderItem={row => Item(row, columns)}
-      />
+export const List = ({ dataSource, columns, loading }) => {
+  return loading ? (
+    <View style={styles.fetchingContainer}>      
+      <ActivityIndicator color="#0000ff"/>
     </View>
-  );
+  ) : (
+    dataSource.length ? (
+      <View>
+        <FlatList 
+          data={dataSource}
+          renderItem={row => Item(row, columns)}
+        />
+      </View>
+    ) : (
+      <View style={styles.fetchingContainer}>      
+        <Text>No hay datos</Text>
+      </View>
+    )
+  )
 };
 
 const styles = StyleSheet.create({
+  fetchingContainer: {
+    height: height * 0.75,
+    width,
+    justifyContent: 'center',
+    alignItems: 'center',
+    display: 'flex',
+  },
   container:{
     flex: 1,
     flexDirection: 'column',
