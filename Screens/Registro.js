@@ -8,6 +8,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import * as ImagePicker from 'expo-image-picker';
+import * as DocumentPicker from 'expo-document-picker';
 
 
 export default function Registro(){
@@ -211,47 +212,44 @@ export default function Registro(){
 
 	const pickKardex = async () => {
 		// No permissions request is necessary for launching the image library
-		let result = await ImagePicker.launchImageLibraryAsync({
-		  mediaTypes: ImagePicker.MediaTypeOptions.All,
-		  allowsEditing: true,
-		  aspect: [1,1],
-		  quality: 1,
+		let result = await DocumentPicker.getDocumentAsync({
+			type: ['application/pdf','image/*'],
+			copyToCacheDirectory: true,
+			multiple:false,
 		});
   
 		console.log(result);
   
-		if (!result.cancelled) {
-		  setKardex(result.uri);
+		if (result.type=='success') {
+				setKardex(result.name)
 		}
 	};
 	const pickId = async () => {
 		// No permissions request is necessary for launching the image library
-		let result = await ImagePicker.launchImageLibraryAsync({
-		  mediaTypes: ImagePicker.MediaTypeOptions.All,
-		  allowsEditing: true,
-		  aspect: [1,1],
-		  quality: 1,
+		let result = await DocumentPicker.getDocumentAsync({
+			type: ['application/pdf','image/*'],
+			copyToCacheDirectory: true,
+			multiple:false,
 		});
   
 		console.log(result);
   
-		if (!result.cancelled) {
-		  setIdentificacion(result.uri);
+		if (result.type=='success') {
+				setIdentificacion(result.name)
 		}
 	};
 	const pickFoto = async () => {
 		// No permissions request is necessary for launching the image library
-		let result = await ImagePicker.launchImageLibraryAsync({
-		  mediaTypes: ImagePicker.MediaTypeOptions.All,
-		  allowsEditing: true,
-		  aspect: [1,1],
-		  quality: 1,
+		let result = await DocumentPicker.getDocumentAsync({
+			type: ['application/pdf','image/*'],
+			copyToCacheDirectory: true,
+			multiple:false,
 		});
   
 		console.log(result);
   
-		if (!result.cancelled) {
-		  setFoto(result.uri);
+		if (result.type=='success') {
+				setFoto(result.name)
 		}
 	};
 
@@ -264,6 +262,25 @@ export default function Registro(){
 			}else{
 				return false
 			}
+	}
+
+	const vector = () =>{
+		if(kardex=='Subir archivo')
+		return(
+			<Feather name={'upload'} color={'#003070'} size={13}/>
+		)
+	}
+	const vector2 = () =>{
+		if(identificacion=='Subir archivo')
+		return(
+			<Feather name={'upload'} color={'#003070'} size={13}/>
+		)
+	}
+	const vector3 = () =>{
+		if(foto=='Subir archivo')
+		return(
+			<Feather name={'upload'} color={'#003070'} size={13}/>
+		)
 	}
 
 	const navigation = useNavigation();
@@ -407,10 +424,10 @@ export default function Registro(){
 					<View style={styles.subir}>
 						<View style={kardex=='Subir archivo'?styles.viewTouch:styles.viewTouchCon}>
 							<TouchableCmp onPress={()=>{pickKardex()}}>
-								<View style={styles.viewTouch2}>
-									<View style={styles.viewTouch3}>
-										<Feather name={'upload'} color={'#003070'} size={13}/>
-										<Text style={kardex=='Subir archivo'?styles.touch:styles.touchCon}>{kardex=='Subir archivo'?'Subir Archivo':kardex}</Text>	
+								<View style={kardex=='Subir archivo'?styles.viewTouch2:styles.viewTouch2Con}>
+									<View style={kardex=='Subir archivo'?styles.viewTouch3:styles.viewTouch3Con}>
+										{vector()}
+										<Text numberOfLines={1} style={kardex=='Subir archivo'?styles.touch:styles.touchCon}>{kardex=='Subir archivo'?'Subir Archivo':kardex}</Text>	
 									</View>
 								</View>
 							</TouchableCmp>
@@ -420,10 +437,10 @@ export default function Registro(){
 					<View style={styles.subir}>
 						<View style={identificacion=='Subir archivo'?styles.viewTouch:styles.viewTouchCon}>
 							<TouchableCmp onPress={()=>{pickId()}}>
-								<View style={styles.viewTouch2}>
-									<View style={styles.viewTouch3}>
-										<Feather name={'upload'} color={'#003070'} size={13}/>
-										<Text style={identificacion=='Subir archivo'?styles.touch:styles.touchCon}>{identificacion=='Subir archivo'?'Subir Archivo':identificacion}</Text>	
+								<View style={identificacion=='Subir archivo'?styles.viewTouch2:styles.viewTouch2Con}>
+									<View style={identificacion=='Subir archivo'?styles.viewTouch3:styles.viewTouch3Con}>
+										{vector2()}
+										<Text numberOfLines={1} style={identificacion=='Subir archivo'?styles.touch:styles.touchCon}>{identificacion=='Subir archivo'?'Subir Archivo':identificacion}</Text>	
 									</View>
 								</View>
 							</TouchableCmp>
@@ -433,10 +450,10 @@ export default function Registro(){
 					<View style={styles.subir}>
 						<View style={foto=='Subir archivo'?styles.viewTouch:styles.viewTouchCon}>
 							<TouchableCmp onPress={()=>{pickFoto()}}>
-								<View style={styles.viewTouch2}>
-									<View style={styles.viewTouch3}>
-										<Feather name={'upload'} color={'#003070'} size={13}/>
-										<Text style={foto=='Subir archivo'?styles.touch:styles.touchCon}>{foto=='Subir archivo'?'Subir Archivo':foto}</Text>	
+								<View style={foto=='Subir archivo'?styles.viewTouch2:styles.viewTouch2Con}>
+									<View style={foto=='Subir archivo'?styles.viewTouch3:styles.viewTouch3Con}>
+										{vector3()}
+										<Text numberOfLines={1} style={foto=='Subir archivo'?styles.touch:styles.touchCon}>{foto=='Subir archivo'?'Subir Archivo':foto}</Text>	
 									</View>
 								</View>
 							</TouchableCmp>
@@ -588,11 +605,29 @@ const styles = StyleSheet.create({
 		overflow:'hidden',
 		backgroundColor:'white',
 	},
+	viewTouch2Con:{
+		width:Dimensions.get('window').width/1.2,
+		//width:230,
+		height:Dimensions.get('window').height/21,
+		// height:40,
+		borderRadius:10,
+		borderColor:'#198754',
+		alignItems:'center',
+		justifyContent:'center',
+		overflow:'hidden',
+		backgroundColor:'#5cb85c'
+	},
 	viewTouch3:{
 		width:Dimensions.get('window').width/3,
 		flexDirection:'row',
 		justifyContent:'center',
-		justifyContent:'space-around'
+		justifyContent:'space-around',
+	},
+	viewTouch3Con:{
+		width:'80%',
+		flexDirection:'row',
+		justifyContent:'center',
+		justifyContent:'space-around',
 	},
 	viewLeyenda:{
 		width:Dimensions.get('window').width/4.5,
