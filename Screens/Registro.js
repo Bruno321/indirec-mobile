@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Dimensions, TextInput, Button, ScrollView, Switch, SafeAreaView, Alert  } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, TextInput, Button, ScrollView, Switch, SafeAreaView, Alert, Modal,TouchableWithoutFeedback  } from 'react-native';
 import React, { useState, useEffect, useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
@@ -42,6 +42,8 @@ export default function Registro(){
 	const [kardex, setKardex] = useState("Subir archivo");
 	const [identificacion, setIdentificacion] = useState("Subir archivo");
 	const [foto, setFoto] = useState("Subir archivo");
+	const [modal, setModal] = useState(false);
+	const [modBot, setModBot] = useState('');
 	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 	const [form,setForm] = useState(onInitialState)
 	const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -222,6 +224,23 @@ export default function Registro(){
   
 		if (result.type=='success') {
 				setKardex(result.name)
+				setModBot('')
+				setModal(false)
+		}
+	};
+	const takeKardex = async () => {
+		// No permissions request is necessary for launching the image library
+		let result = await ImagePicker.launchCameraAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			allowsEditing: true,
+			quality:0.5
+		});
+
+		let uri = result.uri.split("/")  
+		if (!result.cancelled) {
+			setKardex(uri[uri.length-1])
+			setModBot('')
+			setModal(false)
 		}
 	};
 	const pickId = async () => {
@@ -236,6 +255,23 @@ export default function Registro(){
   
 		if (result.type=='success') {
 				setIdentificacion(result.name)
+				setModBot('')
+				setModal(false)
+		}
+	};
+	const takeId = async () => {
+		// No permissions request is necessary for launching the image library
+		let result = await ImagePicker.launchCameraAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			allowsEditing: true,
+			quality:0.5
+		});
+
+		let uri = result.uri.split("/")  
+		if (!result.cancelled) {
+			setIdentificacion(uri[uri.length-1])
+			setModBot('')
+			setModal(false)
 		}
 	};
 	const pickFoto = async () => {
@@ -250,6 +286,23 @@ export default function Registro(){
   
 		if (result.type=='success') {
 				setFoto(result.name)
+				setModBot('')
+				setModal(false)
+		}
+	};
+	const takeFoto = async () => {
+		// No permissions request is necessary for launching the image library
+		let result = await ImagePicker.launchCameraAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			allowsEditing: true,
+			quality:0.5
+		});
+
+		let uri = result.uri.split("/")  
+		if (!result.cancelled) {
+			setFoto(uri[uri.length-1])
+			setModBot('')
+			setModal(false)
 		}
 	};
 
@@ -423,7 +476,7 @@ export default function Registro(){
 					<Text style={styles.campos2}>Kárdex:</Text>
 					<View style={styles.subir}>
 						<View style={kardex=='Subir archivo'?styles.viewTouch:styles.viewTouchCon}>
-							<TouchableCmp onPress={()=>{pickKardex()}}>
+							<TouchableCmp onPress={()=>{setModal(true),setModBot('kardex')}}>
 								<View style={kardex=='Subir archivo'?styles.viewTouch2:styles.viewTouch2Con}>
 									<View style={kardex=='Subir archivo'?styles.viewTouch3:styles.viewTouch3Con}>
 										{vector()}
@@ -436,7 +489,7 @@ export default function Registro(){
 					<Text style={styles.campos}>Identificación oficial:</Text>
 					<View style={styles.subir}>
 						<View style={identificacion=='Subir archivo'?styles.viewTouch:styles.viewTouchCon}>
-							<TouchableCmp onPress={()=>{pickId()}}>
+							<TouchableCmp onPress={()=>{setModal(true),setModBot('id')}}>
 								<View style={identificacion=='Subir archivo'?styles.viewTouch2:styles.viewTouch2Con}>
 									<View style={identificacion=='Subir archivo'?styles.viewTouch3:styles.viewTouch3Con}>
 										{vector2()}
@@ -449,7 +502,7 @@ export default function Registro(){
 					<Text style={styles.campos}>Foto del deportista:</Text>
 					<View style={styles.subir}>
 						<View style={foto=='Subir archivo'?styles.viewTouch:styles.viewTouchCon}>
-							<TouchableCmp onPress={()=>{pickFoto()}}>
+							<TouchableCmp onPress={()=>{setModal(true),setModBot('foto')}}>
 								<View style={foto=='Subir archivo'?styles.viewTouch2:styles.viewTouch2Con}>
 									<View style={foto=='Subir archivo'?styles.viewTouch3:styles.viewTouch3Con}>
 										{vector3()}
@@ -472,6 +525,34 @@ export default function Registro(){
 					</TouchableCmp>
 				</View>
 			</View>
+			<Modal
+			animationType={'slide'}
+			visible={modal}
+			transparent
+			onRequestClose={()=>setModal(false)}
+			>
+				<TouchableWithoutFeedback onPress={()=>{setModal(false)}}>
+					<View style={styles.notModal}>
+					</View>
+				</TouchableWithoutFeedback>
+				<View style={styles.modal}>
+					<View style={styles.modalTitle}>
+						<Text style={styles.modalTextT}>Elija una opción</Text>
+					</View>
+					<View style={styles.modalBotones}>
+						<TouchableCmp onPress={()=>{modBot=='foto'?takeFoto():modBot=='id'?takeId():takeKardex()}}>
+							<View style={styles.modalOp1} onPress={()=>{modBot=='foto'?takeFoto():modBot=='id'?takeId():takeKardex()}}>
+								<Text style={styles.modalText} onPress={()=>{modBot=='foto'?takeFoto():modBot=='id'?takeId():takeKardex()}}>Tomar foto</Text>
+							</View>
+						</TouchableCmp>
+						<TouchableCmp onPress={()=>{modBot=='foto'?pickFoto():modBot=='id'?pickId():pickKardex()}}>
+							<View style={styles.modalOp1} onPress={()=>{modBot=='foto'?pickFoto():modBot=='id'?pickId():pickKardex()}}>
+								<Text style={styles.modalText} onPress={()=>{modBot=='foto'?pickFoto():modBot=='id'?pickId():pickKardex()}}>Seleccionar archivo</Text>
+							</View>
+						</TouchableCmp>
+					</View>
+				</View>
+			</Modal>
 		</ScrollView>
 	)
 }
@@ -713,5 +794,42 @@ const styles = StyleSheet.create({
 		fontFamily:'Fredoka-Light',
 		color: '#BA1200',
 		//marginBottom:15
-	  }
+	},
+	notModal:{
+		height:Dimensions.get('window').height*0.84,
+	},
+	modal:{
+		height:Dimensions.get('window').height/6,
+		backgroundColor:'#003070',
+		borderTopLeftRadius:30,
+		borderTopRightRadius:30,
+		// width:'95%',
+		// marginLeft:'2.5%'
+	},
+	modalBotones:{
+		flexDirection:'row',
+		justifyContent:'space-around',
+		//backgroundColor:'green',
+		marginTop:30,
+	},
+	modalOp1:{
+		backgroundColor:'white',
+		width:Dimensions.get('window').width*0.45,
+		height:Dimensions.get('window').height*0.05,
+		justifyContent:'center',
+		borderRadius:15
+	},
+	modalTextT:{
+		color:'white',
+		fontSize:20,
+		fontFamily:'Fredoka-Medium',
+		textAlign:'center',
+		marginTop:15
+	},
+	modalText:{
+		color:'#003070',
+		fontSize:17,
+		fontFamily:'Fredoka-Light',
+		textAlign:'center',
+	},
 })
