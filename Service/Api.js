@@ -8,6 +8,8 @@ export const SAVE = 'POST';
 export const UPDATE = 'PATCH';
 export const DELETE = 'DELETE';
 
+const loginPath = '/api/auth';
+
 export const token = async () => await AsyncStorage.getItem('token');
 
 const API = axios.create({
@@ -20,14 +22,17 @@ const API = axios.create({
 });
 
 export async function login (email, password) {
-  return await API.post('/api/auth', { email, password });
+  return await API.post(loginPath, { email, password });
 };
 
 API.interceptors.request.use(async config => {
-  const sToken = await token();
-  if (sToken) {
-    config.headers.Authorization = `Bearer ${sToken}`;
+  if (!(config.url === loginPath)) {
+    const sToken = await token();
+      if (sToken) {
+        config.headers.Authorization = `Bearer ${sToken}`;
+      }
   }
+  console.log(); // ! Not remove
   return config;
 });
 
