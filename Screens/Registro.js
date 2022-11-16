@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Dimensions, TextInput, Button, ScrollView, Switch, SafeAreaView, Alert, Modal,TouchableWithoutFeedback  } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, TextInput, Button, ScrollView, Switch, SafeAreaView, Alert, Modal,TouchableWithoutFeedback, TouchableOpacity, Platform, TouchableNativeFeedback  } from 'react-native';
 import React, { useState, useEffect, useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
@@ -236,8 +236,8 @@ export default function Registro(){
 			quality:0.5
 		});
 
-		let uri = result.uri.split("/")  
 		if (!result.cancelled) {
+			let uri = result.uri.split("/")  
 			setKardex(uri[uri.length-1])
 			setModBot('')
 			setModal(false)
@@ -267,8 +267,8 @@ export default function Registro(){
 			quality:0.5
 		});
 
-		let uri = result.uri.split("/")  
 		if (!result.cancelled) {
+			let uri = result.uri.split("/")  
 			setIdentificacion(uri[uri.length-1])
 			setModBot('')
 			setModal(false)
@@ -298,8 +298,8 @@ export default function Registro(){
 			quality:0.5
 		});
 
-		let uri = result.uri.split("/")  
 		if (!result.cancelled) {
+			let uri = result.uri.split("/")  
 			setFoto(uri[uri.length-1])
 			setModBot('')
 			setModal(false)
@@ -539,18 +539,33 @@ export default function Registro(){
 					<View style={styles.modalTitle}>
 						<Text style={styles.modalTextT}>Elija una opción</Text>
 					</View>
+					{Platform.OS==='android'?
 					<View style={styles.modalBotones}>
-						<TouchableCmp onPress={()=>{modBot=='foto'?takeFoto():modBot=='id'?takeId():takeKardex()}}>
-							<View style={styles.modalOp1} onPress={()=>{modBot=='foto'?takeFoto():modBot=='id'?takeId():takeKardex()}}>
-								<Text style={styles.modalText} onPress={()=>{modBot=='foto'?takeFoto():modBot=='id'?takeId():takeKardex()}}>Tomar foto</Text>
+						<TouchableNativeFeedback onPress={()=>modBot=='foto'?takeFoto():modBot=='id'?takeId():takeKardex()}>
+							<View style={styles.modalOp1}>
+								<Text style={styles.modalText}>Tomar foto</Text>
 							</View>
-						</TouchableCmp>
-						<TouchableCmp onPress={()=>{modBot=='foto'?pickFoto():modBot=='id'?pickId():pickKardex()}}>
-							<View style={styles.modalOp1} onPress={()=>{modBot=='foto'?pickFoto():modBot=='id'?pickId():pickKardex()}}>
-								<Text style={styles.modalText} onPress={()=>{modBot=='foto'?pickFoto():modBot=='id'?pickId():pickKardex()}}>Seleccionar archivo</Text>
+						</TouchableNativeFeedback>
+						<TouchableNativeFeedback onPress={()=>modBot=='foto'?pickFoto():modBot=='id'?pickId():pickKardex()}>
+							<View style={styles.modalOp1}>
+								<Text style={styles.modalText}>Seleccionar archivo</Text>
 							</View>
-						</TouchableCmp>
+						</TouchableNativeFeedback>
 					</View>
+					:
+					<View style={styles.modalBotones}>
+						<TouchableOpacity onPress={()=>modBot=='foto'?takeFoto():modBot=='id'?takeId():takeKardex()}>
+							<View style={styles.modalOp1}>
+								<Text style={styles.modalText}>Tomar foto</Text>
+							</View>
+						</TouchableOpacity>
+						<TouchableOpacity onPress={()=>modBot=='foto'?pickFoto():modBot=='id'?pickId():pickKardex()}>
+							<View style={styles.modalOp1}>
+								<Text style={styles.modalText}>Seleccionar archivo</Text>
+							</View>
+						</TouchableOpacity>
+					</View>
+					}
 				</View>
 			</Modal>
 		</ScrollView>
