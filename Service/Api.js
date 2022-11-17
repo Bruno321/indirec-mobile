@@ -7,34 +7,25 @@ export const FIND = 'FIND';
 export const SAVE = 'POST';
 export const UPDATE = 'PATCH';
 export const DELETE = 'DELETE';
+export const SAVE_WITH_FILE = 'SAVE_WITH_FILE';
 
-const loginPath = '/api/auth';
+export const BASEPATH = '/api';
+
+const LOGINPATH = `${BASEPATH}/auth`;
 
 export const token = async () => await AsyncStorage.getItem('token');
 
 const API = axios.create({
   baseURL: REACT_APP_API_URL,
   headers: { 
-    "Content-Type": "application/json",
     "Access-Control-Allow-Origin": null ,
     "Accept":"*/*"
   },
 });
 
 export async function login (email, password) {
-  return await API.post(loginPath, { email, password });
+  return await API.post(LOGINPATH, { email, password });
 };
-
-API.interceptors.request.use(async config => {
-  if (!(config.url === loginPath)) {
-    const sToken = await token();
-      if (sToken) {
-        config.headers.Authorization = `Bearer ${sToken}`;
-      }
-  }
-  console.log(); // ! Not remove
-  return config;
-});
 
 /**
  * Generic function to make api calls
@@ -46,25 +37,37 @@ API.interceptors.request.use(async config => {
   export async function process(operation, model, payload = {}, params = {}) {
   const { id, queries, limit, skip } = params || {};
 
+  const oAuth = {
+    headers: {
+      Authorization: `Bearer ${await token()}`,
+    },
+  };
+
   switch (operation) {
     // case FIND:
     //   return await API.get(
     //     `/api/${model}?${queries ? queries + '&' : ''}${
     //       limit ? '$limit=' + limit : ''
     //     }&$skip=${skip}`,
-    //     null,
     //     oAuth
     //   );
     case FIND:
-      return await API.get(`/api/${model}`);
-    case GET:
-      return await API.get(`/api/${model}/${id}${queries || ''}`, null);
+      return await API.get(`${BASEPATH}/${model}`, oAuth);
     case SAVE:
-      return await API.post(`/api/${model}`, payload);
+      return await API.post(`${BASEPATH}/${model}`, payload);
+    case SAVE_WITH_FILE:
+      return await API.post(`${BASEPATH}/${model}`, payload, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        transformRequest: data => {
+          return data;
+      },
+      });
     case UPDATE:
-      return await API.patch(`/api/${model}/${id}`, payload);
+      return await API.patch(`${BASEPATH}/${model}/${id}`, payload);
     case DELETE:
-      return await API.delete(`/api/${model}/${id}`, null);
+      return await API.delete(`${BASEPATH}/${model}/${id}`, null);
     default:
       return null;
   }
