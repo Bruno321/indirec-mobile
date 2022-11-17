@@ -11,7 +11,7 @@ export const OrderView = () => {
   const [checked, setChecked] = useState(aOptions[0]);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // TODO: Remove before
+  // TODO: Remove later
   useEffect(() => {
     console.log(checked);
   }, [checked])

@@ -1,32 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Dimensions, Modal, View, StyleSheet, Pressable, Text } from 'react-native';
+import { aFacultities } from '../Utils/Constants';
 import { ActionButton } from './ActionButton';
 import { Dropdown } from 'react-native-element-dropdown';
 
 const { width, height } = Dimensions.get('window');       
 
-const aFacultities = [
-  "Bellas Artes",
-  "Ciencias Naturales",
-  "Ciencias Políticas y Sociales",
-  "Derecho", "Enfermería",
-  "Filosofía",
-  "Informática",
-  "Ingeniería",
-  "Lenguas y Letras",
-  "Medicina",
-  "Psicología",
-  "Contaduría",
-  "Química",
-];
-
 const aSports = [
   "Fútbol",
   "Baloncesto",
   "Voleibol",
-  "Natación",
   "Atletismo",
-  "Tenis",
 ];
 
 export const FiltersView = () => {
@@ -60,7 +44,7 @@ export const FiltersView = () => {
     });
   };
 
-  // TODO: Remove before
+  // TODO: Remove this later
   useEffect(() => {
     console.log(search);
   }, [search]);
@@ -92,7 +76,7 @@ export const FiltersView = () => {
                 placeholder='Todos'
                 style={styles.dropdown}
                 containerStyle={styles.dropdown}
-                onChange={(value) => {
+                onChange={value => {
                   handleQueries('deporte', value);
                 }}
                 value={search?.deporte}
@@ -109,7 +93,7 @@ export const FiltersView = () => {
                 placeholder='Todos'
                 style={styles.dropdown}
                 containerStyle={styles.dropdown}
-                onChange={(value) => {
+                onChange={value => {
                   handleQueries('activo', value);
                 }}
                 value={search?.activo}
@@ -125,7 +109,7 @@ export const FiltersView = () => {
                 placeholder='Todas'
                 style={styles.dropdown}
                 containerStyle={styles.dropdown}
-                onChange={(value) => {
+                onChange={value => {
                   handleQueries('facultad', value);
                 }}
                 value={search?.facultad}
