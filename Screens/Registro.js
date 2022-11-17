@@ -1,573 +1,509 @@
-import { StyleSheet, Text, View, Image, Dimensions, TextInput, Button, ScrollView, Switch, SafeAreaView, Alert, Modal,TouchableWithoutFeedback, TouchableOpacity, Platform, TouchableNativeFeedback  } from 'react-native';
-import React, { useState, useEffect, useCallback } from 'react';
-import { StatusBar } from 'expo-status-bar';
+import React, { useState } from 'react';
+import {
+	Alert,
+	ActivityIndicator,
+	Dimensions,
+	Modal,
+	Platform,
+	SafeAreaView,
+	StyleSheet,
+	ScrollView,
+	Switch,
+	Text,
+	TextInput,
+	TouchableWithoutFeedback,
+	View,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Formik } from 'formik';
+import * as yup from "yup";
+import { aFacultities, expRegex, insuranceRegex, nameRegex, phoneRegex } from '../Utils/Constants';
 import { Header } from '../components';
-import SelectDropdown from 'react-native-select-dropdown'
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { Dropdown } from 'react-native-element-dropdown';
 import Feather from 'react-native-vector-icons/Feather';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
+import { process, SAVE_WITH_FILE } from '../Service/Api';
 
+const { width, height } = Dimensions.get('window');       
 
-export default function Registro(){
-	const onInitialState ={
-		expediente: '',
-		nombres:'',
-		apellidos:'',
-		sexo:'',
-		facultad:'',
-		sexoText:'Selecciona una opción',
-		facultadText:'Selecciona una facultad',
-		seleccionado:'',
-		seguro:'',
-		email:'',
-		telefono:'',
-		telEmergencia:'',
-		isValidExp:true,
-		isValidNomb:true,
-		isValidApe:true,
-		isValidSex:true,
-		isValidFac:true,
-		isValidSeg:true,
-		isValidEmail:true,
-		isValidTel:true,
-		isValidEmer:true,
-	}
-	const sexo = ["Masculino", "Femenino"];
-	const facultades=["Informática","Ingeniería","Ciencias"]
-	const [isEnabled, setIsEnabled] = useState(false);
-	const [check, setCheck] = useState(false);
-	const [kardex, setKardex] = useState("Subir archivo");
-	const [identificacion, setIdentificacion] = useState("Subir archivo");
-	const [foto, setFoto] = useState("Subir archivo");
+const sexo = ["Masculino", "Femenino"];
+
+const filePickerText = "Subir archivo";
+
+// ? Testing purposes, check later how to manage this
+const aSports = [
+	{
+		label: 'Futbol',
+		value: 'Futbol',
+	},
+	{
+		label: 'Basquetball',
+		value: 'Basquetball',
+	},
+	{
+		label: 'Volleyball',
+		value: 'Volleyball',
+	},
+	{
+		label: 'Atletismo',
+		value: 'Atletismo',
+	},
+];
+
+const oInitialState = {
+	expediente: '',
+	nombres: '',
+	apellidos: '',
+	sexo: '',
+	facultad: '',
+	jugadorSeleccionado: false,
+	numSeguroSocial: '',
+	numJugador: '',
+	deporte: '',
+	correo: '',
+	telefono: '',
+	telefonoEmergencia: '',
+	fotoCardex: null,
+	fotoIdentificacionOficial: null,
+	foto: null,
+};
+
+const validationSchema = yup.object().shape({
+	expediente: yup
+		.string()
+		.required('El expediente es requerido')
+		.matches(expRegex, 'El expediente debe ser de almenos 6 digitos'),
+	nombres: yup.string().required('El nombre es requerido').matches(nameRegex, 'Formato de nombre incorrecto'),
+	apellidos: yup.string().required('Los apellidos son requeridos').matches(nameRegex, 'Formato de apellidos incorrecto'),
+	sexo: yup.string().required('El sexo es requerido'),
+	facultad: yup.string().required('La facultad es requerida'),
+	jugadorSeleccionado: yup.boolean().default(false),
+	numSeguroSocial: yup.string().required('El numero de seguro social es requerido').matches(insuranceRegex, 'El numero de seguro social debe ser de 11 digitos'),
+	numJugador: yup.number().integer('Debe ser un número entero'),
+	deporte: yup.string().required('El deporte es requerido'),
+	correo: yup.string().email('El correo no es valido').required('El correo es requerido'),
+	telefono: yup.string().required('El telefono es requerido').matches(phoneRegex, 'El telefono debe ser de 10 digitos'),
+	telefonoEmergencia: yup.string().required('El telefono de emergencia es requerido').matches(phoneRegex, 'El telefono de emergencia debe ser de 10 digitos'),
+	fotoCardex: yup.mixed().required('El Kardex es requerido'),
+	fotoIdentificacionOficial: yup.mixed().required('La foto de tu Identificación Oficial es requerida'),
+	foto: yup.mixed().required('La foto es requerida'),
+});
+
+const Registro = () => {
+	const [kardex, setKardex] = useState(filePickerText);
+	const [identificacion, setIdentificacion] = useState(filePickerText);
+	const [foto, setFoto] = useState(filePickerText);
+	const [loading, setLoading] = useState(false);
 	const [modal, setModal] = useState(false);
 	const [modBot, setModBot] = useState('');
-	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-	const [form,setForm] = useState(onInitialState)
-	const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-	const numberformat = /(\+?( |-|\.)?\d{1,2}( |-|\.)?)?(\(?\d{3}\)?|\d{3})( |-|\.)?(\d{3}( |-|\.)?\d{4})$/g;
-	const numberformat2 = /(\+?( |-|\.)?\d{1,2}( |-|\.)?)?(\(?\d{3}\)?|\d{3})( |-|\.)?(\d{4}( |-|\.)?\d{3})$/g;
-	const numberformat3 = /(\+?( |-|\.)?\d{1,2}( |-|\.)?)?(\(?\d{3}\)?|\d{3})( |-|\.)?(\d{2}( |-|\.)?\d{2}( |-|\.)?\d{3})$/g;
-	const numberformat4 = /(\+?( |-|\.)?\d{1,2}( |-|\.)?)?(\(?\d{3}\)?|\d{3})( |-|\.)?(\d{3}( |-|\.)?\d{2}( |-|\.)?\d{2})$/g;
-	const nameformat = /^([A-ZÁÉÍÓÚ]['-]?[a-záéíóúü]+([ ]?[a-z]?['-]?[A-ZÁÉÍÓÚ]['-]?[a-záéíóúü]+)*)$/
-	const expformat = /^([0-9]{5,7})$/
-	const seguroformat = /^^([0-9]{2}-?[0-9]{2}-?[0-9]{2}-?[0-9]{4}-?[0-9]{1})$$/
-
-	const [data, setData] = React.useState({
-		expediente: '',
-		nombres:'',
-		apellidos:'',
-		sexo:'',
-		facultad:'',
-		sexoText:'Selecciona una opción',
-		facultadText:'Selecciona una facultad',
-		seleccionado:'No',
-		seguro:'',
-		email:'',
-		telefono:'',
-		telEmergencia:'',
-		isValidExp:true,
-		isValidNomb:true,
-		isValidApe:true,
-		isValidSex:true,
-		isValidFac:true,
-		isValidSeg:true,
-		isValidEmail:true,
-		isValidTel:true,
-		isValidEmer:true,
-	})
-
-	const logoutHandle= ()=>{
-	}
-
-	const handleExpChange = (value) =>{
-	if(value.length > 0 && value.match(expformat)){
-		setData({
-		...data,
-		expediente:value,
-		isValidExp:true
-		})
-	}else{
-		setData({
-			...data,
-			expediente:value,
-			isValidExp:false
-		})
-	}
-	}
-	const handleNomChange = (value) =>{
-	if(value.length > 0 && value.match(nameformat)){
-		setData({
-		...data,
-		nombres:value,
-		isValidNomb:true
-		})
-	}else{
-		setData({
-			...data,
-			nombres:value,
-			isValidNomb:false
-		})
-	}
-	}
-	const handleApellChange = (value) =>{
-	if(value.length > 0 && value.match(nameformat)){
-		setData({
-		...data,
-		apellidos:value,
-		isValidApe:true
-		})
-	}else{
-		setData({
-			...data,
-			apellidos:value,
-			isValidApe:false
-		})
-	}
-	}
-	const handleSegChange = (value) =>{
-	if(value.length > 0 && value.match(seguroformat)){
-		setData({
-		...data,
-		seguro:value,
-		isValidSeg:true
-		})
-	}else{
-		setData({
-			...data,
-			seguro:value,
-			isValidSeg:false
-		})
-	}
-	}
-	const handleEmailChange = (value) =>{
-	if(value.length > 0 && value.match(mailformat)){
-		setData({
-		...data,
-		email:value,
-		isValidEmail:true
-		})
-	}else{
-		setData({
-			...data,
-			email:value,
-			isValidEmail:false
-		})
-	}
-	}
-	const handleTelChange = (value) =>{
-	if(value.length > 0 && (value.match(numberformat)||value.match(numberformat2)||value.match(numberformat3)||value.match(numberformat4))){
-		setData({
-		...data,
-		telefono:value,
-		isValidTel:true
-		})
-	}else{
-		setData({
-			...data,
-			telefono:value,
-			isValidTel:false
-		})
-	}
-	}
-	const handleEmeChange = (value) =>{
-		if(value.length > 0 && (value.match(numberformat)||value.match(numberformat2)||value.match(numberformat3)||value.match(numberformat4))){
-		setData({
-		...data,
-		telEmergencia:value,
-		isValidEmer:true
-		})
-	}else{
-		setData({
-			...data,
-			telEmergencia:value,
-			isValidEmer:false
-		})
-	}
-	}
-	const handleSexChange = (value) =>{
-		setData({
-		...data,
-		sexo:value,
-		})
-	}
-	const handleFacChange = (value) =>{
-		setData({
-		...data,
-		facultad:value,
-		})
-	}
-
-	const handleSubmit = ()=>{
-		if(!CheckAll()){
-			Alert.alert('Información incorrecta', 'Uno o más campos son incorrectos',[
-				{text:'Okay'}
-			 ]);
-			console.log("NO ESTA BIEN")
-		}else{
-			setData(onInitialState);
-			navigation.navigate("Home")
-		}
-	}
-
-	const pickKardex = async () => {
-		// No permissions request is necessary for launching the image library
-		let result = await DocumentPicker.getDocumentAsync({
-			type: ['application/pdf','image/*'],
-			copyToCacheDirectory: true,
-			multiple:false,
-		});
-  
-		console.log(result);
-  
-		if (result.type=='success') {
-				setKardex(result.name)
-				setModBot('')
-				setModal(false)
-		}
-	};
-	const takeKardex = async () => {
-		// No permissions request is necessary for launching the image library
-		let result = await ImagePicker.launchCameraAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsEditing: true,
-			quality:0.5
-		});
-
-		if (!result.cancelled) {
-			let uri = result.uri.split("/")  
-			setKardex(uri[uri.length-1])
-			setModBot('')
-			setModal(false)
-		}
-	};
-	const pickId = async () => {
-		// No permissions request is necessary for launching the image library
-		let result = await DocumentPicker.getDocumentAsync({
-			type: ['application/pdf','image/*'],
-			copyToCacheDirectory: true,
-			multiple:false,
-		});
-  
-		console.log(result);
-  
-		if (result.type=='success') {
-				setIdentificacion(result.name)
-				setModBot('')
-				setModal(false)
-		}
-	};
-	const takeId = async () => {
-		// No permissions request is necessary for launching the image library
-		let result = await ImagePicker.launchCameraAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsEditing: true,
-			quality:0.5
-		});
-
-		if (!result.cancelled) {
-			let uri = result.uri.split("/")  
-			setIdentificacion(uri[uri.length-1])
-			setModBot('')
-			setModal(false)
-		}
-	};
-	const pickFoto = async () => {
-		// No permissions request is necessary for launching the image library
-		let result = await DocumentPicker.getDocumentAsync({
-			type: ['application/pdf','image/*'],
-			copyToCacheDirectory: true,
-			multiple:false,
-		});
-  
-		console.log(result);
-  
-		if (result.type=='success') {
-				setFoto(result.name)
-				setModBot('')
-				setModal(false)
-		}
-	};
-	const takeFoto = async () => {
-		// No permissions request is necessary for launching the image library
-		let result = await ImagePicker.launchCameraAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsEditing: true,
-			quality:0.5
-		});
-
-		if (!result.cancelled) {
-			let uri = result.uri.split("/")  
-			setFoto(uri[uri.length-1])
-			setModBot('')
-			setModal(false)
-		}
-	};
-
-	const CheckAll = () =>{
-		if((data.isValidExp&&data.isValidNomb&&data.isValidApe&&data.isValidSeg&&data.isValidEmail&&data.isValidTel&&data.isValidEmer
-			&& data.expediente.trim().length >0 && data.nombres.trim().length >0 && data.apellidos.trim().length >0
-			&& data.seguro.trim().length >0 && data.email.trim().length >0 && data.telefono.trim().length >0 && data.telEmergencia.trim().length >0
-			)){
-				return true
-			}else{
-				return false
-			}
-	}
-
-	const vector = () =>{
-		if(kardex=='Subir archivo')
-		return(
-			<Feather name={'upload'} color={'#003070'} size={13}/>
-		)
-	}
-	const vector2 = () =>{
-		if(identificacion=='Subir archivo')
-		return(
-			<Feather name={'upload'} color={'#003070'} size={13}/>
-		)
-	}
-	const vector3 = () =>{
-		if(foto=='Subir archivo')
-		return(
-			<Feather name={'upload'} color={'#003070'} size={13}/>
-		)
-	}
-
 	const navigation = useNavigation();
+
+	const facultitiesItems = aFacultities.map(oFaculty => ({
+		label: `Facultad de ${oFaculty}`,
+		value: oFaculty,
+	}));
+
+	const sexoItems = sexo.map(oSexo => ({
+		label: oSexo,
+		value: oSexo === 'Masculino' ? 0 : 1,
+	}));
+
+	const oSetter = {
+		'fotoCardex': setKardex,
+		'fotoIdentificacionOficial': setIdentificacion,
+		'foto': setFoto,
+	};
+
+	const pickFile = async (type, formHandler) => {
+		// No permissions request is necessary for launching the image library
+		let result = await DocumentPicker.getDocumentAsync({
+			type: ['application/pdf','image/*'],
+			copyToCacheDirectory: true,
+			multiple:false,
+		});
+  
+		console.log(result);
+  
+		if (result.type=='success') {
+				oSetter[type](result.name);
+				formHandler(type, result);
+				setModBot('');
+				setModal(false);
+		}
+	};
+	const takePhoto = async (type, formHandler) => {
+		// No permissions request is necessary for launching the image library
+		let result = await ImagePicker.launchCameraAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			allowsEditing: true,
+			quality:0.5
+		});
+
+		if (!result.cancelled) {
+			const uri = result.uri.split("/");
+			oSetter[type](uri[uri.length-1]);
+			formHandler(type, result);
+			setModBot('');
+			setModal(false);
+		}
+	};
+
+	const vector = (file) =>{
+		if (file === filePickerText)  {
+			return (
+				<Feather name={'upload'} color={'#003070'} size={13}/>
+			)
+		}
+	};
+
+	const onSubmit = async (values, reset) => {
+		setLoading(true);
+		
+		console.log(values);
+		
+		// TODO: Finish this
+		// const FormData = global.FormData;
+		// let oSend = new FormData();
+
+		// for (const sKey in values) {
+
+		// 	if (['fotoCardex', 'fotoIdentificacionOficial', 'foto'].includes(sKey)) {
+		// 		oSend.append(sKey, {
+		// 			uri: (Platform.OS === "android") ? values[sKey].uri : values[sKey].replace("file://", ""),
+		// 			name: values[sKey].name,
+		// 			type: values[sKey].mimeType,
+		// 		});
+		// 	} else {
+		// 		oSend.append(sKey, values[sKey]);
+		// 	}
+		// }
+
+		// const response = await process(SAVE_WITH_FILE, 'deportistas', oSend).catch(err => {
+		// 	console.log(err);
+		// });
+
+		// console.log('->', response);
+
+		// if (response?.data?.ok) {
+		// 	Alert.alert(
+		// 		'Jugador agregado exitosamente',
+		// 		response.data.message,
+		// 		[
+		// 			{text:'Okay'},
+		// 		]
+		// 	);
+		// 	reset();
+		// } else {
+		// 	Alert.alert(
+		// 		'Oops...',
+		// 		'Algo salio mal, intenta mas tarde',
+		// 		[
+		// 			{text:'Okay'},
+		// 		]
+		// 	);
+		// }
+
+		setLoading(false);
+	};
 
 	return(
 		<ScrollView style={styles.general} showsVerticalScrollIndicator={false}>
+
 		<SafeAreaView />
 			<Header navigation={navigation}/>
 			<View style={styles.center}>
 				<View style={styles.viewTitulo}>
 					<Text style={styles.titulo}>Registro de un deportista</Text>
-					{/* <FontAwesome name='soccer-ball-o' size={25} color='blue'/> */}
 				</View>
+
+				{/* FORM FIELDS */}
 				<View style={styles.viewForm}>
-					<Text style={styles.campos}>Expediente:</Text>
-					<TextInput 
-						placeholder='123456' style={styles.input}
-						keyboardType='number-pad'
-						onChangeText={(value) => handleExpChange(value)}
-						value={data.expediente}
+
+				<Formik
+					initialValues={oInitialState}
+					validationSchema={validationSchema}
+					onSubmit={(values, { resetForm }) => {
+						const reset = () => {
+							resetForm();
+							for (const [, fn] of Object.entries(oSetter)) {
+								fn(filePickerText);
+							}
+						};
+
+						onSubmit(values, reset);
+					}}
+				>
+				{({ setFieldValue, handleChange, handleSubmit, values, errors, touched }) => (
+					<>
+						<Text style={styles.campos}>Expediente:</Text>
+						<TextInput
+							placeholder='123456'
+							style={styles.input}
+							keyboardType='number-pad'
+							onChangeText={handleChange('expediente')}
+							value={values.expediente}
 						/>
-					{ data. isValidExp ? null : 
-						<Text style={styles.error}>Campo vacío</Text>
-					}
-					<Text style={styles.campos}>{"Nombre(s):"}</Text>
-					<TextInput 
-						placeholder='Jorge Alejandro' style={styles.input}
-						onChangeText={(value) => handleNomChange(value)}
-						value={data.nombres}
-					/>
-					{ data. isValidNomb ? null : 
-						<Text style={styles.error}>Campo vacío</Text>
-					}
-					<Text style={styles.campos}>{"Apellidos:"}</Text>
-					<TextInput placeholder='Bernal Colín' style={styles.input}
-					onChangeText={(value) => handleApellChange(value)}
-					value={data.apellidos}/>
-					{ data. isValidApe ? null : 
-						<Text style={styles.error}>Campo vacío</Text>
-					}
-					<Text style={styles.campos}>Sexo:</Text>
-					<SelectDropdown 
-						data={sexo}
-						onSelect={(selectedItem, index) => {
-							// console.log(selectedItem, index)
-							handleSexChange(selectedItem);
-						}}
-						defaultButtonText={data.sexoText}
-						buttonTextAfterSelection={(selectedItem, index) => {
-							// text represented after item is selected
-							// if data array is an array of objects then return selectedItem.property to render after item is selected
-							return selectedItem
-						}}
-						buttonStyle={styles.dropdown1BtnStyle}
-						buttonTextStyle={styles.dropdown1BtnTxtStyle}
-						renderDropdownIcon={isOpened => {
-						return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={18} />;
-						}}
-						dropdownIconPosition={'right'}
-						dropdownStyle={styles.dropdown1DropdownStyle}
-						rowStyle={styles.dropdown1RowStyle}
-						rowTextStyle={styles.dropdown1RowTxtStyle}
-					/>
-					{ data. isValidSex ? null : 
-						<Text style={styles.error}>Campo vacío</Text>
-					}
-					<Text style={styles.campos}>Facultad:</Text>
-					<SelectDropdown 
-						data={facultades}
-						onSelect={(selectedItem, index) => {
-							handleFacChange(selectedItem);
-						}}
-						defaultButtonText={data.facultadText}
-						buttonTextAfterSelection={(selectedItem, index) => {
-							// text represented after item is selected
-							// if data array is an array of objects then return selectedItem.property to render after item is selected
-							return selectedItem
-						}}
-						buttonStyle={styles.dropdown1BtnStyle}
-						buttonTextStyle={styles.dropdown1BtnTxtStyle}
-						renderDropdownIcon={isOpened => {
-						return <FontAwesome name={isOpened ? 'chevron-up' : 'chevron-down'} color={'#444'} size={18} />;
-						}}
-						dropdownIconPosition={'right'}
-						dropdownStyle={styles.dropdown1DropdownStyle}
-						rowStyle={styles.dropdown1RowStyle}
-						rowTextStyle={styles.dropdown1RowTxtStyle}
-					/>
-					{ data. isValidFac ? null : 
-						<Text style={styles.error}>Campo vacío</Text>
-					}
-					<Text style={styles.campos}>{"¿Eres jugador seleccionado?"}</Text>
-					<View style={styles.switch}>
-						<View style={styles.switch2}> 
-							<Text style={{fontFamily:'Fredoka-Light'}}>No</Text>
-						</View>
-						<Switch 
-							trackColor={{ false: "#DBDBDB", true: "#CFDBD5" }}
-							thumbColor={isEnabled ? "#09418C" : "#767577"}
-							ios_backgroundColor="#3e3e3e"
-							onValueChange={toggleSwitch}
-							value={isEnabled}
+						<Text style={styles.error}>{touched.expediente && errors.expediente}</Text>
+
+						<Text style={styles.campos}>Nombre(s):</Text>
+						<TextInput
+							placeholder='Jorge Alejandro'
+							style={styles.input}
+							onChangeText={handleChange('nombres')}
+							value={values.nombres}
 						/>
-						<View style={styles.switch2}> 
-							<Text style={{fontFamily:'Fredoka-Light'}}>Si</Text>
+						<Text style={styles.error}>{touched.nombres && errors.nombres}</Text>
+
+						<Text style={styles.campos}>Apellidos:</Text>
+						<TextInput
+							placeholder='Bernal Colín'
+							style={styles.input}
+							onChangeText={handleChange('apellidos')}
+							value={values.apellidos}
+						/>
+						<Text style={styles.error}>{touched.apellidos && errors.apellidos}</Text>
+
+						{/* DROPDOWNS----------------------------------------------------------------------------------------------------- */}
+						<Text style={styles.campos}>Sexo:</Text>
+						<Dropdown 
+							data={sexoItems}
+							labelField="label"
+							valueField="value"
+							placeholder='Seleccione una opción'
+							style={styles.dropdown1DropdownStyle}
+							containerStyle={styles.dropdown1DropdownStyle}
+							onChange={({ value }) => {
+								setFieldValue('sexo', value);
+							}}
+							value={values.sexo}
+						/>
+						<Text style={styles.error}>{touched.sexo && errors.sexo}</Text>
+
+						<Text style={styles.campos}>Facultad:</Text>
+						<Dropdown 
+							data={facultitiesItems}
+							labelField="label"
+							valueField="value"
+							placeholder='Selecciona una facultad'
+							style={styles.dropdown1DropdownStyle}
+							containerStyle={styles.dropdown1DropdownStyle}
+							onChange={({ value }) => {
+								setFieldValue('facultad', value);
+							}}
+							value={values.facultad}
+							search={true}
+						/>
+						<Text style={styles.error}>{touched.facultad && errors.facultad}</Text>
+
+						<Text style={styles.campos}>¿Eres jugador seleccionado?</Text>
+						<View style={styles.switch}>
+							<View style={styles.switch2}> 
+								<Text style={{fontFamily:'Fredoka-Light'}}>No</Text>
+							</View>
+							<Switch 
+								trackColor={{ false: "#DBDBDB", true: "#CFDBD5" }}
+								thumbColor={values.jugadorSeleccionado ? "#09418C" : "#767577"}
+								ios_backgroundColor="#3e3e3e"
+								onValueChange={v => {
+									setFieldValue('jugadorSeleccionado', Number(v));
+								}}
+								value={!!values.jugadorSeleccionado}
+							/>
+							<View style={styles.switch2}> 
+								<Text style={{fontFamily:'Fredoka-Light'}}>Si</Text>
+							</View>
 						</View>
-					</View>
-					<Text style={styles.campos}>No. Seguro Social:</Text>
-					<TextInput placeholder='12345678912' style={styles.input}
-					onChangeText={(value) => handleSegChange(value)}
-					keyboardType='numeric'
-					value={data.seguro}/>
-					{ data. isValidSeg ? null : 
-						<Text style={styles.error}>Campo vacío</Text>
-					}
-					<Text style={styles.campos}>Correo electrónico:</Text>
-					<TextInput placeholder='ejemplo@mail.com' style={styles.input}
-					keyboardType='email-address'
-					onChangeText={(value) => handleEmailChange(value)}
-					value={data.email}/>
-					{ data. isValidEmail ? null : 
-						<Text style={styles.error}>Campo invalido</Text>
-					}
-					<Text style={styles.campos}>Teléfono:</Text>
-					<TextInput placeholder='442-123-4567' style={styles.input}
-					keyboardType='phone-pad'
-					onChangeText={(value) => handleTelChange(value)}
-					value={data.telefono}/>
-					{ data. isValidTel ? null : 
-						<Text style={styles.error}>Campo vacío</Text>
-					}
-					<Text style={styles.campos}>Teléfono de emergencias:</Text>
-					<TextInput placeholder='+51-442-123-12-12' style={styles.input}
-					keyboardType='phone-pad'
-					onChangeText={(value) => handleEmeChange(value)}
-					value={data.telEmergencia}/>
-					{ data. isValidEmer ? null : 
-						<Text style={styles.error}>Campo vacío</Text>
-					}
-					<Text style={styles.campos2}>Kárdex:</Text>
-					<View style={styles.subir}>
-						<View style={kardex=='Subir archivo'?styles.viewTouch:styles.viewTouchCon}>
-							<TouchableCmp onPress={()=>{setModal(true),setModBot('kardex')}}>
-								<View style={kardex=='Subir archivo'?styles.viewTouch2:styles.viewTouch2Con}>
-									<View style={kardex=='Subir archivo'?styles.viewTouch3:styles.viewTouch3Con}>
-										{vector()}
-										<Text numberOfLines={1} style={kardex=='Subir archivo'?styles.touch:styles.touchCon}>{kardex=='Subir archivo'?'Subir Archivo':kardex}</Text>	
+						{/* -------------------------------------------------------------------------------------------------------------- */}
+
+						<Text style={styles.campos}>No. Jugador:</Text>
+						<TextInput
+							placeholder='7'
+							style={styles.input}
+							keyboardType='numeric'
+							onChangeText={handleChange('numJugador')}
+							value={values.numJugador}
+						/>
+						<Text style={styles.error}>{touched.numJugador && errors.numJugador}</Text>
+
+						<Text style={styles.campos}>Deporte:</Text>
+						<Dropdown 
+							data={aSports}
+							labelField="label"
+							valueField="value"
+							placeholder='Seleccione una opción'
+							style={styles.dropdown1DropdownStyle}
+							containerStyle={styles.dropdown1DropdownStyle}
+							onChange={({ value }) => {
+								setFieldValue('deporte', value);
+							}}
+							value={values.deporte}
+						/>
+						<Text style={styles.error}>{touched.deporte && errors.deporte}</Text>
+
+						<Text style={styles.campos}>No. Seguro Social:</Text>
+						<TextInput
+							placeholder='12345678912'
+							style={styles.input}
+							keyboardType='numeric'
+							onChangeText={handleChange('numSeguroSocial')}
+							value={values.numSeguroSocial}
+						/>
+						<Text style={styles.error}>{touched.numSeguroSocial && errors.numSeguroSocial}</Text>
+
+						<Text style={styles.campos}>Correo electrónico:</Text>
+						<TextInput
+							placeholder='sample@mail.com'
+							style={styles.input}
+							keyboardType='email-address'
+							onChangeText={handleChange('correo')}
+							value={values.correo}
+						/>
+						<Text style={styles.error}>{touched.correo && errors.correo}</Text>
+
+						<Text style={styles.campos}>Teléfono:</Text>
+						<TextInput
+							placeholder='442-123-4567'
+							style={styles.input}
+							keyboardType='phone-pad'
+							onChangeText={handleChange('telefono')}
+							value={values.telefono}
+						/>
+						<Text style={styles.error}>{touched.telefono && errors.telefono}</Text>
+
+						<Text style={styles.campos}>Teléfono de emergencias:</Text>
+						<TextInput
+							placeholder='442-123-1212'
+							style={styles.input}
+							keyboardType='phone-pad'
+							onChangeText={handleChange('telefonoEmergencia')}
+							value={values.telefonoEmergencia}
+						/>
+						<Text style={styles.error}>{touched.telefonoEmergencia && errors.telefonoEmergencia}</Text>
+
+
+						{/* FILES -------------------------------------------------------------------------------------------------------- */}
+						<Text style={styles.campos2}>Kárdex:</Text>
+						<View style={styles.subir}>
+							<View style={kardex === filePickerText ? styles.viewTouch : styles.viewTouchCon}>
+								<TouchableCmp onPress={()=>{
+									setModal(true);
+									setModBot('fotoCardex');
+								}}>
+									<View style={kardex === filePickerText ? styles.viewTouch2 : styles.viewTouch2Con}>
+										<View style={kardex === filePickerText?styles.viewTouch3 : styles.viewTouch3Con}>
+											{vector(kardex)}
+											<Text
+												numberOfLines={1}
+												style={kardex === filePickerText ? styles.touch : styles.touchCon}
+											>
+												{ kardex === filePickerText ? filePickerText : kardex}
+											</Text>	
+										</View>
 									</View>
+								</TouchableCmp>
+							</View>
+						</View>
+						<Text style={styles.error}>{touched.fotoCardex && errors.fotoCardex}</Text>
+
+						<Text style={styles.campos}>Identificación oficial:</Text>
+						<View style={styles.subir}>
+							<View style={identificacion === filePickerText ? styles.viewTouch : styles.viewTouchCon}>
+								<TouchableCmp onPress={() => {
+									setModal(true);
+									setModBot('fotoIdentificacionOficial');
+								}}>
+									<View style={identificacion === filePickerText ? styles.viewTouch2 : styles.viewTouch2Con}>
+										<View style={identificacion === filePickerText ? styles.viewTouch3 : styles.viewTouch3Con}>
+											{vector(identificacion)}
+											<Text
+												numberOfLines={1}
+												style={identificacion === filePickerText ? styles.touch : styles.touchCon}
+											>
+												{identificacion === filePickerText ? filePickerText : identificacion}
+											</Text>	
+										</View>
+									</View>
+								</TouchableCmp>
+							</View>
+						</View>
+						<Text style={styles.error}>{touched.fotoIdentificacionOficial && errors.fotoIdentificacionOficial}</Text>
+
+						<Text style={styles.campos}>Foto del deportista:</Text>
+						<View style={styles.subir}>
+							<View style={foto === filePickerText ? styles.viewTouch : styles.viewTouchCon}>
+								<TouchableCmp onPress={() => {
+									setModal(true);
+									setModBot('foto');
+								}}>
+									<View style={foto === filePickerText ? styles.viewTouch2 : styles.viewTouch2Con}>
+										<View style={foto === filePickerText ? styles.viewTouch3 : styles.viewTouch3Con}>
+											{vector(foto)}
+											<Text
+												numberOfLines={1}
+												style={foto === filePickerText ? styles.touch : styles.touchCon}
+											>
+												{foto === filePickerText ? filePickerText : foto}
+											</Text>	
+										</View>
+									</View>
+								</TouchableCmp>
+							</View>
+						</View>
+						<Text style={styles.error}>{touched.foto && errors.foto}</Text>
+						{/* -------------------------------------------------------------------------------------------------------------- */}
+
+
+						<View style={styles.viewButton}>
+							<TouchableCmp onPress={handleSubmit}>
+								<View style={styles.viewRegistrar}>
+									{loading ? <ActivityIndicator color="white"/> : <Text style={styles.registrar}>Registrar deportista</Text>}
 								</View>
 							</TouchableCmp>
 						</View>
-					</View>
-					<Text style={styles.campos}>Identificación oficial:</Text>
-					<View style={styles.subir}>
-						<View style={identificacion=='Subir archivo'?styles.viewTouch:styles.viewTouchCon}>
-							<TouchableCmp onPress={()=>{setModal(true),setModBot('id')}}>
-								<View style={identificacion=='Subir archivo'?styles.viewTouch2:styles.viewTouch2Con}>
-									<View style={identificacion=='Subir archivo'?styles.viewTouch3:styles.viewTouch3Con}>
-										{vector2()}
-										<Text numberOfLines={1} style={identificacion=='Subir archivo'?styles.touch:styles.touchCon}>{identificacion=='Subir archivo'?'Subir Archivo':identificacion}</Text>	
-									</View>
+
+						<Modal
+							animationType={'slide'}
+							visible={modal}
+							transparent
+							onRequestClose={() => setModal(false)}
+							>
+							<TouchableWithoutFeedback onPress={() => setModal(false) }>
+								<View style={styles.notModal}></View>
+							</TouchableWithoutFeedback>
+							<View style={styles.modal}>
+								<View style={styles.modalTitle}>
+									<Text style={styles.modalTextT}>Elija una opción</Text>
 								</View>
-							</TouchableCmp>
-						</View>
-					</View>
-					<Text style={styles.campos}>Foto del deportista:</Text>
-					<View style={styles.subir}>
-						<View style={foto=='Subir archivo'?styles.viewTouch:styles.viewTouchCon}>
-							<TouchableCmp onPress={()=>{setModal(true),setModBot('foto')}}>
-								<View style={foto=='Subir archivo'?styles.viewTouch2:styles.viewTouch2Con}>
-									<View style={foto=='Subir archivo'?styles.viewTouch3:styles.viewTouch3Con}>
-										{vector3()}
-										<Text numberOfLines={1} style={foto=='Subir archivo'?styles.touch:styles.touchCon}>{foto=='Subir archivo'?'Subir Archivo':foto}</Text>	
-									</View>
+								<View style={styles.modalBotones}>
+									<TouchableCmp
+										onPress={() => {
+											takePhoto(modBot, setFieldValue);
+										}}
+									>
+										<View style={styles.modalOp1}>
+											<Text style={styles.modalText}>Tomar foto</Text>
+										</View>
+									</TouchableCmp>
+									<TouchableCmp
+										onPress={() => {
+											pickFile(modBot, setFieldValue);
+										}}
+									>
+										<View style={styles.modalOp1}>
+											<Text style={styles.modalText}>Seleccionar archivo</Text>
+										</View>
+									</TouchableCmp>
 								</View>
-							</TouchableCmp>
-						</View>
-					</View>
-				</View>
-				<View style={styles.viewButton}>
-					<TouchableCmp onPress={()=>{handleSubmit()}}>
-						{(CheckAll())
-						?<View style={styles.viewRegistrar}>
-							<Text style={styles.registrar} onPress={()=>{handleSubmit()}}>Registrar deportista</Text>
-						</View>:
-						<View style={styles.viewRegistrarFalse}>
-							<Text style={styles.registrar} onPress={()=>{handleSubmit()}}>Registrar deportista</Text>
-						</View>}
-					</TouchableCmp>
+							</View>
+						</Modal>
+					</>
+				)}
+
+					</Formik>
 				</View>
 			</View>
-			<Modal
-			animationType={'slide'}
-			visible={modal}
-			transparent
-			onRequestClose={()=>setModal(false)}
-			>
-				<TouchableWithoutFeedback onPress={()=>{setModal(false)}}>
-					<View style={styles.notModal}>
-					</View>
-				</TouchableWithoutFeedback>
-				<View style={styles.modal}>
-					<View style={styles.modalTitle}>
-						<Text style={styles.modalTextT}>Elija una opción</Text>
-					</View>
-					{Platform.OS==='android'?
-					<View style={styles.modalBotones}>
-						<TouchableNativeFeedback onPress={()=>modBot=='foto'?takeFoto():modBot=='id'?takeId():takeKardex()}>
-							<View style={styles.modalOp1}>
-								<Text style={styles.modalText}>Tomar foto</Text>
-							</View>
-						</TouchableNativeFeedback>
-						<TouchableNativeFeedback onPress={()=>modBot=='foto'?pickFoto():modBot=='id'?pickId():pickKardex()}>
-							<View style={styles.modalOp1}>
-								<Text style={styles.modalText}>Seleccionar archivo</Text>
-							</View>
-						</TouchableNativeFeedback>
-					</View>
-					:
-					<View style={styles.modalBotones}>
-						<TouchableOpacity onPress={()=>modBot=='foto'?takeFoto():modBot=='id'?takeId():takeKardex()}>
-							<View style={styles.modalOp1}>
-								<Text style={styles.modalText}>Tomar foto</Text>
-							</View>
-						</TouchableOpacity>
-						<TouchableOpacity onPress={()=>modBot=='foto'?pickFoto():modBot=='id'?pickId():pickKardex()}>
-							<View style={styles.modalOp1}>
-								<Text style={styles.modalText}>Seleccionar archivo</Text>
-							</View>
-						</TouchableOpacity>
-					</View>
-					}
-				</View>
-			</Modal>
 		</ScrollView>
 	)
 }
@@ -579,31 +515,29 @@ const styles = StyleSheet.create({
 	},
 	header:{
 		backgroundColor: '#003070',
-		height:Dimensions.get('window').height/8,
+		height:height/8,
 		alignItems:'center',
 		justifyContent:'center',
 	},
 	logoTexto:{
-		width: Dimensions.get('window').width/2.3,
+		width: width/2.3,
 		resizeMode: 'contain',	
-		marginTop:Dimensions.get('window').width/15,
+		marginTop:width/15,
 	},
 	center:{
 		alignItems:'center'
 	},
 	viewTitulo:{
-		//backgroundColor:'red',
-		width:Dimensions.get('window').width/1.25,
-		marginTop:Dimensions.get('window').height/28,
+		width:width/1.25,
+		marginTop:height/28,
 	},
 	titulo:{
 		fontSize: 40,
 		fontFamily:'Fredoka-Medium',
 	},
 	viewForm:{
-		// backgroundColor:'red',
-		width:Dimensions.get('window').width/1.25,
-		marginTop:Dimensions.get('window').height/28,
+		width:width/1.25,
+		marginTop:height/28,
 	},
 	campos:{
 		fontFamily:'Fredoka-Light',
@@ -614,13 +548,11 @@ const styles = StyleSheet.create({
 		marginTop:30,
 	},
 	input:{
-		width:Dimensions.get('window').width/1.25,
+		width:width/1.25,
 		paddingLeft:5,
 		borderBottomWidth:1,
 		borderBottomColor:'black',
-		//marginBottom:15,
 		fontFamily:'Fredoka-Light',
-		// height:28.5
 	},
 	dropdown1BtnStyle: {
 		width: '100%',
@@ -628,7 +560,6 @@ const styles = StyleSheet.create({
 		backgroundColor:'white',
 		borderBottomWidth: 1,
 		borderColor: 'black',
-		//marginBottom:15,
 	},
 	dropdown1BtnTxtStyle: {
 		color: 'black', 
@@ -636,15 +567,15 @@ const styles = StyleSheet.create({
 		fontFamily:'Fredoka-Light',
 		fontSize:14,
 	},
-  	dropdown1DropdownStyle: {
-		backgroundColor: '#EFEFEF',
+	dropdown1DropdownStyle: {
+		backgroundColor: '#FFF',
 		marginTop:-1.5
 	},
-  	dropdown1RowStyle: {
+	dropdown1RowStyle: {
 		backgroundColor: '#EFEFEF', 
 		borderBottomColor: '#C5C5C5'
 	},
-  	dropdown1RowTxtStyle: {
+	dropdown1RowTxtStyle: {
 		color: '#444', 
 		textAlign: 'left',
 		fontSize:15,
@@ -663,9 +594,7 @@ const styles = StyleSheet.create({
 	viewTouch:{
 		marginTop:7,
 		width:'100%',
-		//width:230,
-		height:Dimensions.get('window').height/21,
-		// height:40,
+		height:height/21,
 		borderRadius:10,
 		borderColor:'#003070',
 		borderWidth:1,
@@ -677,9 +606,7 @@ const styles = StyleSheet.create({
 	viewTouchCon:{
 		marginTop:7,
 		width:'100%',
-		//width:230,
-		height:Dimensions.get('window').height/21,
-		// height:40,
+		height:height/21,
 		borderRadius:10,
 		borderColor:'#198754',
 		borderWidth:1,
@@ -690,10 +617,8 @@ const styles = StyleSheet.create({
 		backgroundColor:'5cb85c'
 	},
 	viewTouch2:{
-		width:Dimensions.get('window').width/1.2,
-		//width:230,
-		height:Dimensions.get('window').height/21,
-		// height:40,
+		width:width/1.2,
+		height:height/21,
 		borderRadius:10,
 		borderColor:'#003070',
 		alignItems:'center',
@@ -702,10 +627,8 @@ const styles = StyleSheet.create({
 		backgroundColor:'white',
 	},
 	viewTouch2Con:{
-		width:Dimensions.get('window').width/1.2,
-		//width:230,
-		height:Dimensions.get('window').height/21,
-		// height:40,
+		width:width/1.2,
+		height:height/21,
 		borderRadius:10,
 		borderColor:'#198754',
 		alignItems:'center',
@@ -714,7 +637,7 @@ const styles = StyleSheet.create({
 		backgroundColor:'#5cb85c'
 	},
 	viewTouch3:{
-		width:Dimensions.get('window').width/3,
+		width:width/3,
 		flexDirection:'row',
 		justifyContent:'center',
 		justifyContent:'space-around',
@@ -726,8 +649,8 @@ const styles = StyleSheet.create({
 		justifyContent:'space-around',
 	},
 	viewLeyenda:{
-		width:Dimensions.get('window').width/4.5,
-		height:Dimensions.get('window').height/21,
+		width:width/4.5,
+		height:height/21,
 		marginTop:6,
 		justifyContent:'center'
 	},
@@ -755,7 +678,7 @@ const styles = StyleSheet.create({
 		textAlign:'center',
 	},
 	viewRegistrar:{
-		width:Dimensions.get('window').width/1.25,
+		width:width/1.25,
 		height:55,
 		borderRadius:10,
 		backgroundColor:'#003070',
@@ -763,7 +686,7 @@ const styles = StyleSheet.create({
 		overflow:'hidden',
 	},
 	viewRegistrarFalse:{
-		width:Dimensions.get('window').width/1.25,
+		width:width/1.25,
 		height:55,
 		borderRadius:10,
 		backgroundColor:'#777777',
@@ -772,7 +695,7 @@ const styles = StyleSheet.create({
 	},
 	viewButton:{
 		backgroundColor:'red',
-		width:Dimensions.get('window').width/1.25,
+		width:width/1.25,
 		height:55,
 		borderRadius:10,
 		backgroundColor:'#003070',
@@ -792,11 +715,7 @@ const styles = StyleSheet.create({
 		backgroundColor:'red',
 	},
 	switch:{
-		//backgroundColor:'green',
 		flexDirection:'row',
-		//marginBottom:15,
-		borderBottomWidth:1,
-		borderBottomColor:'black',
 		justifyContent:'space-evenly',
 		paddingRight:200,
 		height:28.5,
@@ -808,13 +727,12 @@ const styles = StyleSheet.create({
 	error:{
 		fontFamily:'Fredoka-Light',
 		color: '#BA1200',
-		//marginBottom:15
 	},
 	notModal:{
-		height:Dimensions.get('window').height*0.84,
+		height:height*0.84,
 	},
 	modal:{
-		height:Dimensions.get('window').height/6,
+		height:height/6,
 		backgroundColor:'#003070',
 		borderTopLeftRadius:30,
 		borderTopRightRadius:30,
@@ -824,13 +742,12 @@ const styles = StyleSheet.create({
 	modalBotones:{
 		flexDirection:'row',
 		justifyContent:'space-around',
-		//backgroundColor:'green',
 		marginTop:30,
 	},
 	modalOp1:{
 		backgroundColor:'white',
-		width:Dimensions.get('window').width*0.45,
-		height:Dimensions.get('window').height*0.05,
+		width:width*0.45,
+		height:height*0.05,
 		justifyContent:'center',
 		borderRadius:15
 	},
@@ -847,4 +764,6 @@ const styles = StyleSheet.create({
 		fontFamily:'Fredoka-Light',
 		textAlign:'center',
 	},
-})
+});
+
+export default Registro;
