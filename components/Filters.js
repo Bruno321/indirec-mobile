@@ -44,10 +44,9 @@ export const FiltersView = () => {
     });
   };
 
-  // TODO: Remove this later
-  useEffect(() => {
-    console.log(search);
-  }, [search]);
+  // useEffect(() => {
+  //   console.log(search);
+  // }, [search]);
 
   return (
     <>

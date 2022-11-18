@@ -5,16 +5,15 @@ import { RadioButton } from 'react-native-paper';
 
 const { width, height } = Dimensions.get('window');
 
-const aOptions = ['Prdeterminado', 'Nombre [Z-A]','Fecha Agregado [Nuevos-antiguos]','Fecha Agregado [Antiguos-nuevos]'];
+const aOptions = ['Predeterminado', 'Nombre [Z-A]','Fecha Agregado [Nuevos-antiguos]','Fecha Agregado [Antiguos-nuevos]'];
 
 export const OrderView = () => {
   const [checked, setChecked] = useState(aOptions[0]);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // TODO: Remove later
-  useEffect(() => {
-    console.log(checked);
-  }, [checked])
+  // useEffect(() => {
+  //   console.log(checked);
+  // }, [checked])
 
   return (
     <>
