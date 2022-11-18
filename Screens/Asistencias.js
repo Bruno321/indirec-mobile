@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { View, Text, } from "react-native";
-import { ActionButton, Header, List } from '../components';
+import { Image, Text, View } from "react-native";
+import { ActionButton, FiltersView, Header, List, OrderView, SearchInput } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 import moment from "moment/moment";
 import 'moment/locale/es';
@@ -51,11 +51,13 @@ const Asistencias = ({navigation}) => {
       render: (sId, row, styles) => (
         <View style={styles}>
         <ActionButton
-          icon="info-circle"
+          icon="info"
           handler={() => console.log('Editar', sId)}
           color="#FFF"
           backgroundColor="#003070"
           text="Información"	
+          widthPercentage={0.3}     
+          heightPercentage={0.035}
         />
         </View>
       ),
@@ -65,6 +67,23 @@ const Asistencias = ({navigation}) => {
 			<View>
 				<Header navigation={navigation}/>
 				<Text style={{fontSize:40}}>Asistencias</Text>
+        <SearchInput />
+        <View style={{ flexDirection:'row', justifyContent: 'space-between' }}>
+          <FiltersView />
+          <OrderView />
+        </View>
+        <View style={{ flexDirection:'row', justifyContent: 'center' }}>
+          <ActionButton
+            style={{ marginTop: 20, marginBottom: 20 }}
+            icon={<Image source={require('../assets/icons/list.png')}/>}
+            handler={() => console.log('Pasar lista')}
+            color="#FFF"
+            backgroundColor="#003070"
+            text="Pasar lista"
+            widthPercentage={0.9}
+            heightPercentage={0.04}
+          />
+        </View>
 				<List dataSource={asistencias.length ? asistencias : testData} columns={columns} loading={loading} />
 			</View>
     )
