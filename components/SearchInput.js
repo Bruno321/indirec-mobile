@@ -34,6 +34,8 @@ export const SearchInput = () => {
         backgroundColor="#FFF"
         text="Buscar"
         handler={handleSearch}
+        widthPercentage={0.25}
+        heightPercentage={0.04}
       />
     </View>
   );
@@ -49,7 +51,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: width * 0.6,
-    height: 32,
+    height: 35,
     margin: height*0.01,
     borderBottomWidth: 1,
 		borderBottomColor:'black',

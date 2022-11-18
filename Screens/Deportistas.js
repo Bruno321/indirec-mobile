@@ -28,13 +28,17 @@ const Deportistas = ({navigation}) => {
       title: 'Acciones',
       render: (sId, row, styles) => (
         <View style={styles}>
-        <ActionButton
-          icon="info-circle"
-          handler={() => console.log('Editar', sId)}
-          color="#FFF"
-          backgroundColor="#003070"
-          text="Información"
-        />
+          <ActionButton
+            icon="info"
+            handler={() => {
+              console.log('Editar', sId);
+            }}
+            color="#FFF"
+            backgroundColor="#003070"
+            text="Información"
+            widthPercentage={0.3}
+            heightPercentage={0.035}
+          />
         </View>
       ),
     }

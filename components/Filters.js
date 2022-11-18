@@ -145,6 +145,8 @@ export const FiltersView = () => {
           backgroundColor="#003070"
           text="Filtros"
           handler={() => setModalVisible(!modalVisible)}
+          widthPercentage={0.4}
+          heightPercentage={0.04}
         />
       </View>
     </>
@@ -153,8 +155,8 @@ export const FiltersView = () => {
 
 const styles = StyleSheet.create({
   container: {
-    width: width * 0.4,
-    marginLeft: width * 0.07,
+    width: width * 0.5,
+    marginLeft: width * 0.055,
   },
   centeredView: {
     flex: 1,

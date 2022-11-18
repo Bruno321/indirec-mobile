@@ -124,5 +124,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
+    marginRight: width * 0.055,
   }
 });

@@ -73,6 +73,8 @@ export const OrderView = () => {
           backgroundColor="#003070"
           text="Ordenar"
           handler={() => setModalVisible(!modalVisible)}
+          widthPercentage={0.4}
+          heightPercentage={0.04}
         />
       </View>
     </>
