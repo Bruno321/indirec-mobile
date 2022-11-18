@@ -18,6 +18,7 @@ const Deportistas = ({navigation}) => {
     {
       title: 'Sexo',
       dataIndex: 'sexo',
+      render: s => s === 0 ? 'Masculino' : 'Femenino',
     },
     {
       title: 'Facultad',
@@ -48,7 +49,7 @@ const Deportistas = ({navigation}) => {
         <Header navigation={navigation}/>
         <Text style={{fontSize:40}}>Deportistas</Text>
         <SearchInput />
-        <View style={{ flexDirection:'row', justifyContent: 'space-between' }}>
+        <View style={{ flexDirection:'row', justifyContent: 'space-between', marginBottom: 15 }}>
           <FiltersView />
           <OrderView />
         </View>
