@@ -160,50 +160,43 @@ const Registro = () => {
 
 	const onSubmit = async (values, reset) => {
 		setLoading(true);
-		
-		console.log(values);
-		
-		// TODO: Finish this
-		// const FormData = global.FormData;
-		// let oSend = new FormData();
 
-		// for (const sKey in values) {
+		const FormData = global.FormData;
+		let oSend = new FormData();
 
-		// 	if (['fotoCardex', 'fotoIdentificacionOficial', 'foto'].includes(sKey)) {
-		// 		oSend.append(sKey, {
-		// 			uri: (Platform.OS === "android") ? values[sKey].uri : values[sKey].replace("file://", ""),
-		// 			name: values[sKey].name,
-		// 			type: values[sKey].mimeType,
-		// 		});
-		// 	} else {
-		// 		oSend.append(sKey, values[sKey]);
-		// 	}
-		// }
+		for (const sKey in values) {
 
-		// const response = await process(SAVE_WITH_FILE, 'deportistas', oSend).catch(err => {
-		// 	console.log(err);
-		// });
+			if (['fotoCardex', 'fotoIdentificacionOficial', 'foto'].includes(sKey)) {
+				oSend.append(sKey, {
+					uri: (Platform.OS === "android") ? values[sKey].uri : values[sKey].replace("file://", ""),
+					name: values[sKey].name,
+					type: values[sKey].mimeType,
+				});
+			} else {
+				oSend.append(sKey, values[sKey]);
+			}
+		}
 
-		// console.log('->', response);
+		const response = await process(SAVE_WITH_FILE, 'deportistas', oSend);
 
-		// if (response?.data?.ok) {
-		// 	Alert.alert(
-		// 		'Jugador agregado exitosamente',
-		// 		response.data.message,
-		// 		[
-		// 			{text:'Okay'},
-		// 		]
-		// 	);
-		// 	reset();
-		// } else {
-		// 	Alert.alert(
-		// 		'Oops...',
-		// 		'Algo salio mal, intenta mas tarde',
-		// 		[
-		// 			{text:'Okay'},
-		// 		]
-		// 	);
-		// }
+		if (response?.data?.ok) {
+			Alert.alert(
+				'Jugador agregado exitosamente',
+				response.data.message,
+				[
+					{text:'Okay'},
+				]
+			);
+			reset();
+		} else {
+			Alert.alert(
+				'Oops...',
+				'Algo salio mal, intenta mas tarde',
+				[
+					{text:'Okay'},
+				]
+			);
+		}
 
 		setLoading(false);
 	};
@@ -508,21 +501,9 @@ const Registro = () => {
 	)
 }
 
-
 const styles = StyleSheet.create({
 	general:{
 		backgroundColor:'white',
-	},
-	header:{
-		backgroundColor: '#003070',
-		height:height/8,
-		alignItems:'center',
-		justifyContent:'center',
-	},
-	logoTexto:{
-		width: width/2.3,
-		resizeMode: 'contain',	
-		marginTop:width/15,
 	},
 	center:{
 		alignItems:'center'
@@ -554,32 +535,9 @@ const styles = StyleSheet.create({
 		borderBottomColor:'black',
 		fontFamily:'Fredoka-Light',
 	},
-	dropdown1BtnStyle: {
-		width: '100%',
-		height: 30,
-		backgroundColor:'white',
-		borderBottomWidth: 1,
-		borderColor: 'black',
-	},
-	dropdown1BtnTxtStyle: {
-		color: 'black', 
-		textAlign: 'left',
-		fontFamily:'Fredoka-Light',
-		fontSize:14,
-	},
 	dropdown1DropdownStyle: {
 		backgroundColor: '#FFF',
 		marginTop:-1.5
-	},
-	dropdown1RowStyle: {
-		backgroundColor: '#EFEFEF', 
-		borderBottomColor: '#C5C5C5'
-	},
-	dropdown1RowTxtStyle: {
-		color: '#444', 
-		textAlign: 'left',
-		fontSize:15,
-		fontFamily:'Fredoka-Light'
 	},
 	touch:{
 		fontSize:14,
@@ -648,18 +606,6 @@ const styles = StyleSheet.create({
 		justifyContent:'center',
 		justifyContent:'space-around',
 	},
-	viewLeyenda:{
-		width:width/4.5,
-		height:height/21,
-		marginTop:6,
-		justifyContent:'center'
-	},
-	leyenda:{
-		color:'black',
-		fontSize:12,
-		fontFamily:'Fredoka-Light',
-		textAlign:'center'
-	},
 	subir:{
 		flexDirection:'row',
 		justifyContent:'center',
@@ -671,25 +617,11 @@ const styles = StyleSheet.create({
 		color:'white',
 		textAlign:'center',
 	},
-	registrarFalse:{
-		fontFamily:'Fredoka-Regular',
-		fontSize:16,
-		color:'#DEDEDE',
-		textAlign:'center',
-	},
 	viewRegistrar:{
 		width:width/1.25,
 		height:55,
 		borderRadius:10,
 		backgroundColor:'#003070',
-		justifyContent:'center',
-		overflow:'hidden',
-	},
-	viewRegistrarFalse:{
-		width:width/1.25,
-		height:55,
-		borderRadius:10,
-		backgroundColor:'#777777',
 		justifyContent:'center',
 		overflow:'hidden',
 	},
