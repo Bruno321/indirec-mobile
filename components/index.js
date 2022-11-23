@@ -3,6 +3,7 @@ export * from './AsistenciasCard';
 export * from './CustomDrawer';
 export * from './DeportistasCard';
 export * from './Filters';
+export * from './Grid.components';
 export * from './Header';
 export * from './List';
 export * from './Order';
