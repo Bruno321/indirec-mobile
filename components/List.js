@@ -101,8 +101,6 @@ const styles = StyleSheet.create({
     display: 'flex',
   },
   container:{
-    flex: 1,
-    flexDirection: 'column',
     borderBottomWidth: 1,
 		borderBottomColor:'#D9D9D9',
   },

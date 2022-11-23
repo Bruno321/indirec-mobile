@@ -9,8 +9,8 @@ export const ActionButton = ({
   handler,
   icon,
   text,
-  widthPercentage,
-  heightPercentage,
+  widthPercentage = 0.8,
+  heightPercentage = 0.05,
   style = {},
 }) => {
   return (
