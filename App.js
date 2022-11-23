@@ -1,35 +1,30 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { CustomDrawer } from './components/CustomDrawer';
+import { LoginContext } from './Context/LoginContext';
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import {CustomDrawer} from './components/CustomDrawer';
-import {FontAwesome, AntDesign} from 'react-native-vector-icons';
-import Ionicons from 'react-native-vector-icons/Ionicons'
-// import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {LoginContext} from './Context/LoginContext';
-import sports from './assets/icons/clock.png'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Login from './Screens/Login';
-import Home from './Screens/Home';
-import Registro from './Screens/Registro';
-import Deportistas from './Screens/Deportistas';
-import Asistencias from './Screens/Asistencias';
+import {
+  Login,
+  Home,
+  Registro,
+  Deportistas,
+  Asistencias,
+  DeportistaDetails
+} from './Screens/index';
 
-
-const Stack = createStackNavigator();
 SplashScreen.preventAutoHideAsync();
-
 
 export default function App() {
   // Para saber cuando las fuentes hayan cargado y ocultar la pantalla de carga
   const [appIsReady, setAppIsReady] = useState(false);
-
-   
- 
   const [isAuth,setIsAuth] = useState(false)
+  const Drawer = createDrawerNavigator();
+  const Stack = createStackNavigator();
 
   const loginContext = {
     iniciarSesion: async (token) => {
@@ -64,7 +59,6 @@ export default function App() {
       } finally {
         setAppIsReady(true);
       }
-    
     }
     prepare();
   }, []);
@@ -78,55 +72,61 @@ export default function App() {
   }, [appIsReady]);
 
   if (!appIsReady) return null;
-  
 
-  const Drawer = createDrawerNavigator();
+  const SideDrawer = () => {
+    return(
+      <Drawer.Navigator
+        drawerContent={props => <CustomDrawer {...props}/>}
+        screenOptions={{ 
+          headerShown: false,
+          drawerLabelStyle: {marginLeft: -15, color: '#fff'}
+        }}
+      >
+          <Drawer.Screen name="Deportistas" component={Deportistas} 
+            options={{
+              drawerIcon: () => <Image source={require('./assets/icons/sports.png')}/>,
+              title: 'Deportistas'
+            }}
+          />
+          <Drawer.Screen name="Asistencias" component={Asistencias} 
+            options={{
+              drawerIcon: () => <Image source={require('./assets/icons/clock.png')}/>,
+              title: 'Asistencias'
+            }}
+          />
+          <Drawer.Screen name="Registro" component ={Registro} 
+            options={{
+              drawerIcon: () => <Image source={require('./assets/icons/register.png')}/>,
+              title: 'Registrar deportista'
+            }}
+          />
+          <Drawer.Screen name="Home" component={Home} 
+            options={{
+              drawerIcon: () => <Image source={require('./assets/icons/list.png')}/>,
+              title: 'Pase de lista'
+            }}
+          />
+      </Drawer.Navigator>
+    );
+  };
 
   return (
     // AuthContext es importado desde context.js, authContext utiliza useMemo
     <LoginContext.Provider value={loginContext}>
       {/* Cuando carga NavigationContainer, llama la función onLayoutRootView*/}
       <NavigationContainer onReady={onLayoutRootView}>
-        { isAuth ===true ? ( // Si hay un token guardado
-          <Drawer.Navigator
-            drawerContent={props => <CustomDrawer {...props}/>}
-            screenOptions={{ 
-              headerShown: false,
-              drawerLabelStyle: {marginLeft: -15, color: '#fff'}
-            }}
-          >
-              <Drawer.Screen name="Deportistas" component={Deportistas} 
-                options={{
-                  drawerIcon: () => <Image source={require('./assets/icons/sports.png')}/>,
-                  title: 'Deportistas'
-                }}
-              />
-              <Drawer.Screen name="Asistencias" component={Asistencias} 
-                options={{
-                  drawerIcon: () => <Image source={require('./assets/icons/clock.png')}/>,
-                  title: 'Asistencias'
-                }}
-              />
-              <Drawer.Screen name="Registro" component ={Registro} 
-                options={{
-                  drawerIcon: () => <Image source={require('./assets/icons/register.png')}/>,
-                  title: 'Registrar deportista'
-                }}
-              />
-              <Drawer.Screen name="Home" component={Home} 
-                options={{
-                  drawerIcon: () => <Image source={require('./assets/icons/list.png')}/>,
-                  title: 'Pase de lista'
-                }}
-              />
-          </Drawer.Navigator>
-        )
-        : // Si no hay un token guardado
-          <Stack.Navigator screenOptions={{ headerShown: false }} >
-            <Stack.Screen name="Login" component ={Login} />
-          </Stack.Navigator>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+
+        { isAuth ? 
+          <>
+            <Stack.Screen name="drawer" component={SideDrawer}/> 
+            <Stack.Screen name="Deportista.details" component={DeportistaDetails}/> 
+          </>
+        : 
+          <Stack.Screen name="Login" component={Login}/>
         }
+        </Stack.Navigator>
       </NavigationContainer>
     </LoginContext.Provider>
   );
-}
+};
