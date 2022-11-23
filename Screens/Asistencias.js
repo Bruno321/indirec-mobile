@@ -5,7 +5,7 @@ import { useFetchData } from '../Hooks/Fetch.hook';
 import moment from "moment/moment";
 import 'moment/locale/es';
 
-const Asistencias = ({navigation}) => {
+export const Asistencias = ({navigation}) => {
 	const [testData, setTestData] = useState([]);
 	const [asistencias, loading] = useFetchData('deportistas/asistencias');
 
@@ -88,5 +88,3 @@ const Asistencias = ({navigation}) => {
 			</View>
     )
 }
-
-export default Asistencias;

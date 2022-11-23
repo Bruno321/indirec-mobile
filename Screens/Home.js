@@ -9,7 +9,7 @@ import moment from 'moment/moment';
 import axios from 'axios';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Home() {
+export const  Home = ()  => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [dataScaneo, setDataScaneo] = useState({});
@@ -195,7 +195,7 @@ export default function Home() {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

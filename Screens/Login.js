@@ -25,7 +25,7 @@ const oInitState = {
   isValidPassword:true
 };
 
-export default function Login() {
+export const Login = () => {
   const [data, setData] = useState(oInitState);
   const [loading, setLoading] = useState(false);
   const { iniciarSesion } = useContext(LoginContext);
@@ -145,7 +145,7 @@ export default function Login() {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

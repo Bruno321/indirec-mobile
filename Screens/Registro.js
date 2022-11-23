@@ -91,7 +91,7 @@ const validationSchema = yup.object().shape({
 	foto: yup.mixed().required('La foto es requerida'),
 });
 
-const Registro = () => {
+export const Registro = () => {
 	const [kardex, setKardex] = useState(filePickerText);
 	const [identificacion, setIdentificacion] = useState(filePickerText);
 	const [foto, setFoto] = useState(filePickerText);
@@ -697,5 +697,3 @@ const styles = StyleSheet.create({
 		textAlign:'center',
 	},
 });
-
-export default Registro;
