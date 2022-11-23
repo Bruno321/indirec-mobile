@@ -2,7 +2,7 @@ import { View, Text} from "react-native";
 import { ActionButton, FiltersView, Header, List, OrderView, SearchInput } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 
-const Deportistas = ({navigation}) => {
+const Deportistas = ({ navigation }) => {
   const [deportistas, loading] = useFetchData('deportistas');
 
   const columns = [
@@ -32,7 +32,8 @@ const Deportistas = ({navigation}) => {
           <ActionButton
             icon="info"
             handler={() => {
-              console.log('Editar', sId);
+              console.log(row);
+              navigation.navigate('Deportista.details', { data: row });
             }}
             color="#FFF"
             backgroundColor="#003070"
