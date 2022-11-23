@@ -54,10 +54,11 @@ export async function login (email, password) {
     case FIND:
       return await API.get(`${BASEPATH}/${model}`, oAuth);
     case SAVE:
-      return await API.post(`${BASEPATH}/${model}`, payload);
+      return await API.post(`${BASEPATH}/${model}`, payload, oAuth);
     case SAVE_WITH_FILE:
       return await API.post(`${BASEPATH}/${model}`, payload, {
         headers: {
+          ...oAuth.headers,
           'Content-Type': 'multipart/form-data',
         },
         transformRequest: data => {
@@ -65,9 +66,9 @@ export async function login (email, password) {
       },
       });
     case UPDATE:
-      return await API.patch(`${BASEPATH}/${model}/${id}`, payload);
+      return await API.patch(`${BASEPATH}/${model}/${id}`, payload, oAuth);
     case DELETE:
-      return await API.delete(`${BASEPATH}/${model}/${id}`, null);
+      return await API.delete(`${BASEPATH}/${model}/${id}`, oAuth);
     default:
       return null;
   }
