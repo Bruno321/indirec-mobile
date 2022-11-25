@@ -71,7 +71,7 @@ const Item = ({item}, columns) => {
   );
 }
 
-export const List = ({ dataSource, columns, loading }) => {
+export const List = ({ dataSource, columns, loading, renderItem }) => {
   return loading ? (
     <View style={styles.fetchingContainer}>      
       <ActivityIndicator color="#0000ff"/>
@@ -81,7 +81,7 @@ export const List = ({ dataSource, columns, loading }) => {
       <View>
         <FlatList 
           data={dataSource}
-          renderItem={row => Item(row, columns)}
+          renderItem={row => renderItem !== undefined ? renderItem(row.item) : Item(row, columns)}
         />
       </View>
     ) : (

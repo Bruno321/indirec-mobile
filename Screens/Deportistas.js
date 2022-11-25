@@ -1,5 +1,5 @@
 import { View, Text} from "react-native";
-import { ActionButton, FiltersView, Header, List, OrderView, SearchInput } from '../components';
+import { ActionButton, DeportistasCard ,FiltersView, Header, List, OrderView, SearchInput } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 
 export const Deportistas = ({ navigation }) => {
@@ -53,7 +53,13 @@ export const Deportistas = ({ navigation }) => {
           <FiltersView />
           <OrderView />
         </View>
+        {/* You can choose between the following options to show the data: */}
+
+        {/* USING COLUMNS ARRAY */}
         <List dataSource={deportistas} columns={columns} loading={loading} />
+
+        {/* USING CUSTOM RENDER */}
+        {/* <List dataSource={deportistas} renderItem={row => <DeportistasCard props={row} />} loading={loading} /> */}
       </View>
     )
 };

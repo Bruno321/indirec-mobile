@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Image, Text, View } from "react-native";
-import { ActionButton, FiltersView, Header, List, OrderView, SearchInput } from '../components';
+import { ActionButton, AsistenciasCard, FiltersView, Header, List, OrderView, SearchInput } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 import moment from "moment/moment";
 import 'moment/locale/es';
@@ -84,7 +84,15 @@ export const Asistencias = ({navigation}) => {
             heightPercentage={0.04}
           />
         </View>
+
+        {/* You can choose between the following options to show the data: */}
+
+        {/* USING COLUMNS ARRAY */}
 				<List dataSource={asistencias.length ? asistencias : testData} columns={columns} loading={loading} />
+
+        {/* USING CUSTOM RENDER */}
+        {/* <List dataSource={asistencias.length ? asistencias : testData} renderItem={row => <AsistenciasCard props={row} />} loading={loading} /> */}
+
 			</View>
     )
 }
