@@ -15,7 +15,7 @@ import {
   Deportistas,
   Asistencias,
   DeportistaDetails,
-  Equipos
+  RegistroEquipos
 } from './Screens/index';
 
 SplashScreen.preventAutoHideAsync();
@@ -83,16 +83,16 @@ export default function App() {
           drawerLabelStyle: {marginLeft: -15, color: '#fff'}
         }}
       >
-          <Drawer.Screen name="Equipos" component={Equipos} 
-            options={{
-              drawerIcon: () => <Image source={require('./assets/icons/sports.png')}/>,
-              title: 'Equipos'
-            }}
-          />
           <Drawer.Screen name="Deportistas" component={Deportistas} 
             options={{
               drawerIcon: () => <Image source={require('./assets/icons/sports.png')}/>,
               title: 'Deportistas'
+            }}
+          />
+          <Drawer.Screen name="RegistroEquipos" component={RegistroEquipos} 
+            options={{
+              drawerIcon: () => <Image source={require('./assets/icons/sports.png')}/>,
+              title: 'Registrar Equipos'
             }}
           />
           <Drawer.Screen name="Asistencias" component={Asistencias} 

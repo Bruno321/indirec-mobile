@@ -9,7 +9,7 @@ import TouchableCmp from '../assetsUI/TouchableCmp';
 import RadioButtonRN from 'radio-buttons-react-native';
 
 
-export const Equipos = () => {
+export const RegistroEquipos = () => {
 	const onInitialState ={
 		nombreEquipo: '',
 		deporte:'Selecciona un deporte',
