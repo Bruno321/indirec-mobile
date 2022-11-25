@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
 import { Dimensions, Image, View, StyleSheet, Text } from 'react-native';
 import { ActionButton, Col, Header, Row } from '../components';
+import { REACT_APP_API_URL } from '@env';
+import { BASEPATH } from '../Service/Api';
 
 const { width, height } = Dimensions.get('window');       
 
@@ -11,7 +12,8 @@ const LargeText = ({ children, style = {} }) => {
 };
 
 export const DeportistaDetails = ({ navigation, route }) => {
-  const { data } = route.params;
+  const { data } = route.params,
+    profilePicture = data.foto ? { uri: `${REACT_APP_API_URL}${BASEPATH}/${data.foto}` } : require('../images/ImagenEjemploDeportista.jpg');
 
   return (
       <View>
@@ -20,7 +22,7 @@ export const DeportistaDetails = ({ navigation, route }) => {
           <Row>
 
             <Col>
-              <Image source={require('../images/ImagenEjemploDeportista.jpg')} style={styles.profilePicture}/>
+              <Image source={profilePicture} style={styles.profilePicture}/>
             </Col>
             <Col>
               <View style={{ marginBottom: '25%' }}>
@@ -79,7 +81,7 @@ export const DeportistaDetails = ({ navigation, route }) => {
 
             <Col>
               <LargeText style={styles.boldText}>No. Jugador</LargeText>
-              <LargeText>{data?.jugadorSeleccionado ? data.jugadorSeleccionado : 'No aplica'}</LargeText>
+              <LargeText>{data?.numJugador}</LargeText>
             </Col>
 
           </Row>
