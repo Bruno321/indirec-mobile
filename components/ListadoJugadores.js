@@ -31,7 +31,7 @@ const ListadoJugadores = () => {
         { "id": "45", "nombre": "dummy45", "sel": false },
     ];
     const [myList, setMyList] = useState(initialList);
-    const [mySeleccionadosList, setmySeleccionadosList] = useState({});
+    const [mySeleccionadosList, setmySeleccionadosList] = useState([]);
     function actualizarListaSeleccion(value, value2) {
         const myNextList = [...myList];
         const seleccionar = myNextList.find(
@@ -49,13 +49,13 @@ const ListadoJugadores = () => {
 
     const limpiarLista = () => {
         const myNextList = [...myList];
-        console.log(myNextList);
+        // console.log(myNextList);
         const limpiados = myNextList;
-        console.log("LIMPIADOS> " + JSON.stringify(limpiados));
+        // console.log("LIMPIADOS> " + JSON.stringify(limpiados));
         for (let i = 0; i < limpiados.length; i++) {
             limpiados[i].sel = false;
         }
-        console.log("LIMPIADOS> " + JSON.stringify(limpiados));
+        // console.log("LIMPIADOS> " + JSON.stringify(limpiados));
         setMyList(myNextList);
         const myNextSeleccionadosList = [];
         myNextList.find(
@@ -65,60 +65,44 @@ const ListadoJugadores = () => {
     }
 
     const cargarEquipoSeleccionado = (props) => {
-        var output = [];
-        for (let i = 0; i < props.length; i++) {
-                var tempItem = (
-                    <View style={styles.ViewJugador}>
-                        <View style={styles.celda3a}>
-                            <Text style={styles.celda3y4Texta} numberOfLines={1}>{props[i].id}</Text>
-                        </View>
-                        <View style={styles.celda4a}>
-                            <Text style={styles.celda3y4Texta} numberOfLines={2}>{props[i].nombre}</Text>
-                        </View>
-                    </View>
-                )
-                output[i] = (tempItem);
-        }
-        return (
-            <View>
-                {output}
+        return(
+        props.map(x=>
+            // <Text>hola</Text>
+        <View key={x.id+"SelView1"} style={styles.ViewJugador}>
+            <View key={x.id+"SelView2"} style={styles.celda3a}>
+                <Text key={x.id+"SelText1"} style={styles.celda3y4Texta} numberOfLines={1}>{x.id}</Text>
             </View>
-        )
-    }
-    const cargarEquipoCompleto = (props) => {
-        var output = [];
-        for (let i = 0; i < props.length; i++) {
-            var tempItem = (
-                <View key={i} style={styles.ViewJugador}>
-                    <View style={props[i].sel == false ? styles.celda3a : styles.celda3b}>
-                        <Text style={props[i].sel == false ? styles.celda3y4Texta : styles.celda3y4Textb} numberOfLines={1}>{props[i].id}</Text>
-                    </View>
-                    <View style={props[i].sel == false ? styles.celda4a : styles.celda4b}>
-                        <Text style={props[i].sel == false ? styles.celda3y4Texta : styles.celda3y4Textb} numberOfLines={2}>{props[i].nombre}</Text>
-                    </View>
-                    {/* {props[i].sel == false ?} */}
-                    <TouchableCmp onPress={() => actualizarListaSeleccion(props[i].id, true)}>
-                        <View style={props[i].sel == false ? styles.celda5a : styles.celda5b}>
-                            <FontAwesome name='plus-square-o' size={25} color={props[i].sel == false ?'#003070' : "#888"} />
-                            <Text style={props[i].sel == false ? styles.celda3y4Texta : styles.celda3y4Textb} numberOfLines={1}>Añadir</Text>
-                        </View>
-                    </TouchableCmp>
-                    <TouchableCmp onPress={() => actualizarListaSeleccion(props[i].id, false)}>
-                        <View style={props[i].sel == false ? styles.celda6a : styles.celda6b}>
-                            <FontAwesome name='trash-o' size={25} color={props[i].sel == false ?'#BBB' : "#C0392B"} />
-                        </View>
-                    </TouchableCmp>
-                </View>
-            )
-            output[i] = (tempItem);
-        }
-        return (
-            <ScrollView>
-                {output}
-            </ScrollView>
-        )
+            <View key={x.id+"SelView3"} style={styles.celda4a}>
+                <Text key={x.id+"SelText2"} style={styles.celda3y4Texta} numberOfLines={2}>{x.nombre}</Text>
+            </View>
+        </View>
+        ))
     }
 
+    const cargarEquipoCompleto = (props) => {
+        // console.log(props);
+        return(
+        props.map(x=>
+        <View key={x.id+"view1"} style={styles.ViewJugador}>
+            <View key={x.id+"view2"} style={x.sel == false ? styles.celda3a : styles.celda3b}>
+                <Text key={x.id+"text1"} style={x.sel == false ? styles.celda3y4Texta : styles.celda3y4Textb} numberOfLines={1}>{x.id}</Text>
+            </View>
+            <View key={x.id+"view3"} style={x.sel == false ? styles.celda4a : styles.celda4b}>
+               <Text key={x.id+"text2"} style={x.sel == false ? styles.celda3y4Texta : styles.celda3y4Textb} numberOfLines={2}>{x.nombre}</Text>
+           </View>
+           <TouchableCmp key={x.id+"touchable1"} onPress={() => actualizarListaSeleccion(x.id, true)}>
+               <View key={x.id+"view4"} style={x.sel == false ? styles.celda5a : styles.celda5b}>
+                   <FontAwesome key={x.id+"icon1"} name='plus-square-o' size={25} color={x.sel == false ?'#003070' : "#888"} />
+                   <Text key={x.id+"text3"} style={x.sel == false ? styles.celda3y4Texta : styles.celda3y4Textb} numberOfLines={1}>Añadir</Text>
+               </View>
+           </TouchableCmp>
+           <TouchableCmp key={x.id+"touchable2"} onPress={() => actualizarListaSeleccion(x.id, false)}>
+               <View key={x.id+"view5"} style={x.sel == false ? styles.celda6a : styles.celda6b}>
+                   <FontAwesome key={x.id+"icon2"} name='trash-o' size={25} color={x.sel == false ?'#BBB' : "#C0392B"} />
+               </View>
+           </TouchableCmp> 
+       </View>
+    ))}
     return (
         <>
             <View style={styles.View}>
@@ -184,11 +168,10 @@ const ListadoJugadores = () => {
                                 {/* <Text style={styles.celda1y2Text}>Nombre Completo</Text> */}
                             </View>
                         </View>
-                        {cargarEquipoCompleto(myList)}
+                        <ScrollView>
+                            {cargarEquipoCompleto(myList)}
+                        </ScrollView>
                     </View>
-                    {/* <View style={styles.ModalView3}>
-                        <Button title={"IMPRIMIR LISTA"} onPress={() => console.log("LISTA IMPRESA > " + JSON.stringify(myList) + "\nTypeof > " + typeof JSON.stringify(myList))} />
-                    </View> */}
                 </View>
             </Modal>
         </>
@@ -234,10 +217,11 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
     ViewJugador: {
-        // backgroundColor: '#EEE',
+        // backgroundColor: '#0F0',
         flexDirection: 'row',
         borderTopWidth: 1,
         borderTopColor: "#C0C0C0",
+        // marginBottom: 50,
     },
     celda3a: {
         backgroundColor: '#FFF',
