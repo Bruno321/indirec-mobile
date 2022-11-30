@@ -5,7 +5,6 @@ import { EquiposCard } from "../components/EquiposCard";
 
 export const Equipos = ({ navigation,props }) => {
 	const [equipos, loading] = useFetchData('equipos');
-	console.log(equipos.nombre)
 	var columns =[
 		{
 			id:1,
@@ -53,9 +52,9 @@ export const Equipos = ({ navigation,props }) => {
 			</View>
 			<View style={styles.cartas} showsVerticalScrollIndicator={false}>
 				<FlatList 
-					data={columns}
+					data={equipos}
 					showsVerticalScrollIndicator={false}
-					keyExtractor={item => item.id.toString()}
+					keyExtractor={item => item.equipoId.toString()}
 					renderItem= {itemData => (
 						<EquiposCard {...props} Info={itemData.item}/>
 					)}

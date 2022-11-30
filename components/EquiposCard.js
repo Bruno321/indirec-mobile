@@ -22,13 +22,17 @@ export const EquiposCard = (props) => {
                         <Text style={styles.dep} numberOfLines={1}>{props.Info.deporte}</Text>
                     </View>
                     <View style={styles.detalles}>
-                        <Text style={styles.fac} numberOfLines={2}>{props.Info.fac}</Text>
-                        <Text style={styles.camp} numberOfLines={1}>{props.Info.camp}</Text>
+                        <Text style={styles.fac} numberOfLines={2}>{props.Info.facultad}</Text>
+                        <Text style={styles.camp} numberOfLines={1}>{props.Info.campus}</Text>
                     </View>
                 </View>
                 <View style={styles.segunda}>
                     <View style={styles.textoSegunda}>
-                        <Text style={styles.sex} numberOfLines={1}>{props.Info.sex}</Text>
+                        {props.Info.sex==0?
+                            <Text style={styles.sex} numberOfLines={1}>Femenil</Text>
+                            :
+                            <Text style={styles.sex} numberOfLines={1}>Varoníl</Text>
+                        }
                     </View>
                     <View style={styles.viewTouch}>
                         <TouchableCmp>
