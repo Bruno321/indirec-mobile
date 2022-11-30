@@ -15,7 +15,8 @@ import {
   Deportistas,
   Asistencias,
   DeportistaDetails,
-  RegistroEquipos
+  RegistroEquipos,
+  Equipos
 } from './Screens/index';
 
 SplashScreen.preventAutoHideAsync();
@@ -111,6 +112,12 @@ export default function App() {
             options={{
               drawerIcon: () => <Image source={require('./assets/icons/list.png')}/>,
               title: 'Pase de lista'
+            }}
+          />
+          <Drawer.Screen name="Equipos" component={Equipos} 
+            options={{
+              drawerIcon: () => <Image source={require('./assets/icons/list.png')}/>,
+              title: 'Equipos'
             }}
           />
       </Drawer.Navigator>
