@@ -2,6 +2,7 @@ export * from './ActionButton';
 export * from './AsistenciasCard';
 export * from './CustomDrawer';
 export * from './DeportistasCard';
+export * from './EquiposCard';
 export * from './Filters';
 export * from './Grid.components';
 export * from './Header';

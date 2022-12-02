@@ -1,58 +1,56 @@
-import { View, Text, StyleSheet} from "react-native";
-import { Feather } from 'react-native-vector-icons';
-import TouchableCmp from "../assetsUI/TouchableCmp";
+import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
+import { ActionButton } from './ActionButton';
 import MarqueeText from 'react-native-marquee';
 
+export const EquiposCard = ({props}) => {
+    const { fontScale } = useWindowDimensions();
+    const styles = makeStyles(fontScale);
 
-export const EquiposCard = (props) => {
     return (
         <View style={{paddingLeft:0}}>
             <View style={styles.card}>
                 <View style={styles.primera}>
                     <View style={styles.detalles}>
                         <MarqueeText
-                            style={{ fontSize: 25, fontWeight:'700' }}
+                            style={{ fontSize: 25 / fontScale, fontWeight:'700' }}
                             speed={0.1}
                             marqueeOnStart={true}
                             loop={true}
                             delay={2000}
-                            >
-                                {props.Info.nombre}
+                        >
+                            {props.nombre}
                         </MarqueeText>
-                        <Text style={styles.dep} numberOfLines={1}>{props.Info.deporte}</Text>
+                        <Text style={styles.dep} numberOfLines={1}>{props.deporte}</Text>
                     </View>
                     <View style={styles.detalles}>
-                        <Text style={styles.fac} numberOfLines={2}>{props.Info.facultad}</Text>
-                        <Text style={styles.camp} numberOfLines={1}>{props.Info.campus}</Text>
+                        <Text style={styles.fac} numberOfLines={2}>{props.facultad}</Text>
+                        <Text style={styles.camp} numberOfLines={1}>{props.campus}</Text>
                     </View>
                 </View>
                 <View style={styles.segunda}>
                     <View style={styles.textoSegunda}>
-                        {props.Info.sex==0?
-                            <Text style={styles.sex} numberOfLines={1}>Femenil</Text>
-                            :
-                            <Text style={styles.sex} numberOfLines={1}>Varoníl</Text>
-                        }
+                        <Text style={styles.sex} numberOfLines={1}>{props.sexo ? "Femenil" : "Varoníl"}</Text>
                     </View>
                     <View style={styles.viewTouch}>
-                        <TouchableCmp>
-                            <View style={styles.btnInfo}>
-                                <Feather name={"info"} color={'white'} size={20}/>
-                                <Text style={styles.info}>Información</Text>
-                            </View>
-                        </TouchableCmp>
+                        <ActionButton
+                            icon="info"
+                            color="#FFF"
+                            backgroundColor="#003070"
+                            text="Información"
+                            widthPercentage={0.3}
+                            heightPercentage={0.035}
+                        />
                     </View>
                 </View>
             </View>
         </View>
-      )
-}
+    );
+};
 
-const styles = StyleSheet.create({ 
+const makeStyles = fontScale => StyleSheet.create({ 
     card:{
         height:150,
         width:'100%',
-        //backgroundColor:'red',
         borderBottomWidth:1,
         borderColor:'#DDDDDD',
         paddingBottom:20,
@@ -61,7 +59,8 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'space-between',
         overflow:'hidden'
-    },btnInfo:{
+    },
+    btnInfo:{
         flexDirection:'row',
         backgroundColor: '#003070',
         width:'100%',
@@ -75,17 +74,15 @@ const styles = StyleSheet.create({
         justifyContent:'space-between',
     },
     nom:{
-        //fontFamily:'Fredoka-Bold',
-        fontSize:25,
+        fontSize:25 / fontScale,
         fontWeight:'700'
     },
     dep:{
-        //fontFamily:'Fredoka-Bold',
-        fontSize:20,
+        fontSize:20 / fontScale,
         fontWeight:'600'
     },
     sex:{
-        fontSize:16,
+        fontSize:16 / fontScale,
         fontWeight:'900'
     },
     info:{
@@ -100,12 +97,9 @@ const styles = StyleSheet.create({
         height:30
     },
     viewTouch:{
-        width:140,
-        borderRadius:10,
         overflow:'hidden'
     },
     detalles:{
-        width:180,
         overflow:'hidden',
     }
 })
