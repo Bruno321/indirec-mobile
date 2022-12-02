@@ -2,8 +2,9 @@ import { View, Text, StyleSheet, ScrollView,FlatList } from "react-native";
 import { EquiposCard , FiltersView, Header, List, OrderView, SearchInput } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 
-export const Equipos = ({ navigation,props }) => {
+export const Equipos = ({ navigation }) => {
 	const [equipos, loading] = useFetchData('equipos');
+
 	return (
 		<View style={styles.container}>
 			<Header navigation={navigation} />
@@ -28,8 +29,8 @@ export const Equipos = ({ navigation,props }) => {
 
 const styles = StyleSheet.create({
 	container:{
-		backgroundColor:'white',
-		marginBottom: '65%'
+		backgroundColor:'#FFF',
+		height: '95%',
 	},
 	cartas:{
 		marginTop:40,

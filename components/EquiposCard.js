@@ -49,6 +49,7 @@ export const EquiposCard = ({props}) => {
 
 const makeStyles = fontScale => StyleSheet.create({ 
     card:{
+        backgroundColor:'#FFF',
         height:150,
         width:'100%',
         borderBottomWidth:1,
