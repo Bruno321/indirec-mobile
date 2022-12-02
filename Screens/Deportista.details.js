@@ -9,7 +9,7 @@ const LargeText = ({ children, style = {} }) => {
   const { fontScale } = useWindowDimensions();
 
   return (
-    <Text style={{ fontSize: height * 0.02 / fontScale, ...style }}>{children}</Text>
+    <Text style={{ fontSize: width * 0.038 / fontScale, ...style }}>{children}</Text>
   );
 };
 
@@ -149,6 +149,8 @@ const styles = StyleSheet.create({
   centeredView: {
     display: 'flex',
     marginTop: height * 0.025,
+    height: height * 0.5,
+    // backgroundColor: '#000',
   },
   boldText: {
     fontWeight: 'bold',

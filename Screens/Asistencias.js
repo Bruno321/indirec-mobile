@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Image, Text, View } from "react-native";
+import { Image, Text, View, useWindowDimensions } from "react-native";
 import { ActionButton, AsistenciasCard, FiltersView, Header, List, OrderView, SearchInput } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 import moment from "moment/moment";
@@ -8,6 +8,7 @@ import 'moment/locale/es';
 export const Asistencias = ({navigation}) => {
 	const [testData, setTestData] = useState([]);
 	const [asistencias, loading] = useFetchData('deportistas/asistencias');
+  const { fontScale } = useWindowDimensions();
 
 	// ? Testing purposes
 	useEffect(() => {
@@ -64,9 +65,9 @@ export const Asistencias = ({navigation}) => {
     }
   ];
     return(
-			<View>
+			<View style={{ flex:1, marginBottom: '65%' }}>
 				<Header navigation={navigation}/>
-				<Text style={{fontSize:40}}>Asistencias</Text>
+				<Text style={{ fontSize: 35 / fontScale }}>Asistencias</Text>
         <SearchInput />
         <View style={{ flexDirection:'row', justifyContent: 'space-between' }}>
           <FiltersView />

@@ -1,9 +1,10 @@
-import { View, Text} from "react-native";
+import { Text, View, useWindowDimensions } from "react-native";
 import { ActionButton, DeportistasCard ,FiltersView, Header, List, OrderView, SearchInput } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 
 export const Deportistas = ({ navigation }) => {
   const [deportistas, loading] = useFetchData('deportistas');
+  const { fontScale } = useWindowDimensions();
 
   const columns = [
     {
@@ -45,9 +46,9 @@ export const Deportistas = ({ navigation }) => {
     }
   ];
     return (
-      <View>
+      <View style={{ flex:1, marginBottom: '65%' }}>
         <Header navigation={navigation}/>
-        <Text style={{fontSize:40}}>Deportistas</Text>
+        <Text style={{ fontSize: 35 / fontScale }}>Deportistas</Text>
         <SearchInput />
         <View style={{ flexDirection:'row', justifyContent: 'space-between', marginBottom: 15 }}>
           <FiltersView />
