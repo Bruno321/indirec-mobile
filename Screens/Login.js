@@ -58,7 +58,7 @@ export const Login = () => {
         setLoading(true);
         const response = await login(email, password)
           .catch(error => {
-            console.log(error);
+            console.log(error.response);
           });
 
         if (response?.data?.ok) {

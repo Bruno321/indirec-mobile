@@ -1,7 +1,8 @@
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
-const { width, height } = Dimensions.get('window');
+import { Dimensions, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import TouchableCmp from '../assetsUI/TouchableCmp';
+
+const { width, height } = Dimensions.get('window');
 
 export const ActionButton = ({
   backgroundColor,
@@ -13,6 +14,7 @@ export const ActionButton = ({
   heightPercentage = 0.05,
   style = {},
 }) => {
+  const { fontScale } = useWindowDimensions();
   return (
     <TouchableCmp onPress={handler}>
       <View style={{ 
@@ -28,7 +30,7 @@ export const ActionButton = ({
         icon
       )}
       {text !== undefined && text !== '' ? (
-        <Text style={{color, fontSize: 20, marginLeft: 10}}>{ text }</Text>
+        <Text style={{color, fontSize: 15 /  fontScale, marginLeft: 10}}>{ text }</Text>
       ) : null}
       </View>
     </TouchableCmp>
