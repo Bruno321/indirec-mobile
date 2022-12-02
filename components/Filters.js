@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Dimensions, Modal, View, StyleSheet, Pressable, Text } from 'react-native';
+import { Dimensions, Modal, View, StyleSheet, Pressable, Text, useWindowDimensions } from 'react-native';
 import { aFacultities } from '../Utils/Constants';
 import { ActionButton } from './ActionButton';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -36,6 +36,9 @@ export const FiltersView = () => {
     }))
   ];
 
+  const { fontScale } = useWindowDimensions();
+  const styles = makeStyles(fontScale);
+
   //TODO: Generate queries based on search object
   const handleQueries = (name, { value }) => {
     setSearch({
@@ -62,7 +65,7 @@ export const FiltersView = () => {
           <View style={styles.modalView}>
 
             <View style={styles.rowOption}>
-              <Text style={{ fontSize: width * 0.07 }}>Filtrar por:</Text>
+              <Text style={{ fontSize: width * 0.06 / fontScale }}>Filtrar por:</Text>
             </View>
 
             {/* ITEMS */}
@@ -73,6 +76,9 @@ export const FiltersView = () => {
                 labelField="label"
                 valueField="value"
                 placeholder='Todos'
+                placeholderStyle={styles.dropdown_text}
+                selectedTextStyle={styles.dropdown_text}
+                itemTextStyle={styles.dropdown_text}
                 style={styles.dropdown}
                 containerStyle={styles.dropdown}
                 onChange={value => {
@@ -90,6 +96,9 @@ export const FiltersView = () => {
                 labelField="label"
                 valueField="value"
                 placeholder='Todos'
+                placeholderStyle={styles.dropdown_text}
+                selectedTextStyle={styles.dropdown_text}
+                itemTextStyle={styles.dropdown_text}
                 style={styles.dropdown}
                 containerStyle={styles.dropdown}
                 onChange={value => {
@@ -106,6 +115,9 @@ export const FiltersView = () => {
                 labelField="label"
                 valueField="value"
                 placeholder='Todas'
+                placeholderStyle={styles.dropdown_text}
+                selectedTextStyle={styles.dropdown_text}
+                itemTextStyle={styles.dropdown_text}
                 style={styles.dropdown}
                 containerStyle={styles.dropdown}
                 onChange={value => {
@@ -123,7 +135,7 @@ export const FiltersView = () => {
                   setModalVisible(!modalVisible)
                 }}
               >
-                <Text style={styles.textStyle}>Aplicar Filtros</Text>
+                <Text style={styles.textStyle}>Filtrar</Text>
               </Pressable>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
@@ -153,7 +165,7 @@ export const FiltersView = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = fontScale => StyleSheet.create({
   container: {
     width: width * 0.5,
     marginLeft: width * 0.055,
@@ -184,6 +196,7 @@ const styles = StyleSheet.create({
     width: width * 0.4,
     flexDirection: 'row',
     justifyContent: 'space-around',
+    marginTop: '2%',
   },
   button: {
     borderRadius: 10,
@@ -202,10 +215,12 @@ const styles = StyleSheet.create({
   textStyle: {
     color: "white",
     fontWeight: "bold",
-    textAlign: "center"
+    textAlign: "center",
+    fontSize: width * 0.03/ fontScale,
   },
   modalText: {
-    fontSize: width * 0.05,
+    fontSize: width * 0.035 / fontScale,
+    // fontSize: width * 0.05 / fontScale,
   },
   rowOption: {
     width: width * 0.7,
@@ -216,5 +231,9 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     width: width * 0.4,
+    fontSize: width * 0.035 / fontScale,
+  },
+  dropdown_text : {
+    fontSize: width * 0.035 / fontScale,
   }
 });

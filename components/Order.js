@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Dimensions, Modal, View, StyleSheet, Pressable, Text } from 'react-native';
+import { Dimensions, Modal, View, StyleSheet, Pressable, Text, useWindowDimensions } from 'react-native';
 import { ActionButton } from './ActionButton';
 import { RadioButton } from 'react-native-paper';
 
@@ -10,6 +10,9 @@ const aOptions = ['Predeterminado', 'Nombre [Z-A]','Fecha Agregado [Nuevos-antig
 export const OrderView = () => {
   const [checked, setChecked] = useState(aOptions[0]);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const { fontScale } = useWindowDimensions();
+  const styles = makeStyles(fontScale);
 
   // useEffect(() => {
   //   console.log(checked);
@@ -29,7 +32,7 @@ export const OrderView = () => {
           <View style={styles.modalView}>
 
           <View style={styles.rowOption}>
-            <Text style={{ fontSize: width * 0.07 }}>Ordenar por:</Text>
+            <Text style={{ fontSize: width * 0.06 / fontScale }}>Ordenar por:</Text>
           </View>
 
           {/* ITEMS */}
@@ -81,7 +84,7 @@ export const OrderView = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const makeStyles = fontScale => StyleSheet.create({
   container: {
     width: width * 0.4,
     marginRight: width * 0.07,
@@ -130,10 +133,11 @@ const styles = StyleSheet.create({
   textStyle: {
     color: "white",
     fontWeight: "bold",
-    textAlign: "center"
+    textAlign: "center",
+    fontSize: width * 0.03/ fontScale,
   },
   modalText: {
-    fontSize: width * 0.04,
+    fontSize: width * 0.035 / fontScale,
   },
   rowOption: {
     width: width * 0.7,
