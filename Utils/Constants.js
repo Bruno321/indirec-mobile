@@ -13,6 +13,16 @@ export  const aFacultities = [
   "Química",
 ];
 
+// ! CHANGE THIS LATER
+export const aSports = [
+  "Fútbol",
+  "Baloncesto",
+  "Voleibol",
+  "Atletismo",
+];
+
+export const aCampus = 	["Centro Universitario","Juriquilla","Aeropuerto", "Ex-prepa Centro", "Prepa Norte", "Prepa Sur"];
+
 export const expRegex = /^([0-9]{5,7})$/;
 
 export const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
