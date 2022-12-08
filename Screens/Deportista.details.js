@@ -1,12 +1,11 @@
-import { Dimensions, Image, View, StyleSheet, Text, useWindowDimensions } from 'react-native';
+import { Dimensions, Image, View, StyleSheet, Text } from 'react-native';
 import { ActionButton, Col, Header, Row } from '../components';
 import { REACT_APP_API_URL } from '@env';
 import { BASEPATH } from '../Service/Api';
 
-const { width, height } = Dimensions.get('window');       
+const { width, height, fontScale } = Dimensions.get('window');       
 
 const LargeText = ({ children, style = {} }) => {
-  const { fontScale } = useWindowDimensions();
 
   return (
     <Text style={{ fontSize: width * 0.038 / fontScale, ...style }}>{children}</Text>

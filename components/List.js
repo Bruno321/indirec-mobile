@@ -1,6 +1,6 @@
-import { ActivityIndicator, Dimensions, FlatList, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { ActivityIndicator, Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
+const { width, height, fontScale } = Dimensions.get('window');
 
 const handleInnerFields = index => {
   const [val, ...attrs] = index.split('.');
@@ -13,7 +13,7 @@ const handleInnerFields = index => {
   return `item${innerFields}`;
 };
 
-const handleRender = (valueToRender, styles) => {
+const handleRender = valueToRender => {
   const type = typeof valueToRender;
 
   if (type === 'string' || type === 'number') {
@@ -25,7 +25,7 @@ const handleRender = (valueToRender, styles) => {
 
 // TODO: What happens if there are more than 4 columns? (In terms of styling)
 
-const Item = ({item}, columns, styles) => {
+const Item = ({item}, columns) => {
   let dataColumns = columns.filter(c => c.dataIndex !== 'id');
   let actions = columns.find(c => c.dataIndex === 'id');
 
@@ -41,7 +41,7 @@ const Item = ({item}, columns, styles) => {
               </Text>
               {
                 render !== undefined ? (
-                  handleRender(render(dataIndex.includes('.') ? item[dataIndex.split('.')[0]] : item[dataIndex], item), styles) // ? render(value, record)
+                  handleRender(render(dataIndex.includes('.') ? item[dataIndex.split('.')[0]] : item[dataIndex], item)) // ? render(value, record)
                 ) : (
                   <Text style={styles.contentColumn}>
                     {
@@ -72,9 +72,6 @@ const Item = ({item}, columns, styles) => {
 }
 
 export const List = ({ dataSource, columns, loading, renderItem }) => {
-  const { fontScale } = useWindowDimensions();
-
-  const styles = makeStyles(fontScale);
   return loading ? (
     <View style={styles.fetchingContainer}>      
       <ActivityIndicator color="#0000ff"/>
@@ -84,7 +81,7 @@ export const List = ({ dataSource, columns, loading, renderItem }) => {
       <View>
         <FlatList 
           data={dataSource}
-          renderItem={row => renderItem !== undefined ? renderItem(row.item) : Item(row, columns, styles)}
+          renderItem={row => renderItem !== undefined ? renderItem(row.item) : Item(row, columns)}
         />
       </View>
     ) : (
@@ -95,7 +92,7 @@ export const List = ({ dataSource, columns, loading, renderItem }) => {
   )
 };
 
-const makeStyles = fontScale => StyleSheet.create({
+const styles = StyleSheet.create({
   fetchingContainer: {
     height: height * 0.75,
     width,

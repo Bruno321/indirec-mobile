@@ -1,17 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Dimensions, Modal, View, StyleSheet, Pressable, Text, useWindowDimensions } from 'react-native';
-import { aFacultities } from '../Utils/Constants';
+import { Dimensions, Modal, View, StyleSheet, Pressable, Text } from 'react-native';
+import { aFacultities, aSports } from '../Utils/Constants';
 import { ActionButton } from './ActionButton';
 import { Dropdown } from 'react-native-element-dropdown';
 
-const { width, height } = Dimensions.get('window');       
-
-const aSports = [
-  "Fútbol",
-  "Baloncesto",
-  "Voleibol",
-  "Atletismo",
-];
+const { width, height, fontScale } = Dimensions.get('window');       
 
 export const FiltersView = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -35,9 +28,6 @@ export const FiltersView = () => {
       value: `Facultad de ${oFaculty}`,
     }))
   ];
-
-  const { fontScale } = useWindowDimensions();
-  const styles = makeStyles(fontScale);
 
   //TODO: Generate queries based on search object
   const handleQueries = (name, { value }) => {
@@ -165,7 +155,7 @@ export const FiltersView = () => {
   );
 };
 
-const makeStyles = fontScale => StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     width: width * 0.5,
     marginLeft: width * 0.055,

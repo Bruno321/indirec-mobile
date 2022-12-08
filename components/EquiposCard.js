@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
+import { Dimensions, View, Text, StyleSheet } from "react-native";
 import { ActionButton } from './ActionButton';
 import MarqueeText from 'react-native-marquee';
 
+const { fontScale } = Dimensions.get('window');
+
 export const EquiposCard = ({props}) => {
-    const { fontScale } = useWindowDimensions();
-    const styles = makeStyles(fontScale);
 
     return (
         <View style={{paddingLeft:0}}>
@@ -47,7 +47,7 @@ export const EquiposCard = ({props}) => {
     );
 };
 
-const makeStyles = fontScale => StyleSheet.create({ 
+const styles = StyleSheet.create({ 
     card:{
         backgroundColor:'#FFF',
         height:150,

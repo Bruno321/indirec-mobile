@@ -1,18 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Dimensions, Modal, View, StyleSheet, Pressable, Text, useWindowDimensions } from 'react-native';
+import { Dimensions, Modal, View, StyleSheet, Pressable, Text } from 'react-native';
 import { ActionButton } from './ActionButton';
 import { RadioButton } from 'react-native-paper';
 
-const { width, height } = Dimensions.get('window');
+const { width, height, fontScale } = Dimensions.get('window');
 
 const aOptions = ['Predeterminado', 'Nombre [Z-A]','Fecha Agregado [Nuevos-antiguos]','Fecha Agregado [Antiguos-nuevos]'];
 
 export const OrderView = () => {
   const [checked, setChecked] = useState(aOptions[0]);
   const [modalVisible, setModalVisible] = useState(false);
-
-  const { fontScale } = useWindowDimensions();
-  const styles = makeStyles(fontScale);
 
   // useEffect(() => {
   //   console.log(checked);
@@ -84,7 +81,7 @@ export const OrderView = () => {
   );
 };
 
-const makeStyles = fontScale => StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     width: width * 0.4,
     marginRight: width * 0.07,

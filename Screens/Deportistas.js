@@ -1,10 +1,11 @@
-import { Text, View, useWindowDimensions } from "react-native";
+import { Dimensions ,Text, View } from "react-native";
 import { ActionButton, DeportistasCard ,FiltersView, Header, List, OrderView, SearchInput } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 
+const { fontScale } = Dimensions.get('window');
+
 export const Deportistas = ({ navigation }) => {
   const [deportistas, loading] = useFetchData('deportistas');
-  const { fontScale } = useWindowDimensions();
 
   const columns = [
     {

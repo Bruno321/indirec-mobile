@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Image, Text, View, useWindowDimensions } from "react-native";
+import { Dimensions, Image, Text, View } from "react-native";
 import { ActionButton, AsistenciasCard, FiltersView, Header, List, OrderView, SearchInput } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 import moment from "moment/moment";
 import 'moment/locale/es';
 
+const { fontScale } = Dimensions.get('window');
+
 export const Asistencias = ({navigation}) => {
 	const [testData, setTestData] = useState([]);
 	const [asistencias, loading] = useFetchData('deportistas/asistencias');
-  const { fontScale } = useWindowDimensions();
 
 	// ? Testing purposes
 	useEffect(() => {

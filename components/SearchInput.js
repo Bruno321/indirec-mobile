@@ -1,13 +1,11 @@
 import { useState } from 'react';
-import { Dimensions, StyleSheet, TextInput, View, useWindowDimensions } from 'react-native';
+import { Dimensions, StyleSheet, TextInput, View } from 'react-native';
 import { ActionButton } from './ActionButton';
 
-const { width, height } = Dimensions.get('window');
+const { width, height, fontScale } = Dimensions.get('window');
 
 export const SearchInput = () => {
   const [search, setSearch] = useState('');
-  const { fontScale } = useWindowDimensions();
-  const styles = makeStyles(fontScale);
 
   //TODO: Add logic to search from API
   const handleSearch = () => {
@@ -50,7 +48,7 @@ export const SearchInput = () => {
   );
 };
 
-const makeStyles = fontScale => StyleSheet.create({
+const styles =  StyleSheet.create({
   container: {
     width,
     flexDirection: 'row',
