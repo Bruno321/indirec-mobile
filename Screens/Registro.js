@@ -75,20 +75,54 @@ const validationSchema = yup.object().shape({
 		.string()
 		.required('El expediente es requerido')
 		.matches(expRegex, 'El expediente debe ser de almenos 6 digitos'),
-	nombres: yup.string().required('El nombre es requerido').matches(nameRegex, 'Formato de nombre incorrecto'),
-	apellidos: yup.string().required('Los apellidos son requeridos').matches(nameRegex, 'Formato de apellidos incorrecto'),
-	sexo: yup.string().required('El sexo es requerido'),
-	facultad: yup.string().required('La facultad es requerida'),
-	jugadorSeleccionado: yup.boolean().default(false),
-	numSeguroSocial: yup.string().required('El numero de seguro social es requerido').matches(insuranceRegex, 'El numero de seguro social debe ser de 11 digitos'),
-	numJugador: yup.number().integer('Debe ser un número entero'),
-	deporte: yup.string().required('El deporte es requerido'),
-	correo: yup.string().email('El correo no es valido').required('El correo es requerido'),
-	telefono: yup.string().required('El telefono es requerido').matches(phoneRegex, 'El telefono debe ser de 10 digitos'),
-	telefonoEmergencia: yup.string().required('El telefono de emergencia es requerido').matches(phoneRegex, 'El telefono de emergencia debe ser de 10 digitos'),
-	fotoCardex: yup.mixed().required('El Kardex es requerido'),
-	fotoIdentificacionOficial: yup.mixed().required('La foto de tu Identificación Oficial es requerida'),
-	foto: yup.mixed().required('La foto es requerida'),
+	nombres: yup
+		.string()
+		.required('El nombre es requerido')
+		.matches(nameRegex, 'Formato de nombre incorrecto'),
+	apellidos: yup
+		.string()
+		.required('Los apellidos son requeridos')
+		.matches(nameRegex, 'Formato de apellidos incorrecto'),
+	sexo: yup
+		.string()
+		.required('El sexo es requerido'),
+	facultad: yup
+		.string()
+		.required('La facultad es requerida'),
+	jugadorSeleccionado: yup
+		.boolean()
+		.default(false),
+	numSeguroSocial: yup
+		.string()
+		.required('El numero de seguro social es requerido')
+		.matches(insuranceRegex, 'El numero de seguro social debe ser de 11 digitos'),
+	numJugador: yup
+		.number()
+		.integer('Debe ser un número entero'),
+	deporte: yup
+		.string()
+		.required('El deporte es requerido'),
+	correo: yup
+		.string()
+		.email('El correo no es valido')
+		.required('El correo es requerido'),
+	telefono: yup
+		.string()
+		.required('El telefono es requerido')
+		.matches(phoneRegex, 'El telefono debe ser de 10 digitos'),
+	telefonoEmergencia: yup
+		.string()
+		.required('El telefono de emergencia es requerido')
+		.matches(phoneRegex, 'El telefono de emergencia debe ser de 10 digitos'),
+	fotoCardex: yup
+		.mixed()
+		.required('El Kardex es requerido'),
+	fotoIdentificacionOficial: yup
+		.mixed()
+		.required('La foto de tu Identificación Oficial es requerida'),
+	foto: yup
+		.mixed()
+		.required('La foto es requerida'),
 });
 
 export const Registro = () => {
