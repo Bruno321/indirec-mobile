@@ -13,10 +13,10 @@ export const Header = ({ navigation }) => {
 				hidden={false}
 			/>
 			<View style={styles.header}>
-				<Image
+				{/* <Image
 					style={styles.logoTexto}
 					source={require('../images/indereq-logo-texto.png')}
-				/>
+				/> */}
 			</View>
 			{navigation === undefined ? null : (
 				<View style={styles.menu}>

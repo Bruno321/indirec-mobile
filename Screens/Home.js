@@ -1,13 +1,11 @@
+import React, { useState, useEffect } from "react"
 import { StyleSheet, Text, View, Image, Dimensions, StatusBar, Modal, Button, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { Header } from '../components';
-import React, { useState, useEffect } from "react"
-import NetInfo from "@react-native-community/netinfo";
+import { process, SAVE } from "../Service/Api";
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import moment from 'moment/moment';
-import axios from 'axios';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const  Home = ()  => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -15,21 +13,12 @@ export const  Home = ()  => {
   const [dataScaneo, setDataScaneo] = useState({});
   const [dataResponse, setDataResponse] = useState({});
   const [registroCheck, setRegistroCheck] = useState(true);
-  const [token,setToken] = useState()
   const navigation = useNavigation();
-
-  useEffect(()=>{
-    async function getToken (){
-      let retrieveToken = await AsyncStorage.getItem('token') 
-      setToken(retrieveToken)
-    }
-    getToken()
-  },[])
   
   // DOCUMENTACION - Función que regresa un bloque de código dependiendo si la lectura del QR fue correcta o incorrecta -> Regresa los componentes para mostrar un modal correcto/incorrecto
   const GenerarModal = () => {
     try {
-      if(registroCheck == true){
+      if(registroCheck){
           return  (
           <>
             <View style={styles.ModalAlerta}>
@@ -86,40 +75,34 @@ export const  Home = ()  => {
   }, [navigation]);
   
   // DOCUMENTACION - Función que toma lo que leé la camara de un QR y lo trabaja (data)
-  const handleBarCodeScanned = ({ data }) => {
+  const handleBarCodeScanned = async ({ data }) => {
     try {
       setScanned(true); // DOCUMENTACION - Al leer algo, renderizar el Modal con la funcion GenerarModal()
       let datos = JSON.parse(data); // DOCUMENTACION - Guardamos la informacion leída parseada a JSON
-      setDataScaneo(datos); 
-      if(Object.keys(datos).length == 3){ // DOCUMENTACION - Que sean 3 keys del json
+      
+      setDataScaneo(datos);
+      if(Object.keys(datos).length === 3){ // DOCUMENTACION - Que sean 3 keys del json
        if(datos.hasOwnProperty('id') && datos.hasOwnProperty('nombreC') && datos.hasOwnProperty('fecha') == true){ // DOCUMENTACION - Que sean las keys que queremos
 
+        const oSend = {
+          id: datos.id,
+          fecha: datos.fecha
+        };
+        const response = await process(SAVE, 'deportistas/asistencias', oSend).catch((e, res) => {
+          console.log(res);
+          setRegistroCheck(false);
+        });
+
+        if (response?.data?.ok) {
+          console.log(response);
+          setRegistroCheck(true);
+        }
 
         //Aqui se mandaria el post
         // configurar MAMADAS PORQUE SOMOS HTTP NO HTTPS Zzzzz
         // https://github.com/facebook/react-native/issues/32931
 
-        axios({
-          method: "POST",
-          url: "http://192.168.100.25:3000/api/deportistas/asistencias",  //NOTA: En el url se debe cambiar con la DIRECCION IP DE TU MAQUINA, no funciona si ponemos localhost ni tampoco 127.0.0.1
-          data: {
-            id: dataScaneo.id,
-            fecha:dataScaneo.fecha
-          },
-          headers: { 
-            'Authorization': `Bearer ${token}`,
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin":null ,
-            "Accept":"*/*"
-          },
-            mode: 'cors',
-        })
-        .then((response)=>{
-          // console.log("Data del response " + JSON.stringify(response.data))
-          setDataResponse(response.data)// DOCUMENTACION - Guardar la info del response para poder usarlo en GenerarModal()
-          setRegistroCheck(true)})// DOCUMENTACION - Lectura del QR válida
-
-        const unsubscribe = NetInfo.addEventListener(state => {
+        /*const unsubscribe = NetInfo.addEventListener(state => {
             switch (state.type) {
               case "wifi":
                 // DOCUMENTACION - EN CASO DE TENER WIFI...
@@ -134,18 +117,15 @@ export const  Home = ()  => {
                 break;
             }
         });
-        unsubscribe();
+        unsubscribe();*/
         } else {
-        setRegistroCheck(false);
-        // console.log("✖ JSON CON LLAVES INCORRECTAS");
+          setRegistroCheck(false);
         }
       } else {
         setRegistroCheck(false);
-        // console.log("✖ JSON CON MÁS O MENOS DE 3 LLAVES -> " + Object.keys(datos).length);
       }
     } catch (error) {
       setRegistroCheck(false);
-      console.log("✖ ERROR DE LECTURA"); // NO ES UN JSON
     }
   }
 

@@ -107,7 +107,7 @@ export const Login = () => {
         ) : null}
       </KeyboardAvoidingView>
       <View style={styles.cuadrante2}>
-        <Text style={styles.indereqTexto}>Bienvenido a INDEREQ</Text>
+        <Text style={styles.indereqTexto}>Iniciar Sesión</Text>
         <View style={styles.rowForm}>
           <Text style={styles.label}>Correo Electronico:</Text>
           <TextInput
