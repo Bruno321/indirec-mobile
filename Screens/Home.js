@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { Header } from '../components';
 import { process, SAVE } from "../Service/Api";
+import { REACT_APP_API_URL } from '@env';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import moment from 'moment/moment';
 
@@ -22,20 +23,21 @@ export const  Home = ()  => {
           return  (
           <>
             <View style={styles.ModalAlerta}>
-            <Text style={styles.Modal1Text1}>Escaneo exitoso</Text>
-            <Text style={styles.Modal1Text2}>Bienvendio</Text>
-            <Text style={styles.Modal1Text3}>${dataResponse.deportista.nombres} ${dataResponse.deportista.apellidos}</Text>
-            <Image style={styles.Modal1Image} source={{uri: `http://192.168.100.25:3000/api/${dataResponse.deportista.foto}`}}></Image>
-            <Text style={styles.Modal1Text4}>Hora: {moment(dataScaneo.fecha).format('h:mm a')}</Text>
-            <Text style={styles.Modal1Text4}>{dataResponse.message}</Text>
-            <View style={styles.ModalTouchable}>
-              <TouchableCmp>
-                <Text style={styles.ModalCerrarButton} onPress={() => {
-                  setScanned(false);
-                  }}>Aceptar</Text>
-              </TouchableCmp>
+              <Text style={styles.Modal1Text1}>Escaneo exitoso</Text>
+              <Text style={styles.Modal1Text2}>Bienvendio</Text>
+              <Text style={styles.Modal1Text3}>{dataResponse.deportista.nombres} {dataResponse.deportista.apellidos}</Text>
+              
+              <Image style={styles.Modal1Image} source={{ uri: `${REACT_APP_API_URL}${BASEPATH}/${dataResponse.foto}` }}></Image>
+              <Text style={styles.Modal1Text4}>Hora: {moment(dataScaneo.fecha).format('h:mm a')}</Text>
+              <Text style={styles.Modal1Text4}>{dataResponse.message}</Text>
+              <View style={styles.ModalTouchable}>
+                <TouchableCmp>
+                  <Text style={styles.ModalCerrarButton} onPress={() => {
+                    setScanned(false);
+                    }}>Aceptar</Text>
+                </TouchableCmp>
+              </View>
             </View>
-          </View>
           </>
           )
       } else {
@@ -88,13 +90,14 @@ export const  Home = ()  => {
           id: datos.id,
           fecha: datos.fecha
         };
-        const response = await process(SAVE, 'deportistas/asistencias', oSend).catch((e, res) => {
-          console.log(res);
+        const response = await process(SAVE, 'deportistas/asistencias', oSend).catch(e => {
+          console.log(e.response);
           setRegistroCheck(false);
         });
 
         if (response?.data?.ok) {
           console.log(response);
+          setDataResponse(response.data.deportista);
           setRegistroCheck(true);
         }
 
@@ -129,14 +132,14 @@ export const  Home = ()  => {
     }
   }
 
-  if  (hasPermission === null){
+  if (hasPermission === null){
     return <Text>Requesting for camera permission</Text>
   }
   if (hasPermission === false){
     return <Text>No access to camera</Text>
   }
   
-  return(
+  return (
     <View style={styles.container}>
       <StatusBar
         backgroundColor="#000"
