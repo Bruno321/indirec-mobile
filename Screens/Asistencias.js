@@ -68,7 +68,7 @@ export const Asistencias = ({navigation}) => {
     return(
 			<View style={{ flex:1, marginBottom: '65%' }}>
 				<Header navigation={navigation}/>
-				<Text style={{ fontSize: 35 / fontScale }}>Asistencias</Text>
+        <Text style={{ fontSize: 35 / fontScale, fontFamily: 'Fredoka-Medium', paddingLeft: 10}}>Asistencias</Text>
         <SearchInput />
         <View style={{ flexDirection:'row', justifyContent: 'space-between' }}>
           <FiltersView />

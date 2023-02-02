@@ -65,7 +65,7 @@ const styles =  StyleSheet.create({
     color:'#000000',
     fontFamily:'Fredoka-Light',
     backgroundColor:'#ffffff',
-    fontSize:width * .035 / fontScale,
+    fontSize: 15 / fontScale,
   },
   buttons: {
     width: width * 0.22,

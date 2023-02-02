@@ -21,92 +21,75 @@ export const DeportistaDetails = ({ navigation, route }) => {
         <Header/>
         <View style={styles.centeredView}>
           <Row>
-
             <Col>
               <Image source={profilePicture} style={styles.profilePicture}/>
             </Col>
             <Col>
-              <View style={{ marginBottom: '25%' }}>
+              <View>
                 <LargeText style={styles.boldText}>Expediente </LargeText>
-                <LargeText>{data?.expediente}</LargeText>
+                <LargeText style={styles.dato}>{data?.expediente}</LargeText>
               </View>
               <View>
                 <LargeText style={styles.boldText}>No. Seguro Social </LargeText>
-                <LargeText>{data?.numSeguroSocial}</LargeText>
+                <LargeText style={styles.dato}>{data?.numSeguroSocial}</LargeText>
               </View>
             </Col>
-
           </Row>
-          <Row style={{ marginTop: '7.5%' }}>
-
+          <Row>
             <Col>
               <LargeText style={styles.boldText}>Nombre</LargeText>
-              <LargeText>{data?.nombres}</LargeText>
+              <LargeText style={styles.dato}>{data?.nombres}</LargeText>
             </Col>
-
             <Col>
               <LargeText style={styles.boldText}>Apellidos</LargeText>
-              <LargeText>{data?.apellidos}</LargeText>
+              <LargeText style={styles.dato}>{data?.apellidos}</LargeText>
             </Col>
-
             <Col>
               <LargeText style={styles.boldText}>Sexo</LargeText>
-              <LargeText>{data?.sexo ? 'Femenino' : 'Masculino'}</LargeText>
+              <LargeText style={styles.dato}>{data?.sexo ? 'Femenino' : 'Masculino'}</LargeText>
             </Col>
-
           </Row>
-          <Row style={{ marginTop: '7.5%' }}>
-
+          <Row>
             <Col>
               <LargeText style={styles.boldText}>Facultad</LargeText>
-              <LargeText>{data?.facultad}</LargeText>
+              <LargeText style={styles.dato2}>{data?.facultad}</LargeText>
             </Col>
-
             <Col>
               <LargeText style={styles.boldText}>Deporte</LargeText>
-              <LargeText>{data?.deporte}</LargeText>
+              <LargeText style={styles.dato2}>{data?.deporte}</LargeText>
             </Col>
-
             <Col>
               <LargeText style={styles.boldText}>Subdivisión</LargeText>
-              <LargeText>{''}</LargeText>
+              <LargeText style={styles.dato2}>{''}</LargeText>
             </Col>
-
           </Row>
-          <Row style={{ marginTop: '7.5%' }}>
-
+          <Row>
             <Col>
               <LargeText style={styles.boldText}>Jugador Seleccionado</LargeText>
-              <LargeText>{data?.jugadorSeleccionado ? 'Si' : 'No'}</LargeText>
+              <LargeText style={styles.dato}>{data?.jugadorSeleccionado ? 'Si' : 'No'}</LargeText>
             </Col>
-
             <Col>
               <LargeText style={styles.boldText}>No. Jugador</LargeText>
-              <LargeText>{data?.numJugador}</LargeText>
+              <LargeText style={styles.dato}>{data?.numJugador}</LargeText>
             </Col>
-
           </Row>
-          <Row style={{ marginTop: '7.5%' }}>
-
+          <Row>
             <Col>
               <LargeText style={styles.boldText}>Telefono</LargeText>
-              <LargeText>{data?.telefono}</LargeText>
+              <LargeText style={styles.dato}>{data?.telefono}</LargeText>
             </Col>
-
             <Col>
               <LargeText style={styles.boldText}>Num. Emergencias</LargeText>
-              <LargeText>{data?.telefonoEmergencia}</LargeText>
+              <LargeText style={styles.dato}>{data?.telefonoEmergencia}</LargeText>
             </Col>
-
           </Row>
-          <Row style={{ marginTop: '7.5%' }}>
+          <Row>
             <Col>
               <LargeText style={styles.boldText}>Correo</LargeText>
-              <LargeText>{data?.correo}</LargeText>
+              <LargeText style={styles.dato}>{data?.correo}</LargeText>
             </Col>
           </Row>
-          <Row style={{ marginTop: '7.5%' }}>
-
+          <Row>
             <Col>
               <LargeText style={styles.boldText}>Kardex</LargeText>
               <ActionButton
@@ -117,7 +100,6 @@ export const DeportistaDetails = ({ navigation, route }) => {
                 widthPercentage={0.4}
               />
             </Col>
-
             <Col>
               <LargeText style={styles.boldText}>Identificación Oficial</LargeText>
               <ActionButton
@@ -128,9 +110,8 @@ export const DeportistaDetails = ({ navigation, route }) => {
                 widthPercentage={0.4}
               />
             </Col>
-
           </Row>
-          <Row style={{ marginTop: '7.5%' }}>
+          <Row>
             <ActionButton
               text="Regresar"
               backgroundColor="#003070"
@@ -147,16 +128,27 @@ export const DeportistaDetails = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   centeredView: {
     display: 'flex',
-    marginTop: height * 0.025,
-    height: height * 0.5,
-    // backgroundColor: '#000',
+    justifyContent: 'space-evenly',
+    padding: 10,
+    height: height*0.9,
   },
   boldText: {
-    fontWeight: 'bold',
+    fontFamily: 'Fredoka-Medium',
+    fontSize: 18 / fontScale,
     marginBottom: '5%',
   },
   profilePicture: {
     width: width * 0.4,
     height: width * 0.4,
+  },
+  dato: {
+    fontFamily: 'Fredoka-Light',
+    fontSize: 14 / fontScale,
+  },
+  dato2: {
+    // backgroundColor: 'red',
+    width: Dimensions.get('window').width*0.3,
+    fontFamily: 'Fredoka-Light',
+    fontSize: 14 / fontScale,
   }
 });

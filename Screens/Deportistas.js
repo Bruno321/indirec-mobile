@@ -48,8 +48,8 @@ export const Deportistas = ({ navigation }) => {
   ];
     return (
       <View style={{ flex:1, marginBottom: '65%' }}>
-        <Header navigation={navigation}/>
-        <Text style={{ fontSize: 35 / fontScale }}>Deportistas</Text>
+        <Header navigation={navigation} title={"DEPORTISTAS"}/>
+        <Text style={{ fontSize: 35 / fontScale, fontFamily: 'Fredoka-Medium', alignSelf: 'center'}}>Deportistas</Text>
         <SearchInput />
         <View style={{ flexDirection:'row', justifyContent: 'space-between', marginBottom: 15 }}>
           <FiltersView />
