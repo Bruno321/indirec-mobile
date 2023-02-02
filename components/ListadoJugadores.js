@@ -1,108 +1,133 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Modal, ScrollView, SafeAreaView, Image, Button } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import Feather from 'react-native-vector-icons/Feather';
 
-const ListadoJugadores = () => {
+export const ListadoJugadores = ({ dataSource, aSelected, setSelected }) => {
     const [modalActive, setModalActive] = useState(false);
-    const initialList = [
-        { "id": "1", "nombre": "Sebas Mbappé", "sel": false },
-        { "id": "2", "nombre": "Alan Ronaldo", "sel": false },
-        { "id": "3", "nombre": "Bruno Cristiano", "sel": false },
-        { "id": "4", "nombre": "Josué Dont", "sel": false },
-        { "id": "5", "nombre": "Jorge Campos", "sel": false },
-        { "id": "6", "nombre": "Luis Flores", "sel": false },
-        { "id": "7", "nombre": "Carlos Mendieta", "sel": false },
-        { "id": "8", "nombre": "Adrian Zavaleta", "sel": false },
-        { "id": "9", "nombre": "dummy1", "sel": false },
-        { "id": "10", "nombre": "dummy2", "sel": false },
-        { "id": "11", "nombre": "dummy3", "sel": false },
-        { "id": "12", "nombre": "dummy4", "sel": false },
-        { "id": "13", "nombre": "dummy5", "sel": false },
-        { "id": "14", "nombre": "dummy6", "sel": false },
-        { "id": "15", "nombre": "dummy7", "sel": false },
-        { "id": "16", "nombre": "dummy8", "sel": false },
-        { "id": "17", "nombre": "dummy9", "sel": false },
-        { "id": "18", "nombre": "dummy10", "sel": false },
-        { "id": "19", "nombre": "dummy11", "sel": false },
-        { "id": "20", "nombre": "dummy12", "sel": false },
-        { "id": "22", "nombre": "dummy13", "sel": false },
-        { "id": "45", "nombre": "dummy45", "sel": false },
-    ];
-    const [myList, setMyList] = useState(initialList);
-    const [mySeleccionadosList, setmySeleccionadosList] = useState([]);
-    function actualizarListaSeleccion(value, value2) {
-        const myNextList = [...myList];
-        const seleccionar = myNextList.find(
-            a => a.id === value
-        );
-        seleccionar.sel = value2;
-        setMyList(myNextList);
+    const [aJugadores, setJugadores] = useState(dataSource || []);
 
-        const myNextSeleccionadosList = [];
-        myNextList.find(
-            a => { if (a.sel == true) { myNextSeleccionadosList.push(a) } }
-        );
-        setmySeleccionadosList(myNextSeleccionadosList)
-    }
-
-    const limpiarLista = () => {
-        const myNextList = [...myList];
-        // console.log(myNextList);
-        const limpiados = myNextList;
-        // console.log("LIMPIADOS> " + JSON.stringify(limpiados));
-        for (let i = 0; i < limpiados.length; i++) {
-            limpiados[i].sel = false;
+    useEffect(() => {
+        if (dataSource?.length) {
+            setJugadores(dataSource);
         }
-        // console.log("LIMPIADOS> " + JSON.stringify(limpiados));
-        setMyList(myNextList);
-        const myNextSeleccionadosList = [];
-        myNextList.find(
-            a => { if (a.sel == true) { myNextSeleccionadosList.push(a) } }
+    }, [dataSource]);
+
+    const isSelected = sId => aSelected.findIndex(j => j.deportistaId === sId) !== -1;
+
+    const updateSelected = sId => {
+        const nIndex = aSelected.findIndex(j => j.deportistaId === sId);
+        const aTmp = [...aSelected];
+
+        if (nIndex !== -1) {
+            aTmp.splice(nIndex, 1);
+            setSelected(aTmp);
+        } else {
+            aTmp.push(aJugadores.find(j => j.deportistaId === sId));
+            setSelected(aTmp);
+        }
+    };
+
+    const LoadSelected = (props) => {
+        return props.map(x =>
+            <View key={x.deportistaId+"SelView1"} style={styles.ViewJugador}>
+                <View key={x.deportistaId+"SelView2"} style={styles.celda3a}>
+                    <Text
+                        key={x.deportistaId+"SelText1"}
+                        style={styles.celda3y4Texta}
+                        numberOfLines={1}
+                    >
+                        {x.numJugador}
+                    </Text>
+                </View>
+
+                <View key={x.deportistaId+"SelView3"} style={styles.celda4a}>
+                    <Text
+                        key={x.deportistaId+"SelText2"}
+                        style={styles.celda3y4Texta}
+                        numberOfLines={2}
+                    >
+                        {x.nombres}
+                    </Text>
+                </View>
+            </View>
         );
-        setmySeleccionadosList(myNextSeleccionadosList)
     }
 
-    const cargarEquipoSeleccionado = (props) => {
-        return(
-        props.map(x=>
-            // <Text>hola</Text>
-        <View key={x.id+"SelView1"} style={styles.ViewJugador}>
-            <View key={x.id+"SelView2"} style={styles.celda3a}>
-                <Text key={x.id+"SelText1"} style={styles.celda3y4Texta} numberOfLines={1}>{x.id}</Text>
-            </View>
-            <View key={x.id+"SelView3"} style={styles.celda4a}>
-                <Text key={x.id+"SelText2"} style={styles.celda3y4Texta} numberOfLines={2}>{x.nombre}</Text>
-            </View>
-        </View>
-        ))
-    }
+    const showJugadores = jugadores => {
+        return (jugadores.map(x => (
+            <View
+                key={x.deportistaId+"view1"}
+                style={styles.ViewJugador}
+            >
+                <View
+                    key={x.deportistaId+"view2"}
+                    style={!isSelected(x.deportistaId) ? styles.celda3a : styles.celda3b}
+                >
+                    <Text 
+                        key={x.deportistaId+"text1"}
+                        style={!isSelected(x.deportistaId) ? styles.celda3y4Texta : styles.celda3y4Textb}
+                        numberOfLines={1}
+                    >
+                        {x.numJugador}
+                    </Text>
+                </View>
+                <View
+                    key={x.deportistaId+"view3"}
+                    style={!isSelected(x.deportistaId) ? styles.celda4a : styles.celda4b}
+                >
+                    <Text
+                        key={x.deportistaId+"text2"}
+                        style={!isSelected(x.deportistaId) ? styles.celda3y4Texta : styles.celda3y4Textb}
+                        numberOfLines={2}
+                    >
+                        {x.nombres}
+                    </Text>
+                </View>
+                <TouchableCmp
+                    key={x.deportistaId+"touchable1"}
+                    onPress={() => updateSelected(x.deportistaId, true)}
+                >
+                    <View
+                        key={x.deportistaId+"view4"}
+                        style={!isSelected(x.deportistaId) ? styles.celda5a : styles.celda5b}
+                    >
+                        <FontAwesome
+                            key={x.deportistaId+"icon1"}
+                            name='plus-square-o'
+                            size={25}
+                            color={!isSelected(x.deportistaId) ?'#003070' : "#888"} 
+                        />
+                        <Text
+                            key={x.deportistaId+"text3"}
+                            style={!isSelected(x.deportistaId) ? styles.celda3y4Texta : styles.celda3y4Textb}
+                            numberOfLines={1}
+                        >
+                            Añadir
+                        </Text>
+                    </View>
+                </TouchableCmp>
 
-    const cargarEquipoCompleto = (props) => {
-        // console.log(props);
-        return(
-        props.map(x=>
-        <View key={x.id+"view1"} style={styles.ViewJugador}>
-            <View key={x.id+"view2"} style={x.sel == false ? styles.celda3a : styles.celda3b}>
-                <Text key={x.id+"text1"} style={x.sel == false ? styles.celda3y4Texta : styles.celda3y4Textb} numberOfLines={1}>{x.id}</Text>
+                <TouchableCmp
+                    key={x.deportistaId+"touchable2"}
+                    onPress={() => updateSelected(x.deportistaId, false)}
+                >
+                    <View key={x.deportistaId+"view5"}
+                        style={!isSelected(x.deportistaId) ? styles.celda6a : styles.celda6b}
+                    >
+                        <FontAwesome
+                            key={x.deportistaId+"icon2"}
+                            name='trash-o'
+                            size={25}
+                            color={!isSelected(x.deportistaId) ?'#BBB' : "#C0392B"}
+                        />
+                    </View>
+                </TouchableCmp> 
             </View>
-            <View key={x.id+"view3"} style={x.sel == false ? styles.celda4a : styles.celda4b}>
-               <Text key={x.id+"text2"} style={x.sel == false ? styles.celda3y4Texta : styles.celda3y4Textb} numberOfLines={2}>{x.nombre}</Text>
-           </View>
-           <TouchableCmp key={x.id+"touchable1"} onPress={() => actualizarListaSeleccion(x.id, true)}>
-               <View key={x.id+"view4"} style={x.sel == false ? styles.celda5a : styles.celda5b}>
-                   <FontAwesome key={x.id+"icon1"} name='plus-square-o' size={25} color={x.sel == false ?'#003070' : "#888"} />
-                   <Text key={x.id+"text3"} style={x.sel == false ? styles.celda3y4Texta : styles.celda3y4Textb} numberOfLines={1}>Añadir</Text>
-               </View>
-           </TouchableCmp>
-           <TouchableCmp key={x.id+"touchable2"} onPress={() => actualizarListaSeleccion(x.id, false)}>
-               <View key={x.id+"view5"} style={x.sel == false ? styles.celda6a : styles.celda6b}>
-                   <FontAwesome key={x.id+"icon2"} name='trash-o' size={25} color={x.sel == false ?'#BBB' : "#C0392B"} />
-               </View>
-           </TouchableCmp> 
-       </View>
-    ))}
+        )
+    ))};
+
     return (
         <>
             <View style={styles.View}>
@@ -114,7 +139,7 @@ const ListadoJugadores = () => {
                         <Text style={styles.celda1y2Text}>Nombre Completo</Text>
                     </View>
                 </View>
-                {cargarEquipoSeleccionado(mySeleccionadosList)}
+                {LoadSelected(aSelected)}
             </View>
             <View style={styles.viewEditar1}>
                 <TouchableCmp onPress={() => { setModalActive(true) }}>
@@ -126,7 +151,6 @@ const ListadoJugadores = () => {
             <Modal
                 animationType={'fade'}
                 transparent
-                // visible={true}
                 visible={modalActive}
                 onRequestClose={() => setModalActive(false)}
                 propagateSwipe={true}
@@ -153,8 +177,6 @@ const ListadoJugadores = () => {
                         </View>
                         <Text style={styles.ModalView1d} numberOfLines={2}>Facultad de Informática - Campus Juriquilla</Text>
                     </View>
-                    {/* <View style={{width: 100, height: "auto", borderRadius: 500, overflow: 'hidden', alignSelf: 'flex-end',}}>
-                    </View> */}
                     <View style={styles.ModalView2}>
                         <View style={styles.headerLista}>
                             <View style={styles.celda1HeaderLista}>
@@ -164,12 +186,11 @@ const ListadoJugadores = () => {
                                 <Text style={styles.celda1y2Text}>Nombre Completo</Text>
                             </View>
                             <View style={styles.celda3HeaderLista}>
-                                <Button title='Limpiar' color={"#003070"} onPress={() => limpiarLista()}/>
-                                {/* <Text style={styles.celda1y2Text}>Nombre Completo</Text> */}
+                                <Button title='Limpiar' color={"#003070"} onPress={() => setSelected([])}/>
                             </View>
                         </View>
                         <ScrollView>
-                            {cargarEquipoCompleto(myList)}
+                            {showJugadores(aJugadores)}
                         </ScrollView>
                     </View>
                 </View>
@@ -182,7 +203,6 @@ const styles = StyleSheet.create({
     View: {
         marginTop: 10,
         width: "100%",
-        // height: 260,
         borderRadius: 10,
         overflow: 'hidden',
         borderWidth: 2,
@@ -197,19 +217,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         height: 40,
-        // backgroundColor: '#F00',
     },
     celda2HeaderLista: {
         width: "40%",
         justifyContent: 'center',
         height: 40,
-        // backgroundColor: '#0F0',
     },
     celda3HeaderLista: {
         width: "40%",
         justifyContent: 'center',
         height: 40,
-        // backgroundColor: '#00F',
     },
     celda1y2Text: {
         color: 'white',
@@ -217,11 +234,9 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
     ViewJugador: {
-        // backgroundColor: '#0F0',
         flexDirection: 'row',
         borderTopWidth: 1,
         borderTopColor: "#C0C0C0",
-        // marginBottom: 50,
     },
     celda3a: {
         backgroundColor: '#FFF',
@@ -298,7 +313,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     viewEditarText: {
-        // backgroundColor: '#EEE',
         color: '#003070',
         fontFamily: 'Fredoka-Light',
         fontSize: 12,
@@ -320,7 +334,6 @@ const styles = StyleSheet.create({
     ModalView1: {
         width: '100%',
         height: 200,
-        // backgroundColor: 'purple',
         padding: 20,
     },
     ModalView1a: {
@@ -340,8 +353,6 @@ const styles = StyleSheet.create({
     },
     ModalView2: {
         height: '60%',
-        // bottom: 'auto',
-        // backgroundColor: 'pink',
     },
     ModalView3: {
         width: '100%',
@@ -366,7 +377,4 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginLeft: 20,
     }
-
 });
-
-export default ListadoJugadores;

@@ -7,6 +7,7 @@ export * from './Filters';
 export * from './Grid.components';
 export * from './Header';
 export * from './List';
+export * from './ListadoJugadores';
 export * from './Order';
 export * from './registroOffline';
 export * from './registroOnline';

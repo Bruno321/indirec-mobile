@@ -3,7 +3,8 @@ import { StyleSheet, Text, View, Image, Dimensions, StatusBar, Modal, Button, Sa
 import { useNavigation } from '@react-navigation/native';
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { Header } from '../components';
-import { process, SAVE } from "../Service/Api";
+import { process, SAVE, BASEPATH } from "../Service/Api";
+import { REACT_APP_API_URL } from '@env';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import moment from 'moment/moment';
 
@@ -16,46 +17,42 @@ export const  Home = ()  => {
   const navigation = useNavigation();
   
   // DOCUMENTACION - Función que regresa un bloque de código dependiendo si la lectura del QR fue correcta o incorrecta -> Regresa los componentes para mostrar un modal correcto/incorrecto
-  const GenerarModal = () => {
-    try {
-      if(registroCheck){
-          return  (
-          <>
-            <View style={styles.ModalAlerta}>
-            <Text style={styles.Modal1Text1}>Escaneo exitoso</Text>
-            <Text style={styles.Modal1Text2}>Bienvendio</Text>
-            <Text style={styles.Modal1Text3}>${dataResponse.deportista.nombres} ${dataResponse.deportista.apellidos}</Text>
-            <Image style={styles.Modal1Image} source={{uri: `http://192.168.100.25:3000/api/${dataResponse.deportista.foto}`}}></Image>
-            <Text style={styles.Modal1Text4}>Hora: {moment(dataScaneo.fecha).format('h:mm a')}</Text>
-            <Text style={styles.Modal1Text4}>{dataResponse.message}</Text>
-            <View style={styles.ModalTouchable}>
-              <TouchableCmp>
-                <Text style={styles.ModalCerrarButton} onPress={() => {
-                  setScanned(false);
-                  }}>Aceptar</Text>
-              </TouchableCmp>
-            </View>
-          </View>
-          </>
-          )
-      } else {
-        return (
-          <>
-        <View style={styles.ModalAlerta}>
-          <Text style={styles.Modal2Text1}>Escaneo fallido, algo ha ocurrido</Text>
-          <Text style={styles.Modal2Text2}>Por favor vuelva a pasar el código QR</Text>
-          <View style={styles.ModalTouchable}>
-            <TouchableCmp>
-              <Text style={styles.ModalCerrarButton} onPress={() => {
-                setScanned(false);
-                }}>Aceptar</Text>
-            </TouchableCmp>
-          </View>
+
+  const SuccessModal = () => {
+    return (
+      <View style={styles.ModalAlerta}>
+        <Text style={styles.Modal1Text1}>Escaneo exitoso</Text>
+        <Text style={styles.Modal1Text2}>{dataResponse?.message?.includes('entrada') ? 'Bienvenido' : 'Hasta pronto'}!</Text>
+        <Text style={styles.Modal1Text3}>{dataResponse?.deportista?.nombres} {dataResponse?.deportista?.apellidos}</Text>
+        
+        <Image style={styles.Modal1Image} source={{ uri: `${REACT_APP_API_URL}${BASEPATH}/${dataResponse?.deportista?.foto}` }}></Image>
+        <Text style={styles.Modal1Text4}>Hora: {moment(dataScaneo.fecha).format('h:mm a')}</Text>
+        <Text style={styles.Modal1Text4}>{dataResponse?.message}</Text>
+        <View style={styles.ModalTouchable}>
+          <TouchableCmp>
+            <Text style={styles.ModalCerrarButton} onPress={() => {
+              setScanned(false);
+              }}>Aceptar</Text>
+          </TouchableCmp>
         </View>
-          </>
-        )
-      }
-    } catch (e) {}
+      </View>
+    );
+  };
+
+  const ErrorModal = () => {
+    return (
+      <View style={styles.ModalAlerta}>
+        <Text style={styles.Modal2Text1}>Escaneo fallido, algo ha ocurrido</Text>
+        <Text style={styles.Modal2Text2}>Por favor vuelva a pasar el código QR</Text>
+        <View style={styles.ModalTouchable}>
+          <TouchableCmp>
+            <Text style={styles.ModalCerrarButton} onPress={() => {
+              setScanned(false);
+              }}>Aceptar</Text>
+          </TouchableCmp>
+        </View>
+      </View>
+    );
   }
 
   // DOCUMENTACION - Cada vez que se entra a la screen:
@@ -88,13 +85,14 @@ export const  Home = ()  => {
           id: datos.id,
           fecha: datos.fecha
         };
-        const response = await process(SAVE, 'deportistas/asistencias', oSend).catch((e, res) => {
-          console.log(res);
+        const response = await process(SAVE, 'deportistas/asistencias', oSend).catch(e => {
+          console.log(e.response);
           setRegistroCheck(false);
         });
 
         if (response?.data?.ok) {
           console.log(response);
+          setDataResponse(response.data);
           setRegistroCheck(true);
         }
 
@@ -129,14 +127,14 @@ export const  Home = ()  => {
     }
   }
 
-  if  (hasPermission === null){
+  if (hasPermission === null){
     return <Text>Requesting for camera permission</Text>
   }
   if (hasPermission === false){
     return <Text>No access to camera</Text>
   }
   
-  return(
+  return (
     <View style={styles.container}>
       <StatusBar
         backgroundColor="#000"
@@ -161,17 +159,17 @@ export const  Home = ()  => {
         onRequestClose={()=>setScanned(false)}
       >
         <View style={styles.ModalCentrado}>
-          {GenerarModal()}
+          {registroCheck && scanned && dataResponse ? <SuccessModal/> : <ErrorModal/>}
         </View>
       </Modal>
       <View style={styles.cuadrante3}>
         <View style={styles.ModalTouchable}>
-              <TouchableCmp>
-                <Text style={styles.botonRegistrarDeportista} onPress={() => {
-                  navigation.navigate("Registro");
-                  }}>Registrar Deportista</Text>
-              </TouchableCmp>
-            </View>
+          <TouchableCmp>
+            <Text style={styles.botonRegistrarDeportista} onPress={() => {
+              navigation.navigate("Registro");
+              }}>Registrar Deportista</Text>
+          </TouchableCmp>
+        </View>
       </View>
     </View>
   );
