@@ -136,11 +136,12 @@ export const  Home = ()  => {
   
   return (
     <View style={styles.container}>
+      <SafeAreaView style={{backgroundColor: "#003070"}}/>
       <StatusBar
         backgroundColor="#000"
         barStyle={"light-content"}
         hidden={false} />
-      <Header navigation={navigation}/>
+      <Header navigation={navigation} title={"Pase de Lista"}/>
       <View style={styles.cuadrante2}>
         <Text style={styles.texto1}>Bienvenido</Text>
         <Text style={styles.texto2}>Por favor escanea el código QR para tomar la asistencia</Text>

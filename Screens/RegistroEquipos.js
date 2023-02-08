@@ -118,16 +118,11 @@ export const RegistroEquipos = () => {
 
 	return (
 		<ScrollView style={styles.general} showsVerticalScrollIndicator={false}>
-		<SafeAreaView />
-		<Header navigation={navigation}/>
+		<SafeAreaView style={{backgroundColor: "#003070"}}/>
+		<Header navigation={navigation}  title={"Registrar equipo"}/>
 
 			<View style={styles.center}>
-				<View style={styles.viewTitulo}>
-					<Text style={styles.titulo}>Registro de equipo</Text>
-				</View>
-
 				<View style={styles.viewForm}>
-
 				<Formik
 					initialValues={oInitialState}
 					validationSchema={validationSchema}
@@ -273,10 +268,6 @@ const styles = StyleSheet.create({
 	},
 	center:{
 		alignItems:'center'
-	},
-	viewTitulo:{
-		width: width / 1.25,
-		marginTop: height / 28,
 	},
 	titulo:{
 		fontSize: 40,

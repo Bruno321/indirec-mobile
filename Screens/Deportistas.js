@@ -1,5 +1,5 @@
-import { Dimensions ,Text, View } from "react-native";
-import { ActionButton, DeportistasCard ,FiltersView, Header, List, OrderView, SearchInput } from '../components';
+import { Dimensions ,Text, View, SafeAreaView } from "react-native";
+import { ActionButton ,FiltersView, Header, List, OrderView, SearchInput, DeportistasCard } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 
 const { fontScale } = Dimensions.get('window');
@@ -48,8 +48,9 @@ export const Deportistas = ({ navigation }) => {
   ];
     return (
       <View style={{ flex:1, marginBottom: '65%' }}>
-        <Header navigation={navigation} title={"DEPORTISTAS"}/>
-        <Text style={{ fontSize: 35 / fontScale, fontFamily: 'Fredoka-Medium', alignSelf: 'center'}}>Deportistas</Text>
+        <SafeAreaView style={{backgroundColor: "#003070"}}/>
+        <Header navigation={navigation} title={"Deportistas"}/>
+        {/* <Text style={{ fontSize: 35 / fontScale, fontFamily: 'Fredoka-Medium', alignSelf: 'center'}}>Deportistas</Text> */}
         <SearchInput />
         <View style={{ flexDirection:'row', justifyContent: 'space-between', marginBottom: 15 }}>
           <FiltersView />
@@ -58,10 +59,10 @@ export const Deportistas = ({ navigation }) => {
         {/* You can choose between the following options to show the data: */}
 
         {/* USING COLUMNS ARRAY */}
-        <List dataSource={deportistas} columns={columns} loading={loading} />
+        {/* <List dataSource={deportistas} columns={columns} loading={loading} /> */}
 
         {/* USING CUSTOM RENDER */}
-        {/* <List dataSource={deportistas} renderItem={row => <DeportistasCard props={row} />} loading={loading} /> */}
+        <List dataSource={deportistas} renderItem={row => <DeportistasCard props={row}/>} loading={loading} />
       </View>
     )
 };

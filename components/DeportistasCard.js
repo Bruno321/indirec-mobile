@@ -1,12 +1,17 @@
 import { StyleSheet, Text, View, Image, Dimensions, Alert, Modal, Button,StatusBar } from 'react-native';
 import TouchableCmp from '../assetsUI/TouchableCmp';
+import { useNavigation } from '@react-navigation/native';
+
 
 export const DeportistasCard = ({props}) => {
+    var dataProps = {props};
+    const navigation = useNavigation();
+    
 	return(
 		<View style={styles.main}>
             <View style={styles.even1}>
                 <View style={styles.caja1}>
-                    <Text style={styles.caja1Text1}>Nombre</Text>
+                    <Text style={styles.caja1Text1}>Nombre - </Text>
                     <Text style={styles.caja1Text2} numberOfLines={2}>{props.nombres} {props.apellidos}</Text>
                 </View>
                 <View style={styles.caja2}>
@@ -24,7 +29,7 @@ export const DeportistasCard = ({props}) => {
                     <Text style={styles.caja4Text2}>{props.facultad}</Text>
                 </View>
                 <View style={styles.buttonOut}>
-                    <TouchableCmp>
+                    <TouchableCmp onPress={()=> navigation.navigate('Deportista.details', { data: dataProps} )}>
                         <View style={styles.buttonIn}>
                             <Text style={styles.buttonText}>&#9432; Información</Text>
                         </View>

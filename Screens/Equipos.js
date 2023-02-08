@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, ScrollView,FlatList } from "react-native";
+import { View, Text, StyleSheet, Dimensions, SafeAreaView } from "react-native";
 import { EquiposCard , FiltersView, Header, List, OrderView, SearchInput } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 
@@ -9,8 +9,9 @@ export const Equipos = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
-			<Header navigation={navigation} />
-			<Text style={{ fontSize: 35 / fontScale, fontFamily: 'Fredoka-Medium', paddingLeft: 10}}>Equipos</Text>
+			<SafeAreaView style={{backgroundColor: "#003070"}}/>
+			<Header navigation={navigation} title={"Equipos"}/>
+			{/* <Text style={{ fontSize: 35 / fontScale, fontFamily: 'Fredoka-Medium', paddingLeft: 10}}>Equipos</Text> */}
 			
 			{/* <View style={styles.titulo}>
 				<Text style={styles.title}>Equipos</Text>

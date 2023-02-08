@@ -1,26 +1,35 @@
 import { StyleSheet, View, Image, Dimensions, StatusBar, SafeAreaView, Text} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 
-const { width, height } = Dimensions.get('window');
+const { width, fontScale } = Dimensions.get('window');
 
 export const Header = (props) => {
 	const {navigation} = props;
 	return(
 		<View style={styles.main}>
-			<SafeAreaView />
 			<StatusBar 
-				backgroundColor={"black"}
+				backgroundColor={"#003070"}
 				barStyle={"light-content"}
 				hidden={false}
 			/>
 			{/* <View style={styles.header}>
 			</View> */}
 			{navigation === undefined ? null : (
-				<View style={styles.menu}>
-					<Feather name={'menu'} size={35} color={'white'} onPress={() => navigation.openDrawer()}/>
-					<Text style={styles.screenTitle}>{props.title}</Text>
-				</View>
+				props.title == "Datos del Deportista" ? (
+				<>
+					<View style={styles.menu}>
+						<Feather name={'arrow-left'} size={35} color={'white'} onPress={() => navigation.goBack()}/>
+					</View>
+				</>
+				) : (
+				<>
+					<View style={styles.menu}>
+						<Feather name={'menu'} size={35} color={'white'} onPress={() => navigation.openDrawer()}/>
+					</View>
+				</>
+				)
 			)}
+			<Text style={styles.screenTitle}>{props.title}</Text>
 		</View>
 )}
 
@@ -29,6 +38,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#003070',
 		height: 80,
 		flexDirection: 'row',
+		alignItems: 'center',
 	},
 	header:{
 		height: 80,
@@ -43,12 +53,25 @@ const styles = StyleSheet.create({
 	menu:{
 		// marginTop:-58,
 		// marginLeft:20,
-		backgroundColor: 'red',
+		// backgroundColor: 'red',
 		width:50,
 		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'center',
 	},
 	screenTitle:{
 		color: 'white',
-		width: 100
+		// backgroundColor: 'red',
+
+		// width: '100%',
+		fontSize: 25 / fontScale,
+		paddingLeft: 5 / fontScale,
+
+		fontFamily: 'Fredoka-Medium',
+		alignSelf: 'center',
+		// alignItems: 'center',
+	},
+	safeareaview:{
+		backgroundColor: 'red',
 	}
 });

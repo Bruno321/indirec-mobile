@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Dimensions, Image, Text, View } from "react-native";
+import { Dimensions, Image, SafeAreaView, Text, View } from "react-native";
 import { ActionButton, AsistenciasCard, FiltersView, Header, List, OrderView, SearchInput } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 import moment from "moment/moment";
@@ -67,8 +67,9 @@ export const Asistencias = ({navigation}) => {
   ];
     return(
 			<View style={{ flex:1, marginBottom: '65%' }}>
-				<Header navigation={navigation}/>
-        <Text style={{ fontSize: 35 / fontScale, fontFamily: 'Fredoka-Medium', paddingLeft: 10}}>Asistencias</Text>
+        <SafeAreaView style={{backgroundColor: "#003070"}}/>
+				<Header navigation={navigation} title={"Asistencias"}/>
+        {/* <Text style={{ fontSize: 35 / fontScale, fontFamily: 'Fredoka-Medium', paddingLeft: 10}}>Asistencias</Text> */}
         <SearchInput />
         <View style={{ flexDirection:'row', justifyContent: 'space-between' }}>
           <FiltersView />

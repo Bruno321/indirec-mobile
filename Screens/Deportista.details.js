@@ -1,4 +1,4 @@
-import { Dimensions, Image, View, StyleSheet, Text } from 'react-native';
+import { Dimensions, Image, View, StyleSheet, Text, SafeAreaView } from 'react-native';
 import { ActionButton, Col, Header, Row } from '../components';
 import { REACT_APP_API_URL } from '@env';
 import { BASEPATH } from '../Service/Api';
@@ -15,10 +15,10 @@ const LargeText = ({ children, style = {} }) => {
 export const DeportistaDetails = ({ navigation, route }) => {
   const { data } = route.params,
     profilePicture = data.foto ? { uri: `${REACT_APP_API_URL}${BASEPATH}/${data.foto}` } : require('../images/ImagenEjemploDeportista.jpg');
-
   return (
       <View>
-        <Header/>
+        <SafeAreaView style={{backgroundColor: "#003070"}}/>
+        <Header navigation={navigation} title={"Datos del Deportista"}/>
         <View style={styles.centeredView}>
           <Row>
             <Col>
@@ -26,37 +26,37 @@ export const DeportistaDetails = ({ navigation, route }) => {
             </Col>
             <Col>
               <View>
-                <LargeText style={styles.boldText}>Expediente </LargeText>
-                <LargeText style={styles.dato}>{data?.expediente}</LargeText>
+                <LargeText style={styles.boldText}>Expediente</LargeText>
+                <LargeText style={styles.dato}>{data.props.expediente}</LargeText>
               </View>
               <View>
                 <LargeText style={styles.boldText}>No. Seguro Social </LargeText>
-                <LargeText style={styles.dato}>{data?.numSeguroSocial}</LargeText>
+                <LargeText style={styles.dato}>{data.props.numSeguroSocial}</LargeText>
               </View>
             </Col>
           </Row>
           <Row>
             <Col>
               <LargeText style={styles.boldText}>Nombre</LargeText>
-              <LargeText style={styles.dato}>{data?.nombres}</LargeText>
+              <LargeText style={styles.dato}>{data.props.nombres}</LargeText>
             </Col>
             <Col>
               <LargeText style={styles.boldText}>Apellidos</LargeText>
-              <LargeText style={styles.dato}>{data?.apellidos}</LargeText>
+              <LargeText style={styles.dato}>{data.props.apellidos}</LargeText>
             </Col>
             <Col>
               <LargeText style={styles.boldText}>Sexo</LargeText>
-              <LargeText style={styles.dato}>{data?.sexo ? 'Femenino' : 'Masculino'}</LargeText>
+              <LargeText style={styles.dato}>{data.props.sexo ? 'Femenino' : 'Masculino'}</LargeText>
             </Col>
           </Row>
           <Row>
             <Col>
               <LargeText style={styles.boldText}>Facultad</LargeText>
-              <LargeText style={styles.dato2}>{data?.facultad}</LargeText>
+              <LargeText style={styles.dato2}>{data.props.facultad}</LargeText>
             </Col>
             <Col>
               <LargeText style={styles.boldText}>Deporte</LargeText>
-              <LargeText style={styles.dato2}>{data?.deporte}</LargeText>
+              <LargeText style={styles.dato2}>{data.props.deporte}</LargeText>
             </Col>
             <Col>
               <LargeText style={styles.boldText}>Subdivisión</LargeText>
@@ -66,27 +66,27 @@ export const DeportistaDetails = ({ navigation, route }) => {
           <Row>
             <Col>
               <LargeText style={styles.boldText}>Jugador Seleccionado</LargeText>
-              <LargeText style={styles.dato}>{data?.jugadorSeleccionado ? 'Si' : 'No'}</LargeText>
+              <LargeText style={styles.dato}>{data.props.jugadorSeleccionado ? 'Si' : 'No'}</LargeText>
             </Col>
             <Col>
               <LargeText style={styles.boldText}>No. Jugador</LargeText>
-              <LargeText style={styles.dato}>{data?.numJugador}</LargeText>
+              <LargeText style={styles.dato}>{data.props.numJugador}</LargeText>
             </Col>
           </Row>
           <Row>
             <Col>
               <LargeText style={styles.boldText}>Telefono</LargeText>
-              <LargeText style={styles.dato}>{data?.telefono}</LargeText>
+              <LargeText style={styles.dato}>{data.props.telefono}</LargeText>
             </Col>
             <Col>
               <LargeText style={styles.boldText}>Num. Emergencias</LargeText>
-              <LargeText style={styles.dato}>{data?.telefonoEmergencia}</LargeText>
+              <LargeText style={styles.dato}>{data.props.telefonoEmergencia}</LargeText>
             </Col>
           </Row>
           <Row>
             <Col>
               <LargeText style={styles.boldText}>Correo</LargeText>
-              <LargeText style={styles.dato}>{data?.correo}</LargeText>
+              <LargeText style={styles.dato}>{data.props.correo}</LargeText>
             </Col>
           </Row>
           <Row>
@@ -111,15 +111,6 @@ export const DeportistaDetails = ({ navigation, route }) => {
               />
             </Col>
           </Row>
-          <Row>
-            <ActionButton
-              text="Regresar"
-              backgroundColor="#003070"
-              color="#FFF"
-              widthPercentage={0.4}
-              handler={() => navigation.goBack()}
-            />
-          </Row>
         </View>
       </View>
   );
@@ -130,7 +121,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'space-evenly',
     padding: 10,
-    height: height*0.9,
+    height: height*0.825,
   },
   boldText: {
     fontFamily: 'Fredoka-Medium',

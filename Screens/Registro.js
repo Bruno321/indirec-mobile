@@ -237,13 +237,9 @@ export const Registro = () => {
 
 	return(
 		<ScrollView style={styles.general} showsVerticalScrollIndicator={false}>
-
-		<SafeAreaView />
-			<Header navigation={navigation}/>
+		<SafeAreaView style={{backgroundColor: "#003070"}}/>
+			<Header navigation={navigation} title={"Registrar Deportista"}/>
 			<View style={styles.center}>
-				<View style={styles.viewTitulo}>
-					<Text style={styles.titulo}>Registro de un deportista</Text>
-				</View>
 
 				{/* FORM FIELDS */}
 				<View style={styles.viewForm}>
@@ -541,10 +537,6 @@ const styles = StyleSheet.create({
 	},
 	center:{
 		alignItems:'center'
-	},
-	viewTitulo:{
-		width:width/1.25,
-		marginTop:height/28,
 	},
 	titulo:{
 		fontSize: 40,
