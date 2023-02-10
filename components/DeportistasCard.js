@@ -8,35 +8,28 @@ export const DeportistasCard = ({props}) => {
     const navigation = useNavigation();
     
 	return(
-		<View style={styles.main}>
-            <View style={styles.even1}>
-                <View style={styles.caja1}>
-                    <Text style={styles.caja1Text1}>Nombre - </Text>
-                    <Text style={styles.caja1Text2} numberOfLines={2}>{props.nombres} {props.apellidos}</Text>
-                </View>
-                <View style={styles.caja2}>
-                    <Text style={styles.caja2Text1}>Expediente</Text>
-                    <Text style={styles.caja2Text2}>{props.expediente}</Text>
-                </View>
-                <View style={styles.caja3}>
-                    <Text style={styles.caja3Text1}>Sexo</Text>
-                    <Text style={styles.caja3Text2}>{props.sexo}</Text>
-                </View>
-            </View>
-            <View style={styles.even2}>
-                <View style={{flexDirection:'row'}}>
-                    <Text style={styles.caja4Text1}>Facultad:</Text>
-                    <Text style={styles.caja4Text2}>{props.facultad}</Text>
-                </View>
-                <View style={styles.buttonOut}>
-                    <TouchableCmp onPress={()=> navigation.navigate('Deportista.details', { data: dataProps} )}>
-                        <View style={styles.buttonIn}>
-                            <Text style={styles.buttonText}>&#9432; Información</Text>
-                        </View>
-                    </TouchableCmp>
+        <TouchableCmp onPress={()=> navigation.navigate('Deportista.details', { data: dataProps} )}>
+            <View style={styles.main}>
+                <View style={styles.even1}>
+                    <View style={styles.caja}>
+                        {/* <Text style={styles.cajaText1}>Nombre</Text> */}
+                        <Text style={styles.cajaText2} numberOfLines={1}>{props.nombres} {props.apellidos}</Text>
+                    </View>
+                    <View style={styles.caja}>
+                        {/* <Text style={styles.cajaText1}>Expediente</Text> */}
+                        <Text style={styles.cajaText2}>{props.expediente}</Text>
+                    </View>
+                    <View style={styles.caja}>
+                        {/* <Text style={styles.cajaText1}>Sexo</Text> */}
+                        <Text style={styles.cajaText2}>{props.sexo == 0 ? "Hombre" : "Mujer"}</Text>
+                    </View>
+                    <View style={styles.caja}>
+                        {/* <Text style={styles.cajaText1}>Facultad:</Text> */}
+                        <Text style={styles.cajaText2}>{props.facultad}</Text>
+                    </View>
                 </View>
             </View>
-        </View>
+        </TouchableCmp>
 
         
 )};
@@ -48,13 +41,9 @@ export const DeportistasCard = ({props}) => {
 const styles = StyleSheet.create({
     main: {
         width: Dimensions.get('window').width,
-        height: 145,
-        backgroundColor: 'white',
+        backgroundColor: 'rgba(255,255,255,1)',
         paddingVertical: 10,
         paddingHorizontal: Dimensions.get('window').width*0.02,
-        // borderWidth: 2,
-        // borderColor: '#000',
-
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -62,97 +51,23 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
-
         elevation: 5,
         marginBottom: 5
     },
     even1:{
         flex: 0,
-    //   bottom: 0,
-        flexDirection: 'row',
-    //   backgroundColor: 'pink',
+        flexDirection: 'column',
         justifyContent: 'space-between',
-    //   alignItems: 'center',
     },
-    even2:{
-        flex: 0,
-      //   bottom: 0,
-        flexDirection: 'row',
-        // backgroundColor: 'pink',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+    caja:{
+        width: "100%",
     },
-    caja1:{
-        width: Dimensions.get('window').width*0.46,
-        height: 80,
-        // backgroundColor:'red',
-    },
-    caja1Text1:{
+    cajaText1:{
         textAlign: 'left',
         color: 'gray'
     },
-    caja1Text2:{
+    cajaText2:{
         textAlign: 'left',
         color: 'black'
     },
-    caja2:{
-        width: Dimensions.get('window').width*0.25,
-        // backgroundColor:'green',
-    },
-    caja2Text1:{
-        textAlign: 'center',
-        color: 'gray'
-    },
-    caja2Text2:{
-        textAlign: 'center',
-        color: 'black'
-    },
-    caja3:{
-        width: Dimensions.get('window').width*0.25,
-        // backgroundColor:'blue',
-        // textAlign: 'right',
-    },
-    caja3Text1:{
-        textAlign: 'right',
-        color: 'gray'
-    },
-    caja3Text2:{
-        textAlign: 'right',
-        color: 'black'
-    },
-    caja4Text1:{
-        textAlign: 'left',
-        color: 'black'
-    },
-    caja4Text2:{
-        textAlign: 'right',
-        color: 'gray'
-    },
-    buttonOut: {
-        backgroundColor: '#005090',
-        height: 40,
-        width: Dimensions.get('window').width*0.4,
-        borderRadius: 18,
-        overflow: 'hidden',
-        justifyContent: 'center',
-
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-
-        elevation: 5,
-    },
-    buttonIn: {
-        width: Dimensions.get('window').width*0.4,
-        height: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: 'white',
-    }
 });

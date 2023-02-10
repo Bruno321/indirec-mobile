@@ -20,29 +20,33 @@ export const SearchInput = () => {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Buscar por Nombre o Expediente"
-        value={search}
-        onChangeText={setSearch}
-      />
-      <View style={styles.buttons}>
-        <ActionButton
-          icon="search"
-          color="#000"
-          backgroundColor="#FFF"
-          handler={handleSearch}
-          widthPercentage={0.1}
-          heightPercentage={0.04}
+      <View style={styles.containerInput}>
+        <TextInput
+          style={styles.input}
+          placeholder="Buscar por Nombre o Expediente"
+          value={search}
+          onChangeText={setSearch}
         />
-        <ActionButton
-          icon="trash"
-          color="#000"
-          backgroundColor="#FFF"
-          handler={() => setSearch('')}
-          widthPercentage={0.1}
-          heightPercentage={0.04}
-        />
+        <View style={styles.buttons}>
+          <View style={{borderRadius: 18, overflow: 'hidden',}}>
+            <ActionButton
+              icon="close"
+              color="#000"
+              // backgroundColor="#FFF"
+              handler={() => setSearch('')}
+              widthPercentage={0.1}
+              heightPercentage={0.04}
+          />
+          </View>
+          <ActionButton
+            icon="search"
+            color="#000"
+            // backgroundColor="#FFF"
+            handler={handleSearch}
+            widthPercentage={0.1}
+            heightPercentage={0.04}
+          />
+        </View>
       </View>
     </View>
   );
@@ -50,18 +54,20 @@ export const SearchInput = () => {
 
 const styles =  StyleSheet.create({
   container: {
-    width,
+    // width,
+    backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: '4%'
+    marginBottom: '4%',
+    marginVertical: 5,
   },
   input: {
     width: width * 0.65,
     height: 35,
     margin: height*0.01,
-    borderBottomWidth: 1,
-		borderBottomColor:'black',
+    // borderBottomWidth: 1,
+		// borderBottomColor:'black',
     color:'#000000',
     fontFamily:'Fredoka-Light',
     backgroundColor:'#ffffff',
@@ -69,7 +75,16 @@ const styles =  StyleSheet.create({
   },
   buttons: {
     width: width * 0.22,
+    // backgroundColor: 'green',
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  containerInput: {
+    flexDirection: 'row',
+    // backgroundColor: 'green',
+    borderWidth: 1,
+    alignItems: 'center',
+    paddingHorizontal: 5,
+    borderRadius: 18,
   }
 });

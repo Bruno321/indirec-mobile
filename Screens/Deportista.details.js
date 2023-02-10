@@ -18,7 +18,7 @@ export const DeportistaDetails = ({ navigation, route }) => {
   return (
       <View>
         <SafeAreaView style={{backgroundColor: "#003070"}}/>
-        <Header navigation={navigation} title={"Datos del Deportista"}/>
+        <Header navigation={navigation} title={"Datos del Deportista"} funcion={"goback"}/>
         <View style={styles.centeredView}>
           <Row>
             <Col>

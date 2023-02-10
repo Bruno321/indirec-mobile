@@ -15,7 +15,7 @@ export const Header = (props) => {
 			{/* <View style={styles.header}>
 			</View> */}
 			{navigation === undefined ? null : (
-				props.title == "Datos del Deportista" ? (
+				props.funcion == "goback" ? (
 				<>
 					<View style={styles.menu}>
 						<Feather name={'arrow-left'} size={35} color={'white'} onPress={() => navigation.goBack()}/>

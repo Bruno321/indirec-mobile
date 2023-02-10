@@ -1,4 +1,4 @@
-import { Dimensions ,Text, View, SafeAreaView } from "react-native";
+import { Dimensions ,Text, View, SafeAreaView, StyleSheet } from "react-native";
 import { ActionButton ,FiltersView, Header, List, OrderView, SearchInput, DeportistasCard } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 
@@ -47,12 +47,11 @@ export const Deportistas = ({ navigation }) => {
     }
   ];
     return (
-      <View style={{ flex:1, marginBottom: '65%' }}>
+      <View style={styles.main}>
         <SafeAreaView style={{backgroundColor: "#003070"}}/>
         <Header navigation={navigation} title={"Deportistas"}/>
-        {/* <Text style={{ fontSize: 35 / fontScale, fontFamily: 'Fredoka-Medium', alignSelf: 'center'}}>Deportistas</Text> */}
         <SearchInput />
-        <View style={{ flexDirection:'row', justifyContent: 'space-between', marginBottom: 15 }}>
+        <View style={{ flexDirection:'row', justifyContent: 'space-between'}}>
           <FiltersView />
           <OrderView />
         </View>
@@ -62,7 +61,16 @@ export const Deportistas = ({ navigation }) => {
         {/* <List dataSource={deportistas} columns={columns} loading={loading} /> */}
 
         {/* USING CUSTOM RENDER */}
-        <List dataSource={deportistas} renderItem={row => <DeportistasCard props={row}/>} loading={loading} />
+        <List dataSource={deportistas} renderItem={row => <DeportistasCard props={row}/>} loading={loading}/>
       </View>
     )
 };
+
+const styles = StyleSheet.create({
+  main: {
+    // backgroundColor: 'red',
+    height: '90%',
+    // overflow: 'hidden',
+    paddingBottom: 50,
+  }
+});
