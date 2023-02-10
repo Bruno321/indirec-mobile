@@ -16,7 +16,7 @@ const LOGINPATH = `${BASEPATH}/auth`;
 export const token = async () => await AsyncStorage.getItem('token');
 
 const API = axios.create({
-  baseURL: "http://148.220.213.241:3000",
+  baseURL: REACT_APP_API_URL,
   headers: { 
     "Access-Control-Allow-Origin": null ,
     "Accept":"*/*"
