@@ -7,3 +7,4 @@ export * from './Registro';
 export * from './RegistroEquipos';
 export * from './Equipos';
 export * from './Eventos';
+export * from './EventosDetails';

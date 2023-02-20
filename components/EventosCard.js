@@ -3,12 +3,16 @@ import { ActionButton } from './ActionButton';
 import MarqueeText from 'react-native-marquee';
 import Modal from "react-native-modal";
 import React, { useState } from 'react';
-import TouchableCmp from '../assetsUI/TouchableCmp';
+import TouchableCmp from '../assetsUI/TouchableCmp'
 
 const { fontScale } = Dimensions.get('window');
 
-export const EventosCard = ({props}) => {
+export const EventosCard = ({props,navigation}) => {
     const [isModalVisible, setModalVisible] = useState(false);
+
+    const redirect = () =>{
+        navigation.navigate("EventosDetails", {datos:props})
+    }
 
     return (
         <View style={{paddingLeft:0}}>
@@ -22,12 +26,12 @@ export const EventosCard = ({props}) => {
                             loop={true}
                             delay={2000}
                         >
-                            {props.nombre1} vs {props.nombre2}
+                            {props.equipoLocal==props.equipos[0]?.equipoId?props.equipos[0]?.nombre:props.equipos[1]?.nombre} vs {props.equipoVisitante==props.equipos[1]?.equipoId?props.equipos[1]?.nombre:props.equipos[0]?.nombre}
                         </MarqueeText>
-                        <Text style={styles.details} numberOfLines={1}>{props.fecha} - {props.hora}</Text>
+                        <Text style={styles.details} numberOfLines={1}>{props.fechaEvento} - {props.horaEvento}</Text>
                     </View>
                     <View style={styles.detalles}>
-                        <Text style={styles.camp} numberOfLines={1}>{props.campus}</Text>
+                        <Text style={styles.camp} numberOfLines={1}>{props.canchaJugada}</Text>
                     </View>
                 </View>
                 <View style={styles.segunda}>
@@ -39,7 +43,7 @@ export const EventosCard = ({props}) => {
                             icon="info"
                             color="#FFF"
                             backgroundColor="#003070"
-                            handler={() => {setModalVisible(true)}}
+                            handler={() => {redirect()}}
                             text="Información"
                             widthPercentage={0.3}
                             heightPercentage={0.035}
@@ -50,57 +54,57 @@ export const EventosCard = ({props}) => {
             <Modal isVisible={isModalVisible} onRequestClose={() => {setModalVisible(false)}}>
                 <ScrollView style={styles.modal} contentContainerStyle={[styles.contentContainer]}>
                     <View style={styles.titulo}>
-                        <Text style={styles.title}>Equipo A vs Equipo B</Text>
+                        <Text style={styles.title}>{props.nombreEvento}</Text>
                     </View>
                     <View style={styles.fecha}>
                         <Text style={styles.txtTitulo}>Fecha</Text>
-                        <Text style={styles.txt}>Viernes 10 de marzo - 11:00 am</Text>
+                        <Text style={styles.txt}>{props.fechaEvento} - {props.horaEvento}</Text>
                     </View>
                     <View style={styles.equipos}>
                         <Text style={styles.txtTitulo}>Equipo local</Text>
-                        <Text style={styles.txt}>Pumas</Text>
+                        <Text style={styles.txt}>{props.equipoLocal==props.equipos[0]?.equipoId?props.equipos[0]?.nombre:props.equipos[1]?.nombre}</Text>
                         <Text style={styles.txtTitulo}>Equipo visitante</Text>
-                        <Text style={styles.txt}>Enermería</Text>
+                        <Text style={styles.txt}>{props.equipoVisitante==props.equipos[1]?.equipoId?props.equipos[1]?.nombre:props.equipos[0]?.nombre}</Text>
                     </View>
                     <View style={styles.director}>
                         <Text style={styles.txtTitulo}>Director técnico local</Text>
-                        <Text style={styles.txt}>Panchito Pérez Juárez</Text>
+                        <Text style={styles.txt}>{props.directorTecnicoLocal}</Text>
                         <Text style={styles.txtTitulo}>Director técnico visitante</Text>
-                        <Text style={styles.txt}>Jorge Bernal Paz</Text>
+                        <Text style={styles.txt}>{props.directorTecnicoVisitante}</Text>
                     </View>
                     <View style={styles.puntos}>
                         <Text style={styles.txtTitulo}>Puntos equipo local</Text>
-                        <Text style={styles.txt}>00</Text>
+                        <Text style={styles.txt}>{props.puntosLocal}</Text>
                         <Text style={styles.txtTitulo}>Puntos equipo visitante</Text>
-                        <Text style={styles.txt}>00</Text>
+                        <Text style={styles.txt}>{props.puntosVisitante}</Text>
                     </View>
                     <View style={styles.jornada}>
                         <Text style={styles.txtTitulo}>Jornada</Text>
-                        <Text style={styles.txt}>1</Text>
+                        <Text style={styles.txt}>{props.jornada}</Text>
                     </View>
                     <View style={styles.notas}>
                         <Text style={styles.txtTitulo}>Notas</Text>
-                        <Text style={styles.txt}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</Text>
+                        <Text style={styles.txt}>{props.incidentes}</Text>
                     </View>
                     <View style={styles.boton}>
-                        <TouchableCmp onPress={()=>setModalVisible(false)}>
-                            <View style={styles.btn}>
-                                <Text style={styles.txtBtn}>OK</Text>
-                            </View>
-                        </TouchableCmp>
-                        {/* {Platform.OS === 'android' ? 
-                            <TouchableNativeFeedback>
+                        {Platform.OS === 'android' ?
+                            <TouchableNativeFeedback onPress={()=>setModalVisible(false)}>
                                 <View style={styles.btn}>
                                     <Text style={styles.txtBtn}>OK</Text>
                                 </View>
                             </TouchableNativeFeedback>
-                            : 
-                            <TouchableOpacity>
+                        :
+                            <TouchableOpacity onPress={()=>setModalVisible(false)}>
                                 <View style={styles.btn}>
                                     <Text style={styles.txtBtn}>OK</Text>
                                 </View>
                             </TouchableOpacity>
-                        } */}
+                        }
+                        {/* <TouchableCmp onPress={()=>setModalVisible(false)}>
+                            <View style={styles.btn}>
+                                <Text style={styles.txtBtn}>OK</Text>
+                            </View>
+                        </TouchableCmp> */}
                     </View>
                 </ScrollView>
             </Modal>

@@ -17,7 +17,8 @@ import {
   DeportistaDetails,
   RegistroEquipos,
   Equipos,
-  Eventos
+  Eventos,
+  EventosDetails,
 } from './Screens/index';
 
 SplashScreen.preventAutoHideAsync();
@@ -142,6 +143,7 @@ export default function App() {
           <>
             <Stack.Screen name="drawer" component={SideDrawer}/> 
             <Stack.Screen name="Deportista.details" component={DeportistaDetails}/> 
+            <Stack.Screen name="EventosDetails" component={EventosDetails}/> 
           </>
         : 
           <Stack.Screen name="Login" component={Login}/>
