@@ -51,7 +51,7 @@ export const Deportistas = ({ navigation }) => {
         <SafeAreaView style={{backgroundColor: "#003070"}}/>
         <Header navigation={navigation} title={"Deportistas"}/>
         <SearchInput />
-        <View style={{ flexDirection:'row', justifyContent: 'space-between'}}>
+        <View style={{ flexDirection:'row', justifyContent: 'space-between', paddingBottom: 24,}}>
           <FiltersView />
           <OrderView />
         </View>
@@ -61,16 +61,15 @@ export const Deportistas = ({ navigation }) => {
         {/* <List dataSource={deportistas} columns={columns} loading={loading} /> */}
 
         {/* USING CUSTOM RENDER */}
-        <List dataSource={deportistas} renderItem={row => <DeportistasCard props={row}/>} loading={loading}/>
+        <View style={{flex: 1}}>
+          <List dataSource={deportistas} renderItem={row => <DeportistasCard props={row}/>} loading={loading}/>
+        </View>
       </View>
     )
 };
 
 const styles = StyleSheet.create({
   main: {
-    // backgroundColor: 'red',
-    height: '90%',
-    // overflow: 'hidden',
-    paddingBottom: 50,
+    height: '100%',
   }
 });

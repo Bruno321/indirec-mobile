@@ -60,7 +60,7 @@ const Item = ({item}, columns) => {
       </View>
       {
         actions ? (
-          <View style={{...styles.row, marginBottom: height * 0.02}}>
+          <View style={{...styles.row}}>
             <View style={{...styles.actionColumn, width: width}}>
               {handleRender(actions.render(item.deportistaId, item, styles.actionColumn))}
             </View>
@@ -79,7 +79,8 @@ export const List = ({ dataSource, columns, loading, renderItem }) => {
   ) : (
     dataSource.length ? (
       <View>
-        <FlatList 
+        <FlatList
+          style={{height: "100%"}} 
           data={dataSource}
           renderItem={row => renderItem !== undefined ? renderItem(row.item) : Item(row, columns)}
         />
