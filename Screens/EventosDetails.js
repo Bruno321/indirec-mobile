@@ -5,17 +5,19 @@ import Modal from "react-native-modal";
 import React, { useState } from 'react';
 import { Col, Header, List } from '../components';
 import TouchableCmp from "../assetsUI/TouchableCmp";
+import { useFetchData } from '../Hooks/Fetch.hook';
 
 const { fontScale } = Dimensions.get('window');
 
 export const EventosDetails = (props) =>{
 	const [isModalVisible, setModalVisible] = useState(false);
+    const [equipoSelec, setEquipoSelec] = useState();
     let datos = props.route.params.datos
-    console.log(datos.deportista)
+    console.log("AAAAAAAAAAA:" + datos.deportista[0])
 
-    const Item = ({title}) => (
+    const Item = ({title,apellido}) => (
         <View style={styles.item}>
-          <Text style={{}}>{title}</Text>
+          <Text style={{}}>{title} {apellido}</Text>
         </View>
     );
     return(
@@ -33,7 +35,7 @@ export const EventosDetails = (props) =>{
                     <Text style={styles.txtTitulo}>Equipo local</Text>
                     <View style={{flexDirection:'row',justifyContent:'space-between'}}>
                         <Text style={styles.txt}>{datos.equipoLocal==datos.equipos[0]?.equipoId?datos.equipos[0]?.nombre:datos.equipos[1]?.nombre}</Text>
-                        <TouchableCmp onPress={()=>setModalVisible(true)}>
+                        <TouchableCmp onPress={()=>{setModalVisible(true),setEquipoSelec(datos.equipoLocal)}}>
                             <View style={{backgroundColor:'#003070',width:Dimensions.get('window').width*0.3,justifyContent:'center',borderRadius:15}}>
                                 <Text style={{textAlign:'center',color:'white'}}>Ver jugadores</Text>
                             </View>
@@ -42,7 +44,7 @@ export const EventosDetails = (props) =>{
                     <Text style={styles.txtTitulo}>Equipo visitante</Text>
                     <View style={{flexDirection:'row',justifyContent:'space-between'}}>
                         <Text style={styles.txt}>{datos.equipoVisitante==datos.equipos[1]?.equipoId?datos.equipos[1]?.nombre:datos.equipos[0]?.nombre}</Text>
-                        <TouchableCmp onPress={()=>setModalVisible(true)}>
+                        <TouchableCmp onPress={()=>{setModalVisible(true),setEquipoSelec(datos.equipoVisitante)}}>
                             <View style={{backgroundColor:'#003070',width:Dimensions.get('window').width*0.3,justifyContent:'center',borderRadius:15}}>
                                 <Text style={{textAlign:'center',color:'white'}}>Ver jugadores</Text>
                             </View>
@@ -71,7 +73,7 @@ export const EventosDetails = (props) =>{
                 </View>
                 <View style={styles.boton}>
                     {Platform.OS === 'android' ?
-                        <TouchableNativeFeedback onPress={()=>setModalVisible(false)}>
+                        <TouchableNativeFeedback onPress={()=>{setModalVisible(false)}}>
                             <View style={styles.btn}>
                                 <Text style={styles.txtBtn}>OK</Text>
                             </View>
@@ -87,11 +89,11 @@ export const EventosDetails = (props) =>{
             </ScrollView>
             <Modal isVisible={isModalVisible} onRequestClose={() => {setModalVisible(false)}}>
                 <View style={{backgroundColor:'white',height:Dimensions.get('window').height*.5,paddingHorizontal:15, paddingTop:20,borderRadius:15}}>
-                    <Text numberOfLines={2} style={{fontFamily: 'Fredoka-Medium',fontSize: 25 / fontScale,textAlign:'center'}}>Jugadores equipo {datos.equipoVisitante==datos.equipos[1]?.equipoId?datos.equipos[1]?.nombre:datos.equipos[0]?.nombre}</Text>
+                    <Text numberOfLines={2} style={{fontFamily: 'Fredoka-Medium',fontSize: 25 / fontScale,textAlign:'center'}}>Jugadores equipo {equipoSelec==datos.equipos[0]?.equipoId?datos.equipos[0]?.nombre:datos.equipos[1]?.nombre}</Text>
                     <View>
                         <FlatList
                             data={datos.deportista}
-                            renderItem={({item}) => <Item title={item.nombres} />}
+                            renderItem={({item}) => equipoSelec==item.equipoId?<Item title={item.nombres} apellido={item.apellidos}/>:""}
                             keyExtractor={item => item.deportistaId}
                         />
                     </View>
