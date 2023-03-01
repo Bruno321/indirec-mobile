@@ -31,7 +31,7 @@ export const SearchInput = () => {
           <View style={{borderRadius: 18, overflow: 'hidden',}}>
             <ActionButton
               icon="close"
-              color="#000"
+              color="#A3A2A2"
               // backgroundColor="#FFF"
               handler={() => setSearch('')}
               widthPercentage={0.1}
@@ -40,7 +40,7 @@ export const SearchInput = () => {
           </View>
           <ActionButton
             icon="search"
-            color="#000"
+            color="#A3A2A2"
             // backgroundColor="#FFF"
             handler={handleSearch}
             widthPercentage={0.1}
@@ -54,12 +54,13 @@ export const SearchInput = () => {
 
 const styles =  StyleSheet.create({
   container: {
-    // width,
-    backgroundColor: 'white',
+    // width:,
+    // backgroundColor: 'red',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: '4%',
+    marginTop: 18,
     marginVertical: 5,
   },
   input: {
@@ -75,16 +76,17 @@ const styles =  StyleSheet.create({
   },
   buttons: {
     width: width * 0.22,
-    // backgroundColor: 'green',
+    backgroundColor: 'white',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
   },
   containerInput: {
     flexDirection: 'row',
-    // backgroundColor: 'green',
+    backgroundColor: 'white',
     borderWidth: 1,
     alignItems: 'center',
     paddingHorizontal: 5,
     borderRadius: 18,
+    borderColor: '#A3A2A2',
   }
 });
