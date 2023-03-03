@@ -25,6 +25,7 @@ import TouchableCmp from '../assetsUI/TouchableCmp';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import { process, SAVE_WITH_FILE } from '../Service/Api';
+import QRCode from 'react-native-qrcode-svg';
 
 const { width, height } = Dimensions.get('window');       
 
@@ -133,6 +134,13 @@ export const Registro = () => {
 	const [modal, setModal] = useState(false);
 	const [modBot, setModBot] = useState('');
 	const navigation = useNavigation();
+	const [showModal, setShowModal] = useState(false);
+	const [deportistaData,setDeportistaData] = useState({
+        nombre:"",
+        apellidoM:"",
+        apellidoP:"",
+        idPropio:""
+    })
 
 	const facultitiesItems = aFacultities.map(oFaculty => ({
 		label: `Facultad de ${oFaculty}`,
@@ -218,9 +226,21 @@ export const Registro = () => {
 				'Jugador agregado exitosamente',
 				response.data.message,
 				[
-					{text:'Okay'},
+					{
+						text:'Okay',
+						onPress: () => setShowModal(!showModal)
+					},
 				]
 			);
+
+			const { nombres: nombre, apellidos, deportistaId: idPropio } = response.data?.data;
+            const [apellidoP, apellidoM] = apellidos.split(" ");
+            setDeportistaData({
+                nombre,
+                apellidoP,
+                apellidoM,
+                idPropio,
+            })
 			reset();
 		} else {
 			Alert.alert(
@@ -521,6 +541,30 @@ export const Registro = () => {
 								</View>
 							</View>
 						</Modal>
+						
+						<Modal
+							animationType="slide"
+							transparent={false}
+							visible={showModal}
+							onRequestClose={() => {
+							Alert.alert('Modal has been closed.');
+							setModalVisible(!modalVisible);
+							}}>
+							<View>
+								<Text>QR Generado</Text>
+								<Text>Los datos han sido guardados exitosamente</Text>
+								<Text>No olvides escanear el código QR</Text>
+								<QRCode
+									value={`${JSON.stringify(deportistaData)}`}
+									size={280}
+									// logo={{uri: base64Logo}}
+									// logoSize={30}
+									// logoBackgroundColor='transparent'
+								/>
+								<Text onPress={() => setShowModal(!showModal)}>Cerrar</Text>
+							</View>
+						</Modal>
+						
 					</>
 				)}
 
