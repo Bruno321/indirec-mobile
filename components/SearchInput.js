@@ -59,9 +59,9 @@ const styles =  StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: '4%',
+    // marginBottom: '4%',
     marginTop: 18,
-    marginVertical: 5,
+    // marginVertical: 5,
   },
   input: {
     width: width * 0.65,

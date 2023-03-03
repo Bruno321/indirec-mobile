@@ -8,12 +8,13 @@ const { fontScale } = Dimensions.get('window');
 export const DeportistasCard = ({props}) => {
     
     var dataProps = {props};
-    console.log(dataProps)
+    // console.log(dataProps)
     const navigation = useNavigation();
-    const profilePicture = dataProps.foto ? { uri: `${REACT_APP_API_URL}${BASEPATH}/${dataProps.foto}` } : require('../images/ImagenEjemploDeportista.png');
+    const profilePicture = dataProps.props.foto ? { uri: `${REACT_APP_API_URL}${BASEPATH}/${dataProps.props.foto}` } : {uri: '../images/ImagenEjemploDeportista.png'};
     
 	return(
-        <TouchableCmp onPress={()=> navigation.navigate('Deportista.details', { data: dataProps} )}>
+        <TouchableCmp onPress={()=> navigation.navigate('Deportista.details', { data: dataProps}, console.log(profilePicture))}>
+            {/* {()=>{console.log(profilePicture)}} */}
             <View style={styles.main}>
                 <View style={styles.imageView}>
                     <Image source={profilePicture} style={styles.profilePic}/>
@@ -26,8 +27,12 @@ export const DeportistasCard = ({props}) => {
                         <Text style={styles.cajaText2} numberOfLines={1}>{props.facultad}</Text>
                     </View>
                     <View style={styles.caja2}>
-                        <Text style={styles.cajaText2} numberOfLines={1}>{props.sexo == 0 ? "Hombre" : "Mujer"}</Text>
-                        <Text style={styles.cajaText2} numberOfLines={1}>{props.expediente}</Text>
+                        <View style={styles.caja2x1}>
+                            <Text style={styles.cajaText2} numberOfLines={1}>{props.expediente}</Text>
+                        </View>
+                        <View style={styles.caja2x2}>
+                            <Text style={styles.cajaText2} numberOfLines={1}>{props.sexo == 0 ? "Hombre" : "Mujer"}</Text>
+                        </View>
                     </View>
                 </View>
             </View>
@@ -44,7 +49,7 @@ const styles = StyleSheet.create({
     main: {
         width: Dimensions.get('window').width,
         backgroundColor: 'rgba(255,255,255,1)',
-        height: 100,
+        height: 80,
         // backgroundColor: 'red',
         // paddingVertical: 10,
         // paddingHorizontal: Dimensions.get('window').width*0.02,
@@ -71,10 +76,14 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     caja2:{
-        width: 140,
-        display: 'flex',
+        width: 200,
         flexDirection: 'row',
-        justifyContent: 'space-between',
+    },
+    caja2x1:{
+        width: 100,
+    },
+    caja2x2:{
+        width: 100,
     },
     cajaText1:{
         textAlign: 'left',
@@ -89,8 +98,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#EEE',
         alignSelf: 'center',
         // height: "100%",
-        height: "100%",
-        width: 100,
+        // height: "100%",
+        width: 80,
     },
     profilePic: {
         width: "100%",
@@ -98,7 +107,7 @@ const styles = StyleSheet.create({
         height: "100%",
         // resizeMode: 'cover',
         // justifyContent: 'center',
-        borderRadius: 50,
+        // borderRadius: 50,
         // backgroundColor: 'purple',
         overflow: 'hidden',
     },

@@ -1,6 +1,8 @@
 import { Dimensions ,Text, View, SafeAreaView, StyleSheet } from "react-native";
-import { ActionButton ,FiltersView, Header, List, OrderView, SearchInput, DeportistasCard } from '../components';
+import { ActionButton ,FiltersView, Header, List, OrderView, SearchInput, DeportistasCard, Pressable } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
+import TouchableCmp from '../assetsUI/TouchableCmp';
+import Feather from 'react-native-vector-icons/Feather';
 
 const { fontScale } = Dimensions.get('window');
 
@@ -51,9 +53,17 @@ export const Deportistas = ({ navigation }) => {
         <SafeAreaView style={{backgroundColor: "#003070"}}/>
         <Header navigation={navigation} title={"Deportistas"}/>
         <SearchInput />
-        <View style={{ flexDirection:'row', justifyContent: 'space-between', paddingBottom: 24,}}>
-          <FiltersView />
-          <OrderView />
+        <View style={{paddingVertical: 24, justifyContent: 'space-between', height: 138,}}>
+          <View style={{flexDirection: 'row'}}>
+            <FiltersView />
+            <OrderView />
+          </View>
+          <TouchableCmp>
+            <View style={styles.agregarJugadorButton}>
+                <Feather name={'user-plus'} size={35} color={'white'}/>
+                <Text>Agregar Jugador</Text>
+            </View>
+          </TouchableCmp>
         </View>
         {/* You can choose between the following options to show the data: */}
 
@@ -64,6 +74,19 @@ export const Deportistas = ({ navigation }) => {
         <View style={{flex: 1}}>
           <List dataSource={deportistas} renderItem={row => <DeportistasCard props={row}/>} loading={loading}/>
         </View>
+        <View style={styles.paginacion}>
+          <TouchableCmp style={styles.paginacionArrowSection} onPress={() => {console.log("Presionado PAGE LEFT")}}>
+            <View style={styles.paginacionArrowButton}>
+              <Feather name={'chevron-left'} size={35} color={'white'}/>
+            </View>
+          </TouchableCmp>
+          <View style={styles.paginacionSelectPage}></View>
+          <TouchableCmp style={styles.paginacionArrowSection} onPress={() => {console.log("Presionado PAGE RIGHT")}}>
+            <View style={styles.paginacionArrowButton}>
+              <Feather name={'chevron-right'} size={35} color={'white'}/>
+            </View>
+          </TouchableCmp>
+        </View>
       </View>
     )
 };
@@ -71,5 +94,46 @@ export const Deportistas = ({ navigation }) => {
 const styles = StyleSheet.create({
   main: {
     height: '100%',
-  }
+    // position: 'relative',
+  },
+  paginacion:{
+    position: 'absolute',
+    bottom: 0,
+    marginBottom: 40,
+    height: 60,
+    width: "90%",
+    backgroundColor: 'rgba(255,0,0,0.2)',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    borderRadius: 50,
+    flexDirection: 'row',
+    overflow: 'hidden',
+  },
+  paginacionArrowSection:{
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+  paginacionArrowButton:{
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'orange',
+    width: "100%",
+    flex: 1,
+  },
+  paginacionSelectPage:{
+    width: "60%",
+    height: "100%",
+    backgroundColor: 'green',
+  },
+  agregarJugadorButton:{
+    width: "90%",
+    height: 35,
+    alignSelf: 'center',
+    backgroundColor: "#003070",
+    flexDirection: 'row',
+    // paddingBottom: 12,
+    // marginBottom: 12,
+  },
 });
