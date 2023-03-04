@@ -3,13 +3,13 @@ import { ActionButton, EventosCard , FiltersView, Header, List, OrderView, Searc
 import { useFetchData } from '../Hooks/Fetch.hook';
 import {Ionicons} from '@expo/vector-icons';
 import Modal from "react-native-modal";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
 import { aFacultities } from '../Utils/Constants';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import * as yup from "yup";
 import { Formik } from 'formik';
-import { process, SAVE, BASEPATH } from "../Service/Api";
+import { process, SAVE, FIND } from "../Service/Api";
 
 const { fontScale } = Dimensions.get('window');
 const { width, height } = Dimensions.get('window');
@@ -77,6 +77,13 @@ const validationSchema = yup.object().shape({
 
 export const Eventos = ({ navigation }) => {
 	const [eventos, loading] = useFetchData('eventos');
+	// const [equipos, setEquipos] = useState([]);
+	const [equipos, loading2] = useFetchData('equipos');
+	const dummy = [{label:"Equipo1"},{label:"equipo2"}]
+	const listaEquipos = equipos.map(obj=>({
+		label:obj.nombre,
+		value: obj.nombre
+	}))
 	const [isModalVisible, setModalVisible] = useState(false);
 	const [time, setTime] = useState('AM')
 	const facultitiesItems = aFacultities.map(oFaculty => ({
@@ -247,20 +254,34 @@ export const Eventos = ({ navigation }) => {
 						<Text style={styles.error}>{touched.hora && errors.hora}</Text>
 						<View style={styles.subtitulo}>
 							<Text style={styles.txtTitulo}>Equipo local</Text>
-								<TextInput
-									style={styles.txt}
-									multiline={true}
-									onChangeText={handleChange('equipoLocal')}
+								<Dropdown 
+									data={listaEquipos}
+									labelField="label"
+									valueField="value"
+									placeholder='Selecciona un equipo'
+									style={styles.dropdown1DropdownStyle2}
+									containerStyle={styles.dropdown2}
+									search={true}
+									onChange={({ value }) => {
+										setFieldValue('equipoLocal', value);
+									}}
 									value={values.equipoLocal}
 								/>
 								<Text style={styles.error}>{touched.equipoLocal && errors.equipoLocal}</Text>
 						</View>
 						<View style={styles.subtitulo}>
 							<Text style={styles.txtTitulo}>Equipo visitante</Text>
-								<TextInput
-									style={styles.txt}
-									multiline={true}
-									onChangeText={handleChange('equipoVisitante')}
+								<Dropdown 
+									data={listaEquipos}
+									labelField="label"
+									valueField="value"
+									placeholder='Selecciona un equipo'
+									style={styles.dropdown1DropdownStyle2}
+									containerStyle={styles.dropdown2}
+									search={true}
+									onChange={({ value }) => {
+										setFieldValue('equipoVisitante', value);
+									}}
 									value={values.equipoVisitante}
 								/>
 								<Text style={styles.error}>{touched.equipoVisitante && errors.equipoVisitante}</Text>
