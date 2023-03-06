@@ -3,13 +3,14 @@ import { ActionButton, EventosCard , FiltersView, Header, List, OrderView, Searc
 import { useFetchData } from '../Hooks/Fetch.hook';
 import {Ionicons} from '@expo/vector-icons';
 import Modal from "react-native-modal";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
+import { MultiSelect } from 'react-native-element-dropdown';
 import { aFacultities } from '../Utils/Constants';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import * as yup from "yup";
 import { Formik } from 'formik';
-import { process, SAVE, BASEPATH } from "../Service/Api";
+import { process, SAVE, FIND } from "../Service/Api";
 
 const { fontScale } = Dimensions.get('window');
 const { width, height } = Dimensions.get('window');
@@ -20,7 +21,9 @@ const oInitialState = {
 	fecha: '',
 	hora: '',
 	equipoLocal: '',
+	jugadoresLocales:'',
 	equipoVisitante: '',
+	jugadoresVisitantes:'',
 	dtLocal: '',
 	dtVisitante: '',
 	puntosLocal: '',
@@ -77,13 +80,72 @@ const validationSchema = yup.object().shape({
 
 export const Eventos = ({ navigation }) => {
 	const [eventos, loading] = useFetchData('eventos');
+	const [equipos, loading2] = useFetchData('equipos');
+	const [form, setForm] = useState(oInitialState);
 	const [isModalVisible, setModalVisible] = useState(false);
 	const [time, setTime] = useState('AM')
+
+	const listaEquipos = equipos.map(obj=>({
+		label:obj.nombre,
+		value: obj.equipoId
+	}))
 	const facultitiesItems = aFacultities.map(oFaculty => ({
 		label: `Facultad de ${oFaculty}`,
 		value: oFaculty,
 	}));
 
+	//Se guarda en un estado el arreglo de los jugadores que corresponden a cada uno de los dos equipos. 
+	const [jugadoresLocales, setJugadoresLocales] = useState();
+	const [jugadoresVisitantes, setJugadoresVisitantes] = useState();
+  
+	//Se guarda en un estado el id del equipo que será tanto local como visitante para posteriormente hacer la llamada de lo jugadores que corresponden a cada equipo seleccionado.
+	const [equipoLocal, setEquipoLocal] = useState();
+	const [equipoVisitante, setEquipoVisitante] = useState();
+  
+	//Estados para guardar en arreglos los deportistas que participaran en el evento. 
+	const [listaJugadoresLocales, setListaJugadoresLocales] = useState([]);
+	const [listaJugadoresVisitantes, setListaJugadoresVisitantes] = useState([]);
+  
+	//Estado que sirve para que el arreglo vuelva a estar vacio si el usuario cambia el equipo en la etiqueta select
+	const [limpiarJugadoresLocales, setLimpiarJugadoresLocales] = useState(false);
+	const [limpiarJugadoresVisitantes, setLimpiarJugadoresVisitantes] = useState(false);
+
+	//UseEffect para el equipo local
+	useEffect(() => {
+		const fetchEquipoLocal = async() => {
+			if(equipoLocal){
+			const response = await process(FIND, `equipos/${equipoLocal}`);
+			setListaJugadoresLocales([]);
+			setJugadoresLocales(response.data.data.jugadores);
+			}
+		}
+		fetchEquipoLocal();
+	}, [equipoLocal])
+
+	//UseEffect para el equipo visitante
+	useEffect(() => {
+		const fetchEquipoVisitante = async() => {
+		  if(equipoVisitante){
+			const response = await process(FIND, `equipos/${equipoVisitante}`);
+			setListaJugadoresVisitantes([]);
+			setJugadoresVisitantes(response.data.data.jugadores);
+		  }
+		}
+		fetchEquipoVisitante();
+	}, [equipoVisitante])
+
+	console.log(jugadoresLocales)
+	console.log(jugadoresVisitantes)
+
+	const listaLocales = jugadoresLocales&&jugadoresLocales.map(obj=>({
+		label:obj.nombres + " " + obj.apellidos,
+		value: obj.deportistaId
+	}))
+	const listaVisitantes = jugadoresVisitantes&&jugadoresVisitantes.map(obj=>({
+		label:obj.nombres + " " + obj.apellidos,
+		value: obj.deportistaId
+	}))
+	
 	const horaItems = [
 		{
 			label: 'AM',
@@ -247,23 +309,77 @@ export const Eventos = ({ navigation }) => {
 						<Text style={styles.error}>{touched.hora && errors.hora}</Text>
 						<View style={styles.subtitulo}>
 							<Text style={styles.txtTitulo}>Equipo local</Text>
-								<TextInput
-									style={styles.txt}
-									multiline={true}
-									onChangeText={handleChange('equipoLocal')}
+								<Dropdown 
+									data={listaEquipos}
+									labelField="label"
+									valueField="value"
+									placeholder='Selecciona un equipo'
+									style={styles.dropdown1DropdownStyle2}
+									containerStyle={styles.dropdown2}
+									search={true}
+									onChange={({ value }) => {
+										setFieldValue('equipoLocal', value);
+										setEquipoLocal(value)
+										setLimpiarJugadoresLocales(!limpiarJugadoresLocales)
+									}}
 									value={values.equipoLocal}
 								/>
 								<Text style={styles.error}>{touched.equipoLocal && errors.equipoLocal}</Text>
 						</View>
 						<View style={styles.subtitulo}>
+							<Text style={styles.txtTitulo}>Jugadores locales</Text>
+								<MultiSelect 
+									data={listaLocales}
+									labelField="label"
+									valueField="value"
+									placeholder='Selecciona un equipo'
+									style={styles.dropdown1DropdownStyle2}
+									containerStyle={styles.dropdown2}
+									search={true}
+									onChange={({ value }) => {
+										setFieldValue('jugadoresLocales', value);
+										setJugadoresLocales(value)
+									}}
+									value={values.jugadoresLocales}
+								/>
+								<Text style={styles.error}>{touched.equipoLocal && errors.equipoLocal}</Text>
+						</View>
+						<View style={styles.subtitulo}>
 							<Text style={styles.txtTitulo}>Equipo visitante</Text>
-								<TextInput
-									style={styles.txt}
-									multiline={true}
-									onChangeText={handleChange('equipoVisitante')}
+								<Dropdown 
+									data={listaEquipos}
+									labelField="label"
+									valueField="value"
+									placeholder='Selecciona un equipo'
+									style={styles.dropdown1DropdownStyle2}
+									containerStyle={styles.dropdown2}
+									search={true}
+									onChange={({ value }) => {
+										setFieldValue('equipoVisitante', value);
+										setEquipoVisitante(value)
+										setLimpiarJugadoresLocales(!limpiarJugadoresLocales)
+									}}
 									value={values.equipoVisitante}
 								/>
 								<Text style={styles.error}>{touched.equipoVisitante && errors.equipoVisitante}</Text>
+						</View>
+						<View style={styles.subtitulo}>
+							<Text style={styles.txtTitulo}>Jugadores visitantes</Text>
+								<MultiSelect 
+									data={listaVisitantes}
+									labelField="label"
+									valueField="value"
+									placeholder='Selecciona un equipo'
+									style={styles.dropdown1DropdownStyle2}
+									containerStyle={styles.dropdown2}
+									search={true}
+									onChange={({ value }) => {
+										setFieldValue('jugadoresVisitantes', value);
+										setJugadoresVisitantes(value)
+									}}
+									value={values.jugadoresVisitantes}
+								/>
+								<Text style={styles.error}>{touched.equipoLocal && errors.equipoLocal}</Text>
 						</View>
 						<View style={styles.subtitulo}>
 							<Text style={styles.txtTitulo}>Director técnico local</Text>
