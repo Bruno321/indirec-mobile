@@ -13,6 +13,7 @@ import {
 	TextInput,
 	TouchableWithoutFeedback,
 	View,
+	Image
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
@@ -27,7 +28,11 @@ import * as DocumentPicker from 'expo-document-picker';
 import { process, SAVE_WITH_FILE } from '../Service/Api';
 import QRCode from 'react-native-qrcode-svg';
 
-const { width, height } = Dimensions.get('window');       
+const { width, height } = Dimensions.get('window');     
+
+const logoINDEREQ = require('../images/logo.png');
+
+
 
 const sexo = ["Masculino", "Femenino"];
 
@@ -550,24 +555,35 @@ export const Registro = () => {
 							Alert.alert('Modal has been closed.');
 							setModalVisible(!modalVisible);
 							}}>
-							<View>
-								<Text>QR Generado</Text>
-								<Text>Los datos han sido guardados exitosamente</Text>
-								<Text>No olvides escanear el código QR</Text>
-								<QRCode
-									value={`${JSON.stringify(deportistaData)}`}
-									size={280}
-									// logo={{uri: base64Logo}}
-									// logoSize={30}
-									// logoBackgroundColor='transparent'
-								/>
-								<Text onPress={() => setShowModal(!showModal)}>Cerrar</Text>
+							<View style={styles.containerModalQR}>
+								<View style={styles.headerIndereq}>
+									<Image source={require('../images/logoIndereqText.png')}/>
+								</View>
+								<View>
+									<Text style={{...styles.componentText, fontWeight: "bold", fontSize: 30}}>QR Generado</Text>
+									<Text style={styles.componentText}>Los datos han sido guardados exitosamente</Text>
+								</View>
+								<View style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+									<QRCode
+										value={`${JSON.stringify(deportistaData)}`}
+										size={Dimensions.get('window').width*0.7}
+									/>
+									<Image 
+										source={require('../images/logo.png')} 
+										style={{width: 70, height: 70, position: 'absolute'}}
+									/>
+								</View>
+								<Text style={styles.componentText}>No olvides escanear el código QR</Text>
+								<TouchableCmp onPress={() => setShowModal(!showModal)}>
+									<View style={styles.viewButtonCerrar}>
+										<Text style={{color: 'white'}}>Cerrar</Text>
+									</View>
+								</TouchableCmp>
 							</View>
 						</Modal>
 						
 					</>
 				)}
-
 					</Formik>
 				</View>
 			</View>
@@ -766,4 +782,31 @@ const styles = StyleSheet.create({
 		fontFamily:'Fredoka-Light',
 		textAlign:'center',
 	},
+	containerModalQR: {
+		paddingBottom: 50,
+		flex: 1,
+		justifyContent: 'space-between',
+		alignItems: 'center',
+	},
+	headerIndereq: {
+		width: '100%',
+		height: 80,
+		backgroundColor: '#003070',
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	componentText: {
+		textAlign: 'center',
+		marginBottom: 10,
+	},
+	viewButtonCerrar: {
+		backgroundColor: '#003070',
+		width: Dimensions.get('window').width*0.65,
+		height: Dimensions.get('window').height*0.06,
+		borderRadius: 10,
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center'
+	}
 });
