@@ -13,7 +13,7 @@ export const DeportistasCard = ({props}) => {
     const profilePicture = dataProps.props.foto ? { uri: `${REACT_APP_API_URL}${BASEPATH}/${dataProps.props.foto}` } : {uri: '../images/ImagenEjemploDeportista.png'};
     
 	return(
-        <TouchableCmp onPress={()=> navigation.navigate('Deportista.details', { data: dataProps}, console.log(profilePicture))}>
+        <TouchableCmp onPress={()=> navigation.navigate('Deportista.details', { data: dataProps}, console.log(dataProps.props.foto))}>
             {/* {()=>{console.log(profilePicture)}} */}
             <View style={styles.main}>
                 <View style={styles.imageView}>

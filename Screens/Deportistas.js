@@ -4,7 +4,8 @@ import { useFetchData } from '../Hooks/Fetch.hook';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import Feather from 'react-native-vector-icons/Feather';
 
-const { fontScale } = Dimensions.get('window');
+
+const { fontScale, width} = Dimensions.get('window');
 
 export const Deportistas = ({ navigation }) => {
   const [deportistas, loading] = useFetchData('deportistas');
@@ -53,15 +54,21 @@ export const Deportistas = ({ navigation }) => {
         <SafeAreaView style={{backgroundColor: "#003070"}}/>
         <Header navigation={navigation} title={"Deportistas"}/>
         <SearchInput />
-        <View style={{paddingVertical: 24, justifyContent: 'space-between', height: 138,}}>
-          <View style={{flexDirection: 'row'}}>
-            <FiltersView />
-            <OrderView />
-          </View>
+        <View style={{paddingVertical: 24, justifyContent: 'space-around', flexDirection: 'row'}}>
+          {/* <View style={{flexDirection: 'row'}}> */}
+            {/* <FiltersView /> */}
+            {/* <OrderView /> */}
+          {/* </View> */}
           <TouchableCmp>
             <View style={styles.agregarJugadorButton}>
-                <Feather name={'user-plus'} size={35} color={'white'}/>
-                <Text>Agregar Jugador</Text>
+                <Feather name={'sliders'} size={24} color={'white'}/>
+                <Text style={styles.buttonText}>Filtro</Text>
+            </View>
+          </TouchableCmp>
+          <TouchableCmp onPress={() => {navigation.navigate("Registro")}}>
+            <View style={styles.agregarJugadorButton}>
+                <Feather name={'user-plus'} size={24} color={'white'}/>
+                <Text style={styles.buttonText}>Agregar Jugador</Text>
             </View>
           </TouchableCmp>
         </View>
@@ -74,6 +81,7 @@ export const Deportistas = ({ navigation }) => {
         <View style={{flex: 1}}>
           <List dataSource={deportistas} renderItem={row => <DeportistasCard props={row}/>} loading={loading}/>
         </View>
+          <View style={{width: "100%", height: 100, backgroundColor: 'red'}}></View>
         <View style={styles.paginacion}>
           <TouchableCmp style={styles.paginacionArrowSection} onPress={() => {console.log("Presionado PAGE LEFT")}}>
             <View style={styles.paginacionArrowButton}>
@@ -128,12 +136,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'green',
   },
   agregarJugadorButton:{
-    width: "90%",
-    height: 35,
+    width: width*0.45,
+    height: 40,
     alignSelf: 'center',
     backgroundColor: "#003070",
     flexDirection: 'row',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
     // paddingBottom: 12,
     // marginBottom: 12,
   },
+  buttonText:{
+    marginLeft: 10,
+    color: "white",
+    fontSize: 16 / fontScale,
+  }
 });
