@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, SafeAreaView, ScrollView, TextInput, Alert } from "react-native";
+import { View, Text, StyleSheet, Dimensions, SafeAreaView, ScrollView, TextInput, Alert, TouchableOpacity } from "react-native";
 import { ActionButton, EventosCard , FiltersView, Header, List, OrderView, SearchInput } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 import {Ionicons} from '@expo/vector-icons';
@@ -11,6 +11,7 @@ import TouchableCmp from '../assetsUI/TouchableCmp';
 import * as yup from "yup";
 import { Formik } from 'formik';
 import { process, SAVE, FIND } from "../Service/Api";
+import { AntDesign } from '@expo/vector-icons';
 
 const { fontScale } = Dimensions.get('window');
 const { width, height } = Dimensions.get('window');
@@ -21,9 +22,9 @@ const oInitialState = {
 	fecha: '',
 	hora: '',
 	equipoLocal: '',
-	jugadoresLocales:'',
+	jugadoresLocales:[],
 	equipoVisitante: '',
-	jugadoresVisitantes:'',
+	jugadoresVisitantes:[],
 	dtLocal: '',
 	dtVisitante: '',
 	puntosLocal: '',
@@ -97,18 +98,17 @@ export const Eventos = ({ navigation }) => {
 	//Se guarda en un estado el arreglo de los jugadores que corresponden a cada uno de los dos equipos. 
 	const [jugadoresLocales, setJugadoresLocales] = useState();
 	const [jugadoresVisitantes, setJugadoresVisitantes] = useState();
+
+	const [selected, setSelected] = useState([]);
   
 	//Se guarda en un estado el id del equipo que será tanto local como visitante para posteriormente hacer la llamada de lo jugadores que corresponden a cada equipo seleccionado.
 	const [equipoLocal, setEquipoLocal] = useState();
 	const [equipoVisitante, setEquipoVisitante] = useState();
-  
+
 	//Estados para guardar en arreglos los deportistas que participaran en el evento. 
 	const [listaJugadoresLocales, setListaJugadoresLocales] = useState([]);
 	const [listaJugadoresVisitantes, setListaJugadoresVisitantes] = useState([]);
-  
-	//Estado que sirve para que el arreglo vuelva a estar vacio si el usuario cambia el equipo en la etiqueta select
-	const [limpiarJugadoresLocales, setLimpiarJugadoresLocales] = useState(false);
-	const [limpiarJugadoresVisitantes, setLimpiarJugadoresVisitantes] = useState(false);
+
 
 	//UseEffect para el equipo local
 	useEffect(() => {
@@ -212,6 +212,11 @@ export const Eventos = ({ navigation }) => {
 		}catch(e){
 			console.log(e)
 		}
+	};
+
+	const handleUnselect = (item) => {
+		const newSelectedItems = selected.filter((selectedItem) => selectedItem !== item);
+   		setSelected(newSelectedItems);
 	};
 
 	return (
@@ -320,7 +325,6 @@ export const Eventos = ({ navigation }) => {
 									onChange={({ value }) => {
 										setFieldValue('equipoLocal', value);
 										setEquipoLocal(value)
-										setLimpiarJugadoresLocales(!limpiarJugadoresLocales)
 									}}
 									value={values.equipoLocal}
 								/>
@@ -333,14 +337,22 @@ export const Eventos = ({ navigation }) => {
 									labelField="label"
 									valueField="value"
 									placeholder='Selecciona un equipo'
+									value={values.jugadoresLocales}
 									style={styles.dropdown1DropdownStyle2}
 									containerStyle={styles.dropdown2}
 									search={true}
-									onChange={({ value }) => {
+									onChange={value => {
 										setFieldValue('jugadoresLocales', value);
-										setJugadoresLocales(value)
 									}}
-									value={values.jugadoresLocales}
+									renderSelectedItem={(item, unSelect) => (
+										<TouchableOpacity onPress={() => unSelect && unSelect(item)}>
+											<View style={styles.selectedStyle}>
+												<Text style={styles.textSelectedStyle}>{item.label}</Text>
+												<AntDesign color="black" name="delete" size={17} />
+											</View>
+										</TouchableOpacity>
+									)}
+									searchPlaceholder="Buscar..."
 								/>
 								<Text style={styles.error}>{touched.equipoLocal && errors.equipoLocal}</Text>
 						</View>
@@ -356,8 +368,6 @@ export const Eventos = ({ navigation }) => {
 									search={true}
 									onChange={({ value }) => {
 										setFieldValue('equipoVisitante', value);
-										setEquipoVisitante(value)
-										setLimpiarJugadoresLocales(!limpiarJugadoresLocales)
 									}}
 									value={values.equipoVisitante}
 								/>
@@ -373,9 +383,9 @@ export const Eventos = ({ navigation }) => {
 									style={styles.dropdown1DropdownStyle2}
 									containerStyle={styles.dropdown2}
 									search={true}
-									onChange={({ value }) => {
+									searchPlaceholder="Buscar..."
+									onChange={value => {
 										setFieldValue('jugadoresVisitantes', value);
-										setJugadoresVisitantes(value)
 									}}
 									value={values.jugadoresVisitantes}
 								/>
@@ -630,4 +640,28 @@ const styles = StyleSheet.create({
 		fontFamily:'Fredoka-Light',
 		color: '#BA1200',
 	},
+	selectedStyle: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 14,
+        backgroundColor: 'white',
+        shadowColor: '#000',
+        marginTop: 8,
+        marginRight: 12,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 1.41,
+
+        elevation: 2,
+    },
+	textSelectedStyle: {
+        marginRight: 5,
+        fontSize: 16,
+    },
 })
