@@ -7,7 +7,7 @@ import { ActionButton } from './ActionButton';
 
 const { fontScale, width} = Dimensions.get('window');
 
-export const CardFilters = () => {
+export const Filters = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState({});
