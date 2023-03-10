@@ -1,14 +1,17 @@
-import { useState, useEffect } from 'react';
-import { Dimensions, Modal, View, StyleSheet, Pressable, Text } from 'react-native';
+import React, { useState } from "react";
+import { StyleSheet, View, Text, Dimensions, Modal  } from "react-native";
+import Feather from 'react-native-vector-icons/Feather';
 import { aFacultities, aSports } from '../Utils/Constants';
+import TouchableCmp from '../assetsUI/TouchableCmp';
 import { ActionButton } from './ActionButton';
-import { Dropdown } from 'react-native-element-dropdown';
 
-const { width, height, fontScale } = Dimensions.get('window');       
+const { fontScale, width} = Dimensions.get('window');
 
-export const FiltersView = () => {
+export const CardFilters = () => {
+
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState({});
+
   const sportItems = [
     {label: 'Todos', value: null},
     ...aSports.map(oSport => ({
@@ -16,6 +19,7 @@ export const FiltersView = () => {
       value: oSport,
     }))
   ]
+
   const statusItems = [
     {label: 'Todos', value: null},
     {label: 'Activo', value: 1},
@@ -28,121 +32,123 @@ export const FiltersView = () => {
       value: `Facultad de ${oFaculty}`,
     }))
   ];
-
-  //TODO: Generate queries based on search object
-  const handleQueries = (name, { value }) => {
-    setSearch({
-      ...search,
-      [name]: value,
-    });
-  };
-
-  // useEffect(() => {
-  //   console.log(search);
-  // }, [search]);
-
+  
   return (
     <>
       <Modal
-        animationType="fade"
+        animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
+        <View 
+          style={{
+            width: '100%',
+            height: '100%',
+            // backgroundColor: 'rgba(0,0,0,0.5)'
+          }}>
+          
+          <View style={styles.container}>
 
-            <View style={styles.rowOption}>
-              <Text style={{ fontSize: width * 0.06 / fontScale }}>Filtrar por:</Text>
+            <View style={styles.filterHeader}>
+              {/* arrow left */}
+              <View style={styles.headerColumns}>
+                <TouchableCmp style={{marginLeft: 8, width: '32%'}} onPress={() => { setModalVisible(!modalVisible) }}>
+                  <Feather name={'chevron-left'} size={35} color={'grey'}/>
+                </TouchableCmp>
+              </View>
+              
+              {/* title 'filtros' */}
+              <View style={styles.headerColumns}>
+                <Text style={[styles.filterText, {textAlign: 'center', fontWeight: '600'}]}>Filtros</Text>
+              </View>
+              
+              {/* reset button */}
+              <View style={styles.headerColumns}>
+                <TouchableCmp>
+                  <Text style={[styles.filterText, {textAlign: 'center', fontSize: 14 / fontScale, color: '#838383'}]}>Restablecer</Text>
+                </TouchableCmp>
+              </View>
             </View>
 
-            {/* ITEMS */}
-            <View style={styles.rowOption}>
-              <Text style={styles.modalText}>Deporte</Text>
-              <Dropdown
-                data={sportItems}
-                labelField="label"
-                valueField="value"
-                placeholder='Todos'
-                placeholderStyle={styles.dropdown_text}
-                selectedTextStyle={styles.dropdown_text}
-                itemTextStyle={styles.dropdown_text}
-                style={styles.dropdown}
-                containerStyle={styles.dropdown}
-                onChange={value => {
-                  handleQueries('deporte', value);
-                }}
-                value={search?.deporte}
-                search={true}
-              />
-            </View>
+            {/* Ordenar por */}
+            <TouchableCmp style={styles.containerItem}>
+              <View style={styles.filterItem}>
+                <Text style={styles.filterText}>Ordenar por</Text>
+                <Text style={styles.filterTextSelect}>Predeterminado</Text>
+              </View>
 
-            <View style={styles.rowOption}>
-              <Text style={styles.modalText}>Estatus</Text>
-              <Dropdown
-                data={statusItems}
-                labelField="label"
-                valueField="value"
-                placeholder='Todos'
-                placeholderStyle={styles.dropdown_text}
-                selectedTextStyle={styles.dropdown_text}
-                itemTextStyle={styles.dropdown_text}
-                style={styles.dropdown}
-                containerStyle={styles.dropdown}
-                onChange={value => {
-                  handleQueries('activo', value);
-                }}
-                value={search?.activo}
-              />
-            </View>
+              <View style={{width: '10%'}}>
+                <Feather name={'chevron-right'} size={35} color={'grey'}/>
+              </View>
+            </TouchableCmp>
 
-            <View style={styles.rowOption}>
-              <Text style={styles.modalText}>Facultad</Text>
-              <Dropdown
-                data={facultitiesItems}
-                labelField="label"
-                valueField="value"
-                placeholder='Todas'
-                placeholderStyle={styles.dropdown_text}
-                selectedTextStyle={styles.dropdown_text}
-                itemTextStyle={styles.dropdown_text}
-                style={styles.dropdown}
-                containerStyle={styles.dropdown}
-                onChange={value => {
-                  handleQueries('facultad', value);
-                }}
-                value={search?.facultad}
-              />
-            </View>
+            {/* Deporte */}
+            <TouchableCmp style={styles.containerItem}>        
+              <View style={styles.filterItem}>
+                <Text style={styles.filterText}>Deporter</Text>
+                <Text style={styles.filterTextSelect}>Todos</Text>
+              </View>
 
-            <View style={styles.buttonContainer}>
-              <Pressable
-                style={[styles.button, styles.buttonApply]}
-                onPress={() => {
-                  setSearch({});
-                  setModalVisible(!modalVisible)
-                }}
-              >
-                <Text style={styles.textStyle}>Filtrar</Text>
-              </Pressable>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => {
-                  setSearch({});
-                  setModalVisible(!modalVisible)
-                }}
-              >
-                <Text style={styles.textStyle}>Cerrar</Text>
-              </Pressable>
-            </View>
-          </View>
+              <View style={{width: '10%'}}>
+                <Feather name={'chevron-right'} size={35} color={'grey'}/>
+              </View>
+            </TouchableCmp>
+
+            {/* Facultad */}
+            <TouchableCmp style={styles.containerItem}>       
+              <View style={styles.filterItem}>
+                <Text style={styles.filterText}>Facultad</Text>
+                <Text style={styles.filterTextSelect}>Todas</Text>
+              </View>
+
+              <View style={{width: '10%'}}>
+                <Feather name={'chevron-right'} size={35} color={'grey'}/>
+              </View>   
+            </TouchableCmp>
+
+            {/* Estatus */}
+            <TouchableCmp style={styles.containerItem}>
+              <View style={styles.filterItem}>
+                <Text style={styles.filterText}>Estatus</Text>
+                <Text style={styles.filterTextSelect}>Todos</Text>
+              </View>
+
+              <View style={{width: '10%'}}>
+                <Feather name={'chevron-right'} size={35} color={'grey'}/>
+              </View>   
+            </TouchableCmp>
+
+            {/* Sexo */}
+            <TouchableCmp style={[styles.containerItem, {borderBottomWidth: 1}]}>         
+              <View style={styles.filterItem}>
+                <Text style={styles.filterText}>Sexo</Text>
+                <Text style={styles.filterTextSelect}>Todos</Text>
+              </View>
+
+              <View style={{width: '10%'}}>
+                <Feather name={'chevron-right'} size={35} color={'grey'}/>
+              </View>   
+            </TouchableCmp>
+
+            <TouchableCmp 
+              style={styles.btnShowAthletes} 
+              onPress={() => {
+                setSearch({});
+                setModalVisible(!modalVisible)
+              }}>
+              <Text style={styles.buttonText}>Ver deportistas</Text>
+            </TouchableCmp>
+            
+          </View>  
         </View>
       </Modal>
-      <View style={styles.container}>
+
+      <View style={styles.btnFilter}>
         <ActionButton
-          icon="filter"
+          icon="sliders"
           color="#FFF"
           backgroundColor="#003070"
           text="Filtros"
@@ -152,78 +158,81 @@ export const FiltersView = () => {
         />
       </View>
     </>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
-    width: width * 0.5,
-    marginLeft: width * 0.055,
+    width: '100%',
+    height: 600,
+    position: 'absolute',
+    bottom: 0,
+    alignSelf: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    overflow: 'hidden',
   },
-  centeredView: {
-    flex: 1,
-    alignItems: "center",
-    backgroundColor: 'rgba(0, 0, 0, 0.5)'
-  },
-  modalView: {
-    width: width * 0.9,
-    height: height * 0.34,
-    backgroundColor: "white",
-    borderRadius: 20,
-    marginTop: height * 0.225,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
-  },
-  buttonContainer: {
-    width: width * 0.4,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: '2%',
-  },
-  button: {
-    borderRadius: 10,
-    padding: 10,
-    elevation: 2
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#C7402B",
-  },
-  buttonApply: {
-    backgroundColor: "#5FDA80",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-    fontSize: width * 0.03/ fontScale,
-  },
-  modalText: {
-    fontSize: width * 0.035 / fontScale,
-    // fontSize: width * 0.05 / fontScale,
-  },
-  rowOption: {
-    width: width * 0.7,
+  filterHeader: {
+    width: '100%',
+    height: 60,
+    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: '7%',
-    alignItems: 'flex-start',
+    // backgroundColor: 'red',
   },
-  dropdown: {
-    width: width * 0.4,
-    fontSize: width * 0.035 / fontScale,
+  filterText: {
+    fontSize: 18 / fontScale,
   },
-  dropdown_text : {
-    fontSize: width * 0.035 / fontScale,
+  headerColumns: {
+    width: '30%',
+    height: '100%',
+    justifyContent: 'center',
+    // backgroundColor: 'gray',
+  },
+  containerItem: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '95%',
+    height: 60,
+    paddingHorizontal: '2.5%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderColor: '#C3BFBF',
+  },
+  filterItem: {
+    width: '90%',
+  },
+  filterTextSelect: {
+    color: '#838383',
+    fontSize: 14 / fontScale,
+    marginTop: 2,
+  },
+  btnShowAthletes: {
+    width: '95%',
+    height: 40,
+    position: 'absolute',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: "#003070",
+    borderRadius: 10,
+    bottom: '8%',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16 / fontScale,
+  },
+  btnFilter: {
+    width: width*0.45,
+    height: 40,
+    alignSelf: 'center',
+    backgroundColor: "#003070",
+    flexDirection: 'row',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   }
-});
+})

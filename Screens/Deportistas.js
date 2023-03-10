@@ -3,6 +3,7 @@ import { ActionButton ,FiltersView, Header, List, OrderView, SearchInput, Deport
 import { useFetchData } from '../Hooks/Fetch.hook';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import Feather from 'react-native-vector-icons/Feather';
+import { Filters } from "../components/Filters";
 
 
 const { fontScale, width} = Dimensions.get('window');
@@ -54,17 +55,22 @@ export const Deportistas = ({ navigation }) => {
         <SafeAreaView style={{backgroundColor: "#003070"}}/>
         <Header navigation={navigation} title={"Deportistas"}/>
         <SearchInput />
+        
         <View style={{paddingVertical: 24, justifyContent: 'space-around', flexDirection: 'row'}}>
           {/* <View style={{flexDirection: 'row'}}> */}
             {/* <FiltersView /> */}
             {/* <OrderView /> */}
           {/* </View> */}
-          <TouchableCmp>
+
+          {/* <TouchableCmp>
             <View style={styles.agregarJugadorButton}>
                 <Feather name={'sliders'} size={24} color={'white'}/>
                 <Text style={styles.buttonText}>Filtro</Text>
             </View>
-          </TouchableCmp>
+          </TouchableCmp> */}
+
+          <Filters />
+
           <TouchableCmp onPress={() => {navigation.navigate("Registro")}}>
             <View style={styles.agregarJugadorButton}>
                 <Feather name={'user-plus'} size={24} color={'white'}/>
@@ -72,23 +78,29 @@ export const Deportistas = ({ navigation }) => {
             </View>
           </TouchableCmp>
         </View>
+
         {/* You can choose between the following options to show the data: */}
 
         {/* USING COLUMNS ARRAY */}
         {/* <List dataSource={deportistas} columns={columns} loading={loading} /> */}
 
         {/* USING CUSTOM RENDER */}
+        
         <View style={{flex: 1}}>
           <List dataSource={deportistas} renderItem={row => <DeportistasCard props={row}/>} loading={loading}/>
         </View>
-          <View style={{width: "100%", height: 100, backgroundColor: 'red'}}></View>
+
+        <View style={{width: "100%", height: 100, backgroundColor: 'red'}}></View>
+       
         <View style={styles.paginacion}>
           <TouchableCmp style={styles.paginacionArrowSection} onPress={() => {console.log("Presionado PAGE LEFT")}}>
             <View style={styles.paginacionArrowButton}>
               <Feather name={'chevron-left'} size={35} color={'white'}/>
             </View>
           </TouchableCmp>
+         
           <View style={styles.paginacionSelectPage}></View>
+         
           <TouchableCmp style={styles.paginacionArrowSection} onPress={() => {console.log("Presionado PAGE RIGHT")}}>
             <View style={styles.paginacionArrowButton}>
               <Feather name={'chevron-right'} size={35} color={'white'}/>
