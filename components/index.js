@@ -5,6 +5,7 @@ export * from './DeportistasCard';
 export * from './EquiposCard';
 export * from './EventosCard';
 export * from './Filters';
+export * from './OldFilters';
 export * from './Grid.components';
 export * from './Header';
 export * from './List';
