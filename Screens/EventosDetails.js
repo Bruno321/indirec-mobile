@@ -29,7 +29,7 @@ export const EventosDetails = (props) =>{
                 </View>
                 <View style={styles.fecha}>
                     <Text style={styles.txtTitulo}>Fecha</Text>
-                    <Text style={styles.txt}>{datos.fechaEvento} - {datos.horaEvento}</Text>
+                    <Text style={styles.txt}>{datos.fechaEvento} -{datos.horaEvento}</Text>
                 </View>
                 <View style={styles.equipos}>
                     <Text style={styles.txtTitulo}>Equipo local</Text>

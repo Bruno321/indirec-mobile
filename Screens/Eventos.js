@@ -18,46 +18,46 @@ const { width, height } = Dimensions.get('window');
 const horaRegex = /^(0?[1-9]|1[0-2]):[0-5][0-9]$/ 
 
 const oInitialState = {
-	nombre: '',
-	fecha: '',
-	hora: '',
+	nombreEvento: '',
+	fechaEvento: '',
+	horaEvento: '',
 	equipoLocal: '',
 	jugadoresLocales:[],
 	equipoVisitante: '',
 	jugadoresVisitantes:[],
-	dtLocal: '',
-	dtVisitante: '',
+	directorTecnicoLocal: '',
+	directorTecnicoVisitante: '',
 	puntosLocal: '',
 	puntosVisitante: '',
-	cancha: '',
+	canchaJugada: '',
 	jornada: '',
 	incidentes: '',
 };
 
 const validationSchema = yup.object().shape({
-	nombre: yup
+	nombreEvento: yup
 		.string()
 		.required('El nombre es requerido'),
-	fecha: yup
+	fechaEvento: yup
 		.date()
 		.required('La fecha es requerida'),
-	hora: yup
+	horaEvento: yup
 		.string()
 		.required('La hora es requerida')
 		.matches(horaRegex, 'La hora debe ser en el formato HH:MM'),
-	amPm: yup
-		.string()
-		.required('AM o PM requerido'),
+	// amPm: yup
+	// 	.string()
+	// 	.required('AM o PM requerido'),
 	equipoLocal: yup
 		.string()
 		.required('El nombre es requerido'),
 	equipoVisitante: yup
 		.string()
 		.required('El nombre es requerido'),
-	dtLocal: yup
+	directorTecnicoLocal: yup
 		.string()
 		.required('El nombre es requerido'),
-	dtVisitante: yup
+	directorTecnicoVisitante: yup
 		.string()
 		.required('El nombre es requerido'),
 	puntosLocal: yup
@@ -68,7 +68,7 @@ const validationSchema = yup.object().shape({
 		.number()
 		.integer('Debe ser un número entero')
 		.required('Los puntos son requeridos'),
-	cancha: yup
+	canchaJugada: yup
 		.string()
 		.required('La cancha es requerida'),
 	jornada: yup
@@ -120,6 +120,8 @@ export const Eventos = ({ navigation }) => {
 			}
 		}
 		fetchEquipoLocal();
+		console.log("BBBB: " + jugadoresLocales)
+		console.log("BBBB: " + equipoLocal)
 	}, [equipoLocal])
 
 	//UseEffect para el equipo visitante
@@ -132,10 +134,9 @@ export const Eventos = ({ navigation }) => {
 		  }
 		}
 		fetchEquipoVisitante();
+		console.log("AAAAA+ " + equipoVisitante)
 	}, [equipoVisitante])
 
-	console.log(jugadoresLocales)
-	console.log(jugadoresVisitantes)
 
 	const listaLocales = jugadoresLocales&&jugadoresLocales.map(obj=>({
 		label:obj.nombres + " " + obj.apellidos,
@@ -182,21 +183,18 @@ export const Eventos = ({ navigation }) => {
     ]
 
 	const onSubmit = async (values, reset) => {
-		console.log("SI")
-		const FormData = global.FormData;
-		let oSend = new FormData();
-		//values.hora+=" "+time
-		for (const sKey in values) {
-			oSend.append(sKey, values[sKey]);
-		}
+		console.log(values)
 		try{
-			const response = await process(SAVE, 'eventos', oSend);
+			const response = await process(SAVE, 'eventos', values);
 			if (response?.data?.ok) {
 				Alert.alert(
 					'Evento agregado exitosamente',
 					response.data.message,
 					[
-						{text:'Okay'},
+						{
+							text:'Okay',
+							onPress: () => setModalVisible(false)
+						},
 					]
 				);
 				reset();
@@ -211,12 +209,14 @@ export const Eventos = ({ navigation }) => {
 			}
 		}catch(e){
 			console.log(e)
+			Alert.alert(
+				'Hubo un error',
+				'Intente de nuevo',
+				[
+					{text:'Okay'},
+				]
+			);
 		}
-	};
-
-	const handleUnselect = (item) => {
-		const newSelectedItems = selected.filter((selectedItem) => selectedItem !== item);
-   		setSelected(newSelectedItems);
 	};
 
 	return (
@@ -253,10 +253,14 @@ export const Eventos = ({ navigation }) => {
 						initialValues={oInitialState}
 						validationSchema={validationSchema}
 						onSubmit={(values, { resetForm }) => {
-							console.log("HROA")
 							const reset = () => {
 								resetForm();
 							};
+							values.horaEvento += " " + time
+							const idJugadoresLocales = listaJugadoresLocales.map(jugador => jugador.deportistaId);
+        					const idJugadoresVisitantes = listaJugadoresVisitantes.map(jugador => jugador.deportistaId);
+        					const concatJugadores = idJugadoresLocales.concat(idJugadoresVisitantes);
+							values.jugadores = concatJugadores
 							onSubmit(values, reset);
 						}}
 					>
@@ -271,10 +275,10 @@ export const Eventos = ({ navigation }) => {
 								placeholder='Bernal Colín'
 								style={styles.txt}
 								multiline={true}
-								onChangeText={handleChange('nombre')}
-								value={values.nombre}
+								onChangeText={handleChange('nombreEvento')}
+								value={values.nombreEvento}
 							/>
-							<Text style={styles.error}>{touched.nombre && errors.nombre}</Text>
+							<Text style={styles.error}>{touched.nombreEvento && errors.nombreEvento}</Text>
 						</View>
 						<View style={styles.subtitulo2}>
 							<View>
@@ -282,8 +286,8 @@ export const Eventos = ({ navigation }) => {
 								<TextInput
 									placeholder='DD/MM/AA'
 									style={styles.txt2}
-									onChangeText={handleChange('fecha')}
-									value={values.fecha}
+									onChangeText={handleChange('fechaEvento')}
+									value={values.fechaEvento}
 								/>
 							</View>
 							<View>
@@ -292,8 +296,8 @@ export const Eventos = ({ navigation }) => {
 									<TextInput
 										placeholder='HH:MM'
 										style={styles.txt3}
-										onChangeText={handleChange('hora')}
-										value={values.hora}
+										onChangeText={handleChange('horaEvento')}
+										value={values.horaEvento}
 									/>
 									<Dropdown 
 										data={horaItems}
@@ -303,15 +307,15 @@ export const Eventos = ({ navigation }) => {
 										style={styles.dropdown1DropdownStyle}
 										containerStyle={styles.dropdown1}
 										onChange={({ value }) => {
-											setTime(value);
+											setTime(value)
 										}}
 										value={time}
 										/>
 								</View>
 							</View>
 						</View>
-						<Text style={styles.error}>{touched.fecha && errors.fecha}</Text>
-						<Text style={styles.error}>{touched.hora && errors.hora}</Text>
+						<Text style={styles.error}>{touched.fechaEvento && errors.fechaEvento}</Text>
+						<Text style={styles.error}>{touched.horaEvento && errors.horaEvento}</Text>
 						<View style={styles.subtitulo}>
 							<Text style={styles.txtTitulo}>Equipo local</Text>
 								<Dropdown 
@@ -354,7 +358,7 @@ export const Eventos = ({ navigation }) => {
 									)}
 									searchPlaceholder="Buscar..."
 								/>
-								<Text style={styles.error}>{touched.equipoLocal && errors.equipoLocal}</Text>
+								<Text style={styles.error}>{touched.jugadoresLocales && errors.jugadoresLocales}</Text>
 						</View>
 						<View style={styles.subtitulo}>
 							<Text style={styles.txtTitulo}>Equipo visitante</Text>
@@ -368,6 +372,7 @@ export const Eventos = ({ navigation }) => {
 									search={true}
 									onChange={({ value }) => {
 										setFieldValue('equipoVisitante', value);
+										setEquipoVisitante(value)
 									}}
 									value={values.equipoVisitante}
 								/>
@@ -387,9 +392,17 @@ export const Eventos = ({ navigation }) => {
 									onChange={value => {
 										setFieldValue('jugadoresVisitantes', value);
 									}}
+									renderSelectedItem={(item, unSelect) => (
+										<TouchableOpacity onPress={() => unSelect && unSelect(item)}>
+											<View style={styles.selectedStyle}>
+												<Text style={styles.textSelectedStyle}>{item.label}</Text>
+												<AntDesign color="black" name="delete" size={17} />
+											</View>
+										</TouchableOpacity>
+									)}
 									value={values.jugadoresVisitantes}
 								/>
-								<Text style={styles.error}>{touched.equipoLocal && errors.equipoLocal}</Text>
+								<Text style={styles.error}>{touched.jugadoresVisitantes && errors.jugadoresVisitantes}</Text>
 						</View>
 						<View style={styles.subtitulo}>
 							<Text style={styles.txtTitulo}>Director técnico local</Text>
@@ -397,10 +410,10 @@ export const Eventos = ({ navigation }) => {
 									placeholder='Jorge Alejandro'
 									style={styles.txt}
 									multiline={true}
-									onChangeText={handleChange('dtLocal')}
-									value={values.dtLocal}
+									onChangeText={handleChange('directorTecnicoLocal')}
+									value={values.directorTecnicoLocal}
 								/>
-								<Text style={styles.error}>{touched.dtLocal && errors.dtLocal}</Text>
+								<Text style={styles.error}>{touched.directorTecnicoLocal && errors.directorTecnicoLocal}</Text>
 						</View>
 						<View style={styles.subtitulo}>
 							<Text style={styles.txtTitulo}>Director técnico visitante</Text>
@@ -408,10 +421,10 @@ export const Eventos = ({ navigation }) => {
 									placeholder='Jorge Bernal'
 									style={styles.txt}
 									multiline={true}
-									onChangeText={handleChange('dtVisitante')}
-									value={values.dtVisitante}
+									onChangeText={handleChange('directorTecnicoVisitante')}
+									value={values.directorTecnicoVisitante}
 								/>
-								<Text style={styles.error}>{touched.dtVisitante && errors.dtVisitante}</Text>
+								<Text style={styles.error}>{touched.directorTecnicoVisitante && errors.directorTecnicoVisitante}</Text>
 						</View>
 						<View style={styles.subtitulo}>
 							<Text style={styles.txtTitulo}>Puntos equipo local</Text>
@@ -444,11 +457,11 @@ export const Eventos = ({ navigation }) => {
 									containerStyle={styles.dropdown2}
 									search={true}
 									onChange={({ value }) => {
-										setFieldValue('cancha', value);
+										setFieldValue('canchaJugada', value);
 									}}
-									value={values.cancha}
+									value={values.canchaJugada}
 								/>
-								<Text style={styles.error}>{touched.cancha && errors.cancha}</Text>
+								<Text style={styles.error}>{touched.canchaJugada && errors.canchaJugada}</Text>
 						</View>
 						<View style={styles.subtitulo}>
 							<Text style={styles.txtTitulo}>Jornada</Text>
@@ -472,7 +485,8 @@ export const Eventos = ({ navigation }) => {
 								<Text style={styles.error}>{touched.incidentes && errors.incidentes}</Text>
 						</View>
 						<View style={styles.boton}>
-							<TouchableCmp onPress={()=>onSubmit()}>
+							{/* <TouchableCmp onPress={()=>onSubmit(values)}> */}
+							<TouchableCmp onPress={handleSubmit}>
 								<View style={styles.btn}>
 									<Text style={styles.txtBtn}>Agregar Evento</Text>
 								</View>
