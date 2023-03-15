@@ -21,7 +21,7 @@ export const DeportistasCard = ({props}) => {
                 </View>
                 <View style={styles.even1}>
                     <View style={styles.caja}>
-                        <Text style={styles.cajaText2} numberOfLines={1}>{props.nombres} {props.apellidos}</Text>
+                        <Text style={styles.cajaText3} numberOfLines={1}>{props.nombres} {props.apellidos}</Text>
                     </View>
                     <View style={styles.caja}>
                         <Text style={styles.cajaText2} numberOfLines={1}>{props.facultad}</Text>
@@ -30,9 +30,9 @@ export const DeportistasCard = ({props}) => {
                         <View style={styles.caja2x1}>
                             <Text style={styles.cajaText2} numberOfLines={1}>{props.expediente}</Text>
                         </View>
-                        <View style={styles.caja2x2}>
-                            <Text style={styles.cajaText2} numberOfLines={1}>{props.sexo == 0 ? "Hombre" : "Mujer"}</Text>
-                        </View>
+                        {/* <View style={styles.caja2x2}> */}
+                            {/* <Text style={styles.cajaText2} numberOfLines={1}>{props.sexo == 0 ? "Hombre" : "Mujer"}</Text> */}
+                        {/* </View> */}
                     </View>
                 </View>
             </View>
@@ -92,7 +92,16 @@ const styles = StyleSheet.create({
     cajaText2:{
         fontSize: 17/fontScale,
         textAlign: 'left',
-        color: 'black'
+        color: 'black',
+        fontWeight: '400',
+
+    },
+    cajaText3:{
+        fontSize: 17/fontScale,
+        textAlign: 'left',
+        color: 'black',
+        fontWeight: '600',
+
     },
     imageView: {
         backgroundColor: '#EEE',

@@ -90,7 +90,7 @@ export const Deportistas = ({ navigation }) => {
           <List dataSource={deportistas} renderItem={row => <DeportistasCard props={row}/>} loading={loading}/>
         </View>
 
-        <View style={{width: "100%", height: 100, backgroundColor: 'red'}}></View>
+        <View style={{width: "100%", height: 100}}></View>
        
         <View style={styles.paginacion}>
           <TouchableCmp style={styles.paginacionArrowSection} onPress={() => {console.log("Presionado PAGE LEFT")}}>

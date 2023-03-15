@@ -70,7 +70,7 @@ const styles =  StyleSheet.create({
     // borderBottomWidth: 1,
 		// borderBottomColor:'black',
     color:'#000000',
-    fontFamily:'Fredoka-Light',
+    // fontFamily:'Fredoka-Light',
     backgroundColor:'#ffffff',
     fontSize: 15 / fontScale,
   },
