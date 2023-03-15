@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
         color:'white'
     },
     primera:{
-        justifyContent:'space-between'
+        justifyContent:'space-between',
+        width:'65%'
     },
     textoSegunda:{
         alignItems:'flex-end',
@@ -101,6 +102,6 @@ const styles = StyleSheet.create({
         overflow:'hidden'
     },
     detalles:{
-        overflow:'hidden',
+        overflow:'scroll',
     }
 })
