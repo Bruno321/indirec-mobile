@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useImperativeHandle, useState } from 'react';
 import {
 	Alert,
 	ActivityIndicator,
@@ -27,6 +27,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import { process, SAVE_WITH_FILE } from '../Service/Api';
 import QRCode from 'react-native-qrcode-svg';
+import { RotateInUpRight } from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get('window');     
 
@@ -171,13 +172,11 @@ export const Registro = () => {
 			multiple:false,
 		});
   
-		console.log(result);
-  
 		if (result.type=='success') {
-				oSetter[type](result.name);
-				formHandler(type, result);
-				setModBot('');
-				setModal(false);
+			oSetter[type](result.name);
+			formHandler(type, result);
+			setModBot('');
+			setModal(false);
 		}
 	};
 	const takePhoto = async (type, formHandler) => {
@@ -185,12 +184,13 @@ export const Registro = () => {
 		let result = await ImagePicker.launchCameraAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
 			allowsEditing: true,
+			aspect:[1,1],
 			quality:0.5
 		});
 
 		if (!result.cancelled) {
-			const uri = result.uri.split("/");
-			oSetter[type](uri[uri.length-1]);
+			let uri = result.uri;
+			oSetter[type](uri);
 			formHandler(type, result);
 			setModBot('');
 			setModal(false);
@@ -205,27 +205,35 @@ export const Registro = () => {
 		}
 	};
 
+	const getLastItem = (cadena) => cadena.split("/")[cadena.split("/").length - 1];
+
 	const onSubmit = async (values, reset) => {
 		setLoading(true);
-
 		const FormData = global.FormData;
 		let oSend = new FormData();
 
 		for (const sKey in values) {
-
 			if (['fotoCardex', 'fotoIdentificacionOficial', 'foto'].includes(sKey)) {
 				oSend.append(sKey, {
 					uri: (Platform.OS === "android") ? values[sKey].uri : values[sKey].replace("file://", ""),
-					name: values[sKey].name,
-					type: values[sKey].mimeType,
+					name: values[sKey].name?values[sKey].name:getLastItem(values[sKey].uri),
+					type: values[sKey].mimeType?values[sKey].mimeType:(values[sKey].type+"/jpeg"),
 				});
 			} else {
 				oSend.append(sKey, values[sKey]);
 			}
 		}
-
-		const response = await process(SAVE_WITH_FILE, 'deportistas', oSend);
-
+		
+		const objStr = JSON.stringify(oSend);
+		console.log("este es el response" + objStr)
+		let response
+		try{
+			response = await process(SAVE_WITH_FILE, 'deportistas', oSend); 
+		}catch(e){
+			let objErr = JSON.stringify(e.response)
+			console.log("error: " + objErr)
+			setLoading(false);
+		}
 		if (response?.data?.ok) {
 			Alert.alert(
 				'Jugador agregado exitosamente',
@@ -237,7 +245,6 @@ export const Registro = () => {
 					},
 				]
 			);
-
 			const { nombres: nombre, apellidos, deportistaId: idPropio } = response.data?.data;
             const [apellidoP, apellidoM] = apellidos.split(" ");
             setDeportistaData({
@@ -256,7 +263,6 @@ export const Registro = () => {
 				]
 			);
 		}
-
 		setLoading(false);
 	};
 
