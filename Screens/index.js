@@ -8,3 +8,4 @@ export * from './RegistroEquipos';
 export * from './Equipos';
 export * from './Eventos';
 export * from './EventosDetails';
+export * from './Deportista.assistance';

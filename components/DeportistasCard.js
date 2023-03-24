@@ -11,13 +11,13 @@ export const DeportistasCard = ({props}) => {
     // console.log(dataProps)
     const navigation = useNavigation();
     const profilePicture = dataProps.props.foto ? { uri: `${REACT_APP_API_URL}${BASEPATH}/${dataProps.props.foto}` } : {uri: '../images/ImagenEjemploDeportista.png'};
+    // console.log("AAAAAAAAAAAAAAAa>" + JSON.stringify(profilePicture));
     
 	return(
-        <TouchableCmp onPress={()=> navigation.navigate('Deportista.details', { data: dataProps}, console.log(dataProps.props.foto))}>
-            {/* {()=>{console.log(profilePicture)}} */}
+        <TouchableCmp onPress={()=> navigation.navigate('Deportista.details', { data: dataProps })}>
             <View style={styles.main}>
                 <View style={styles.imageView}>
-                    <Image source={profilePicture} style={styles.profilePic}/>
+                    <Image source={{uri: profilePicture.uri}} style={styles.profilePic}/>
                 </View>
                 <View style={styles.even1}>
                     <View style={styles.caja}>
@@ -112,12 +112,8 @@ const styles = StyleSheet.create({
     },
     profilePic: {
         width: "100%",
-        // height: 80,
         height: "100%",
         // resizeMode: 'cover',
-        // justifyContent: 'center',
-        // borderRadius: 50,
-        // backgroundColor: 'purple',
         overflow: 'hidden',
     },
     

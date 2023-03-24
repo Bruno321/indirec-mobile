@@ -30,7 +30,7 @@ export const Asistencias = ({navigation}) => {
 	const columns = [
     {
       title: 'Nombre',  
-      dataIndex: 'deportistum.nombres',
+      dataIndex: 'nombres',
     },
     {
       title: 'Entrada',
@@ -91,10 +91,10 @@ export const Asistencias = ({navigation}) => {
         {/* You can choose between the following options to show the data: */}
 
         {/* USING COLUMNS ARRAY */}
-				<List dataSource={asistencias.length ? asistencias : testData} columns={columns} loading={loading} />
+				{/* <List dataSource={asistencias.length ? asistencias : testData} columns={columns} loading={loading} /> */}
 
         {/* USING CUSTOM RENDER */}
-        {/* <List dataSource={asistencias.length ? asistencias : testData} renderItem={row => <AsistenciasCard props={row} />} loading={loading} /> */}
+        <List dataSource={asistencias.length ? asistencias : testData} renderItem={row => <AsistenciasCard props={row} />} loading={loading} />
 
 			</View>
     )

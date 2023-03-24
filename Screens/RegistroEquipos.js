@@ -21,14 +21,14 @@ import TouchableCmp from '../assetsUI/TouchableCmp';
 import RadioButtonRN from 'radio-buttons-react-native';
 import { SAVE, process } from '../Service/Api';
 
-const { width, height } = Dimensions.get('window');
+const { width, height, fontScale } = Dimensions.get('window');
 
 const oInitialState = {
 	nombre: '',
 	facultad: '',
 	campus: '',
 	deporte: '',
-	categoria: null,
+	categoria: 2,
 	nombreEntrenador: '',
 	apellidoEntrenador: '',
 	nombreAsistente: '',
@@ -149,10 +149,24 @@ export const RegistroEquipos = () => {
 								placeholder='Seleccione una opción'
 								style={styles.dropdown1DropdownStyle}
 								containerStyle={styles.dropdown1DropdownStyle}
+								placeholderStyle={styles.dropdown1PlaceholderStyle}
+								selectedTextStyle={{color: "#000"}}
+								itemContainerStyle={{backgroundColor: 'red',}}
+								itemTextStyle={{color: 'green',}}
 								onChange={({ value }) => {
 									setFieldValue('deporte', value);
 								}}
 								value={values.deporte}
+
+								
+	// style?: StyleProp<ViewStyle>;
+    // containerStyle?: StyleProp<ViewStyle>;
+    // placeholderStyle?: StyleProp<TextStyle>;
+    // selectedTextStyle?: StyleProp<TextStyle>;
+	// itemContainerStyle?: StyleProp<ViewStyle>;
+    // itemTextStyle?: StyleProp<TextStyle>;
+    // inputSearchStyle?: StyleProp<TextStyle>;
+    // iconStyle?: StyleProp<ImageStyle>;
 							/>
 						<Text style={styles.error}>{touched.deporte && errors.deporte}</Text>
 
@@ -174,6 +188,7 @@ export const RegistroEquipos = () => {
 								valueField="value"
 								placeholder='Seleccione una opción'
 								style={styles.dropdown1DropdownStyle}
+								placeholderStyle={styles.dropdown1PlaceholderStyle}
 								containerStyle={styles.dropdown1DropdownStyle}
 								onChange={({ value }) => {
 									setFieldValue('facultad', value);
@@ -190,7 +205,9 @@ export const RegistroEquipos = () => {
 								valueField="value"
 								placeholder='Seleccione una opción'
 								style={styles.dropdown1DropdownStyle}
+								placeholderStyle={styles.dropdown1PlaceholderStyle}
 								containerStyle={styles.dropdown1DropdownStyle}
+								itemTextStyle={{color: 'red',}}
 								onChange={({ value }) => {
 									setFieldValue('campus', value);
 								}}
@@ -199,7 +216,7 @@ export const RegistroEquipos = () => {
 						<Text style={styles.error}>{touched.campus && errors.campus}</Text>
 
 						{/* ENTRENADOR */}
-						<Text style={styles.campos}>Datos del entrenador:</Text>
+						<Text style={{...styles.campos, marginTop: 50}}>Datos del entrenador:</Text>
 
 						<Text style={styles.campos}>Nombre(s):</Text>
 						<TextInput 
@@ -220,7 +237,7 @@ export const RegistroEquipos = () => {
 						<Text style={styles.error}>{touched.apellidoEntrenador && errors.apellidoEntrenador}</Text>
 						
 						{/* ASISTENTE */}
-						<Text style={styles.campos}>Datos del asistente:</Text>
+						<Text style={{...styles.campos, marginTop: 50}}>Datos del asistente:</Text>
 
 						<Text style={styles.campos}>Nombre(s):</Text>
 						<TextInput 
@@ -269,38 +286,43 @@ const styles = StyleSheet.create({
 	center:{
 		alignItems:'center'
 	},
-	titulo:{
-		fontSize: 40,
-		fontFamily:'Fredoka-Medium',
-	},
 	viewForm:{
 		width: width / 1.25,
 		marginTop: height / 28,
 	},
 	campos:{
-		fontFamily:'Fredoka-Light',
-		marginTop:15
+		fontSize: 16 / fontScale,
+		marginTop:8
 	},
 	input:{
+		fontSize: 20 / fontScale,
 		width: width / 1.25,
-		paddingLeft:5,
 		borderBottomWidth:1,
 		borderBottomColor:'black',
-		fontFamily:'Fredoka-Light',
+		color: '#000',
 	},
 	dropdown1DropdownStyle: {
 		backgroundColor: '#FFF',
-		marginTop:-1.5
+		marginTop:-1.5,
+		borderBottomWidth:1,
+		borderBottomColor:'black',
+		// color: "#F00",
+	},
+	dropdown1PlaceholderStyle:{
+		fontSize: 20 / fontScale,
+		color: "#AAA"
 	},
 	registrar:{
-		fontFamily:'Fredoka-Regular',
-		fontSize:16,
+		// fontSize:16,
+		fontSize: 20 / fontScale,
+
 		color:'white',
 		textAlign:'center',
 	},
 	registrarFalse:{
-		fontFamily:'Fredoka-Regular',
-		fontSize:16,
+		fontSize: 18 / fontScale,
+
+		// fontSize:16,
 		color:'#DEDEDE',
 		textAlign:'center',
 	},
@@ -334,7 +356,9 @@ const styles = StyleSheet.create({
 	},
 	radioButtonStyle:{
 		flexDirection: 'row',
-		justifyContent: 'space-evenly'
+		justifyContent: 'space-between',
+		// backgroundColor: 'red',
+
 	},
 	radioButtonBoxStyle:{
 		flexDirection: 'row',
@@ -342,11 +366,11 @@ const styles = StyleSheet.create({
 		width: '45%',
 	},
 	radioButtonTextStyle:{
-		fontFamily:'Fredoka-Light',
+		fontSize: 18 / fontScale,
 		marginLeft: 10
 	},
 	error:{
-		fontFamily:'Fredoka-Light',
+		fontSize: 18 / fontScale,
 		color: '#BA1200',
 	},
 });

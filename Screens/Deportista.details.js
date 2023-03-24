@@ -1,4 +1,4 @@
-import { Dimensions, Image, View, StyleSheet, Text, SafeAreaView, flat } from 'react-native';
+import { Dimensions, Image, View, StyleSheet, Text, SafeAreaView, ScrollView } from 'react-native';
 import { ActionButton, Col, Header, Row } from '../components';
 import { REACT_APP_API_URL } from '@env';
 import { BASEPATH } from '../Service/Api';
@@ -20,10 +20,10 @@ export const DeportistaDetails = ({ navigation, route }) => {
     <View style={{height: "100%"}}>
       <SafeAreaView style={{ backgroundColor: "#003070" }} />
       <Header navigation={navigation} title={"Datos del Deportista"} funcion={"goback"} />
-      <View style={styles.centeredView}>
+      <ScrollView contentContainerStyle={styles.centeredView}>
         <Row>
           <Col>
-            <Image source={profilePicture} style={styles.profilePicture} />
+            <Image source={{uri: profilePicture.uri}} style={styles.profilePicture} />
           </Col>
         </Row>
         <Row>
@@ -96,63 +96,68 @@ export const DeportistaDetails = ({ navigation, route }) => {
           </Col>
         </Row>
         <Row>
-          <Col style={{width: "100%", paddingLeft: 20}}>
-            {/* <LargeText style={styles.boldText}>Kardex</LargeText> */}
-            <ActionButton
-              text="Descargar Kardex"
-              backgroundColor="#003070"
-              color="#FFF"
-              icon="file-pdf-o"
-              widthPercentage={0.9}
-              style={{height: 60, marginBottom: 5,}}
-            />
+          <Col style={{width: "90%", height: 60, marginTop: 15}}>
+            <View style={{borderRadius: 18, overflow: 'hidden', height: 60, backgroundColor: 'red'}}>
+              <ActionButton
+                text="Ver Asistencias"
+                backgroundColor="#003070"
+                color="#FFF"
+                icon="clock-o"
+                style={{width: "100%", alignSelf: 'center', height: 60, borderRadius: 18 }}
+                handler={() => {navigation.navigate("DeportistaAssistance")}}
+              />
+            </View>
           </Col>
         </Row>
         <Row>
-          <Col style={{width: "100%", paddingLeft: 20}}l>
-            {/* <LargeText style={styles.boldText}>Identificación Oficial</LargeText> */}
-            <ActionButton
-              text="Descargar Identificación Oficial"
-              backgroundColor="#003070"
-              color="#FFF"
-              icon="file-pdf-o"
-              widthPercentage={0.9}
-              style={{height: 60,}}
-
-            />
+          <Col style={{width: "90%", height: 60, marginTop: 10}}>
+            <View style={{borderRadius: 18, overflow: 'hidden', height: 60, backgroundColor: 'red'}}>
+              <ActionButton
+                text="Descargar Kardex"
+                backgroundColor="#FFF"
+                color="#003070"
+                icon="file-pdf-o"
+                style={{width: "100%", alignSelf: 'center', height: 60, marginBottom: 5, borderWidth: 2, borderColor: "#003070", borderRadius: 18 }}
+              />
+            </View>
           </Col>
         </Row>
-      </View>
+        <Row>
+        <Col style={{width: "90%", height: 60,  marginTop: 10}}>
+            <View style={{borderRadius: 18, overflow: 'hidden', height: 60, backgroundColor: 'red'}}>
+            <ActionButton
+              text="Descargar Identificación Oficial"
+              backgroundColor="#FFF"
+              color="#003070"
+              icon="file-pdf-o"
+              widthPercentage={0.9}
+              style={{height: 60, marginBottom: 5, borderWidth: 2, borderColor: "#003070", borderRadius: 18 }}
+
+            />
+            </View>
+          </Col>
+        </Row>
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   centeredView: {
-    // display: 'flex',
-    flex: 1,
-
-    justifyContent: 'space-evenly',
-    // padding: 10,
-    // height: ,
-    // backgroundColor: 'red',
+    // flex: 1,
+    // justifyContent: 'space-evenly',
     paddingVertical: 20,
   },
   boldText: {
-    // fontFamily: 'Fredoka-Medium',
     fontSize: 18 / fontScale,
     fontWeight: '600',
-    // marginBottom: '5%',
+    marginTop: 20,
   },
   profilePicture: {
-    // marginTop: 20,
     width: width * 0.4,
     height: width * 0.4,
   },
   dato: {
-    // fontFamily: 'Fredoka-Light',
     fontSize: 14 / fontScale,
-    marginBottom: 5,
-    // fontWeight: '400',
   }
 });
