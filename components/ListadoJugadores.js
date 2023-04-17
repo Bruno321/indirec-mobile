@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Modal, ScrollView, SafeAreaView, Image, Button } from 'react-native';
+import { StyleSheet, View, Text, Modal, ScrollView, SafeAreaView, Image, Button, Dimensions } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import Feather from 'react-native-vector-icons/Feather';
+
+const { width, height, fontScale } = Dimensions.get('window');
 
 export const ListadoJugadores = ({ dataSource, aSelected, setSelected }) => {
     const [modalActive, setModalActive] = useState(false);
@@ -31,10 +33,10 @@ export const ListadoJugadores = ({ dataSource, aSelected, setSelected }) => {
 
     const LoadSelected = (props) => {
         return props.map(x =>
-            <View key={x.deportistaId+"SelView1"} style={styles.ViewJugador}>
-                <View key={x.deportistaId+"SelView2"} style={styles.celda3a}>
+            <View key={x.deportistaId + "SelView1"} style={styles.ViewJugador}>
+                <View key={x.deportistaId + "SelView2"} style={styles.celda3a}>
                     <Text
-                        key={x.deportistaId+"SelText1"}
+                        key={x.deportistaId + "SelText1"}
                         style={styles.celda3y4Texta}
                         numberOfLines={1}
                     >
@@ -42,9 +44,9 @@ export const ListadoJugadores = ({ dataSource, aSelected, setSelected }) => {
                     </Text>
                 </View>
 
-                <View key={x.deportistaId+"SelView3"} style={styles.celda4a}>
+                <View key={x.deportistaId + "SelView3"} style={styles.celda4a}>
                     <Text
-                        key={x.deportistaId+"SelText2"}
+                        key={x.deportistaId + "SelText2"}
                         style={styles.celda3y4Texta}
                         numberOfLines={2}
                     >
@@ -58,15 +60,15 @@ export const ListadoJugadores = ({ dataSource, aSelected, setSelected }) => {
     const showJugadores = jugadores => {
         return (jugadores.map(x => (
             <View
-                key={x.deportistaId+"view1"}
+                key={x.deportistaId + "view1"}
                 style={styles.ViewJugador}
             >
                 <View
-                    key={x.deportistaId+"view2"}
+                    key={x.deportistaId + "view2"}
                     style={!isSelected(x.deportistaId) ? styles.celda3a : styles.celda3b}
                 >
-                    <Text 
-                        key={x.deportistaId+"text1"}
+                    <Text
+                        key={x.deportistaId + "text1"}
                         style={!isSelected(x.deportistaId) ? styles.celda3y4Texta : styles.celda3y4Textb}
                         numberOfLines={1}
                     >
@@ -74,11 +76,11 @@ export const ListadoJugadores = ({ dataSource, aSelected, setSelected }) => {
                     </Text>
                 </View>
                 <View
-                    key={x.deportistaId+"view3"}
+                    key={x.deportistaId + "view3"}
                     style={!isSelected(x.deportistaId) ? styles.celda4a : styles.celda4b}
                 >
                     <Text
-                        key={x.deportistaId+"text2"}
+                        key={x.deportistaId + "text2"}
                         style={!isSelected(x.deportistaId) ? styles.celda3y4Texta : styles.celda3y4Textb}
                         numberOfLines={2}
                     >
@@ -86,21 +88,21 @@ export const ListadoJugadores = ({ dataSource, aSelected, setSelected }) => {
                     </Text>
                 </View>
                 <TouchableCmp
-                    key={x.deportistaId+"touchable1"}
+                    key={x.deportistaId + "touchable1"}
                     onPress={() => updateSelected(x.deportistaId, true)}
                 >
                     <View
-                        key={x.deportistaId+"view4"}
+                        key={x.deportistaId + "view4"}
                         style={!isSelected(x.deportistaId) ? styles.celda5a : styles.celda5b}
                     >
                         <FontAwesome
-                            key={x.deportistaId+"icon1"}
+                            key={x.deportistaId + "icon1"}
                             name='plus-square-o'
                             size={25}
-                            color={!isSelected(x.deportistaId) ?'#003070' : "#888"} 
+                            color={!isSelected(x.deportistaId) ? '#003070' : "#888"}
                         />
                         <Text
-                            key={x.deportistaId+"text3"}
+                            key={x.deportistaId + "text3"}
                             style={!isSelected(x.deportistaId) ? styles.celda3y4Texta : styles.celda3y4Textb}
                             numberOfLines={1}
                         >
@@ -110,23 +112,24 @@ export const ListadoJugadores = ({ dataSource, aSelected, setSelected }) => {
                 </TouchableCmp>
 
                 <TouchableCmp
-                    key={x.deportistaId+"touchable2"}
+                    key={x.deportistaId + "touchable2"}
                     onPress={() => updateSelected(x.deportistaId, false)}
                 >
-                    <View key={x.deportistaId+"view5"}
+                    <View key={x.deportistaId + "view5"}
                         style={!isSelected(x.deportistaId) ? styles.celda6a : styles.celda6b}
                     >
                         <FontAwesome
-                            key={x.deportistaId+"icon2"}
+                            key={x.deportistaId + "icon2"}
                             name='trash-o'
                             size={25}
-                            color={!isSelected(x.deportistaId) ?'#BBB' : "#C0392B"}
+                            color={!isSelected(x.deportistaId) ? '#BBB' : "#C0392B"}
                         />
                     </View>
-                </TouchableCmp> 
+                </TouchableCmp>
             </View>
         )
-    ))};
+        ))
+    };
 
     return (
         <>
@@ -158,12 +161,6 @@ export const ListadoJugadores = ({ dataSource, aSelected, setSelected }) => {
                 <View style={styles.ModalStyle}>
                     <View style={styles.headerComponent}>
                         <SafeAreaView />
-                        <View style={styles.header}>
-                            <Image
-                                style={styles.logoTexto}
-                                source={require('../images/indereq-logo-texto.png')}
-                            />
-                        </View>
                         <View style={styles.menu}>
                             <Feather name={'arrow-left'} size={35} color={'white'} onPress={() => setModalActive(false)} />
                         </View>
@@ -171,7 +168,7 @@ export const ListadoJugadores = ({ dataSource, aSelected, setSelected }) => {
                     <View style={styles.ModalView1}>
                         <Text style={styles.ModalView1a}>Lista de Jugadores</Text>
                         <Text style={styles.ModalView1b}>Troyanos Uaq</Text>
-                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                             <Text style={styles.ModalView1c}>Basketball</Text>
                             <Text style={styles.ModalView1c}>Varonil</Text>
                         </View>
@@ -186,7 +183,7 @@ export const ListadoJugadores = ({ dataSource, aSelected, setSelected }) => {
                                 <Text style={styles.celda1y2Text}>Nombre Completo</Text>
                             </View>
                             <View style={styles.celda3HeaderLista}>
-                                <Button title='Limpiar' color={"#003070"} onPress={() => setSelected([])}/>
+                                <Button title='Limpiar' color={"#003070"} onPress={() => setSelected([])} />
                             </View>
                         </View>
                         <ScrollView>
@@ -237,6 +234,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderTopWidth: 1,
         borderTopColor: "#C0C0C0",
+        height: 41,
     },
     celda3a: {
         backgroundColor: '#FFF',
@@ -273,28 +271,33 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
     celda5a: {
-        backgroundColor: '#FFF',
-        width: "20%",
+        // backgroundColor: '#F00',
+        width: width * 0.2,
+        height: "100%",
         justifyContent: 'space-evenly',
         alignItems: 'center',
+        // alignSelf: 'center',
         flexDirection: 'row',
     },
     celda5b: {
         backgroundColor: '#EEE',
-        width: "20%",
+        width: width * 0.2,
+        height: "100%",
         justifyContent: 'space-evenly',
         alignItems: 'center',
         flexDirection: 'row',
     },
     celda6a: {
         backgroundColor: '#FFF',
-        width: "10%",
+        width: width * 0.1,
+        height: "100%",
         justifyContent: 'center',
         alignItems: 'center',
     },
     celda6b: {
         backgroundColor: '#EEE',
-        width: "10%",
+        width: width * 0.1,
+        height: "100%",
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -333,23 +336,25 @@ const styles = StyleSheet.create({
     },
     ModalView1: {
         width: '100%',
-        height: 200,
+        // height: 200,
+        // backgroundColor: 'pink',
         padding: 20,
     },
     ModalView1a: {
-        fontSize: 30,
+        fontSize: 40 / fontScale,
         fontWeight: 'bold',
         marginBottom: 10,
     },
     ModalView1b: {
-        fontSize: 18,
+        fontSize: 25 / fontScale,
         fontWeight: 'bold',
     },
     ModalView1c: {
-        fontSize: 16,
+        fontSize: 18 / fontScale,
         fontWeight: 'bold',
     },
     ModalView1d: {
+        fontSize: 18 / fontScale,
     },
     ModalView2: {
         height: '60%',

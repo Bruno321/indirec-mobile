@@ -1,44 +1,53 @@
-import { View, Text, ScrollView, StyleSheet, Dimensions, Button} from "react-native";
+import { View, Text, ScrollView, StyleSheet, Dimensions, Button, SafeAreaView } from "react-native";
 import { Header, Row, Col } from '../components';
 
 ///////////////////////////////////////////////////
 const { width, height, fontScale } = Dimensions.get('window');
 
-export const DeportistaAssistance = ({ navigation }) => {
+const LargeText = ({ children, style = {}, numberOfLineas }) => {
+
+    return (
+        <Text style={{ fontSize: width * 0.038 / fontScale, ...style }} numberOfLines={numberOfLineas}>{children}</Text>
+    );
+};
+
+export const DeportistaAssistance = ( { navigation , route} ) => {
     return (
         <View>
+            <SafeAreaView style={{ backgroundColor: "#003070" }} />
             <Header navigation={navigation} title={"Asistencias del Deportista"} funcion={"goback"} />
             <View style={styles.centeredView}>
+                <LargeText style={styles.datoName} numberOfLineas={2}>{route.params}</LargeText>
                 <Row>
                     <Col style={styles.col1}>
                         <Text style={styles.subtitle}>Dias entrenados a la semana: </Text>
                     </Col>
                     <Col style={styles.col2}>
-                        <Text style={styles.text}>{'5 Días (EJEMPLO)'}</Text>
+                        <Text style={styles.text}>{'5 días'}</Text>
                     </Col>
                 </Row>
                 <Row>
                     <Col style={styles.col1}>
-                        <Text style={styles.subtitle}>Total de horas entrenadas: </Text>
+                        <Text style={styles.subtitle}>Total de horas entrenadas esta semana: </Text>
                     </Col>
                     <Col style={styles.col2}>
                         <Text style={styles.text}>{'5 Días (EJEMPLO)'}</Text>
                     </Col>
                 </Row>
-                <Row>
-                    <Col style={{width: "100%", paddingLeft: 15}}>
+                <Row style={{ paddingVertical: 20 / fontScale }}>
+                    <Col style={{ width: "100%", paddingLeft: 15 }}>
                         <Text style={styles.textTitle}>Asistencias</Text>
                     </Col>
                 </Row>
-                <Row style={{backgroundColor: 'rgb(255,200,0)'}}>
-                  <Col>
-                    <Text>WIP SELECTOR DE FECHA</Text>
-                  </Col>
+                <Row style={{ backgroundColor: 'rgb(255,200,0)' }}>
+                    <Col>
+                        <Text>WIP SELECTOR DE FECHA</Text>
+                    </Col>
                 </Row>
-                <Row style={{backgroundColor: 'rgb(255,200,0)'}}>
-                  <Col>
-                    <Text>Semana del ** de ** al ** de **</Text>
-                  </Col>
+                <Row style={{ backgroundColor: 'rgb(255,200,0)' }}>
+                    <Col>
+                        <Text>Semana del ** de ** al ** de **</Text>
+                    </Col>
                 </Row>
             </View>
         </View>
@@ -47,16 +56,16 @@ export const DeportistaAssistance = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     centeredView: {
-        paddingVertical: 20,
-        backgroundColor: 'orange',
+        backgroundColor: 'white',
+        backgroundColor: 'pink',
     },
     col1: {
-        backgroundColor: 'pink',
-        width: "60%",
+        // backgroundColor: 'pink',
+        width: "45%",
         height: 50
     },
     col2: {
-        backgroundColor: 'red',
+        // backgroundColor: 'red',
         width: "40%",
         height: 50
     },
@@ -66,12 +75,24 @@ const styles = StyleSheet.create({
         paddingLeft: 15,
     },
     text: {
-        fontSize: 15 / fontScale,
+        fontSize: 20 / fontScale,
         fontWeight: '400',
         textAlign: 'right',
         paddingRight: 15,
     },
-    textTitle:{
+    textTitle: {
         fontSize: 25 / fontScale,
-    }
+    },
+    datoName: {
+        fontSize: 30 / fontScale,
+        fontWeight: '600',
+        // fontFamily: "Fredoka-Medium",
+        
+        textAlign: 'center',
+        width: "100%",
+        // backgroundColor: '#003070',
+        color: "#003070",
+        paddingBottom: 20 / fontScale,
+        marginTop: width * 0.05
+      }
 });

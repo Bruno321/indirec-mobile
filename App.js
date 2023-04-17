@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { CustomDrawer } from './components/CustomDrawer';
 import { LoginContext } from './Context/LoginContext';
@@ -138,7 +138,7 @@ export default function App() {
     <LoginContext.Provider value={loginContext}>
       {/* Cuando carga NavigationContainer, llama la función onLayoutRootView*/}
       <NavigationContainer onReady={onLayoutRootView}>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator screenOptions={{ headerShown: false, ... TransitionPresets.SlideFromRightIOS}}>
 
         { isAuth ? 
           <>
