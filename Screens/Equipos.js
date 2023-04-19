@@ -1,6 +1,8 @@
 import { View, Text, StyleSheet, Dimensions, SafeAreaView } from "react-native";
 import { EquiposCard , FiltersView, Header, List, OrderView, SearchInput } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
+import { Filters } from "../components/FilterEquipos";
+
 
 const { fontScale } = Dimensions.get('window');
 
@@ -17,10 +19,14 @@ export const Equipos = ({ navigation }) => {
 				<Text style={styles.title}>Equipos</Text>
 			</View> */}
 			<SearchInput />
-			<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+			{/* <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 				<FiltersView />
 				<OrderView />
+			</View> */}
+			<View style={{paddingVertical: 24, justifyContent: 'space-around', flexDirection: 'row'}}>
+				<Filters />
 			</View>
+
 			<View style={styles.cartas} showsVerticalScrollIndicator={false}>
 				<List 
 					dataSource={equipos}
@@ -38,7 +44,7 @@ const styles = StyleSheet.create({
 		height: '95%',
 	},
 	cartas:{
-		marginTop:40,
+		marginTop:10,
 		borderTopWidth:1,
 		borderColor:'#DDDDDD',
 		paddingBottom:280

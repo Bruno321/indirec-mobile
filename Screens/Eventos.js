@@ -12,6 +12,8 @@ import * as yup from "yup";
 import { Formik } from 'formik';
 import { process, SAVE, FIND } from "../Service/Api";
 import { AntDesign } from '@expo/vector-icons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Filters } from "../components/Filters";
 
 const { fontScale } = Dimensions.get('window');
 const { width, height } = Dimensions.get('window');
@@ -24,6 +26,7 @@ const oInitialState = {
 	equipoLocal: '',
 	jugadoresLocales:[],
 	equipoVisitante: '',
+	jugadores:[],
 	jugadoresVisitantes:[],
 	directorTecnicoLocal: '',
 	directorTecnicoVisitante: '',
@@ -183,7 +186,12 @@ export const Eventos = ({ navigation }) => {
     ]
 
 	const onSubmit = async (values, reset) => {
-		console.log(values)
+		let data = {...values}
+		const idJugadoresLocales = jugadoresLocales.map(jugador => jugador.deportistaId);
+		const idJugadoresVisitantes = jugadoresVisitantes.map(jugador => jugador.deportistaId);
+		const concatJugadores = idJugadoresLocales.concat(idJugadoresVisitantes);
+		data.jugadores = concatJugadores
+		console.log(data);
 		try{
 			const response = await process(SAVE, 'eventos', values);
 			if (response?.data?.ok) {
@@ -224,7 +232,7 @@ export const Eventos = ({ navigation }) => {
 			<SafeAreaView style={{backgroundColor: "#003070"}}/>
 			<Header navigation={navigation} title={"Eventos"}/>
 			<SearchInput />
-			<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+			{/* <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 				<FiltersView />
 				<OrderView />
 			</View>
@@ -239,7 +247,16 @@ export const Eventos = ({ navigation }) => {
                     widthPercentage={0.9}
                     heightPercentage={0.04}
                 />
-            </View>
+            </View> */}
+			<View style={{paddingVertical: 24, justifyContent: 'space-around', flexDirection: 'row'}}>
+				<Filters />
+				<TouchableCmp onPress={() => setModalVisible(true)}>
+					<View style={styles.agregarJugadorButton}>
+						<MaterialCommunityIcons name={'clipboard-list-outline'} size={24} color={'white'}/>
+						<Text style={styles.buttonText}>Pasar lista</Text>
+					</View>
+				</TouchableCmp>
+			</View>
 			<View style={styles.cartas} showsVerticalScrollIndicator={false}>
 				<List
 					dataSource={eventos}
@@ -257,10 +274,6 @@ export const Eventos = ({ navigation }) => {
 								resetForm();
 							};
 							values.horaEvento += " " + time
-							const idJugadoresLocales = listaJugadoresLocales.map(jugador => jugador.deportistaId);
-        					const idJugadoresVisitantes = listaJugadoresVisitantes.map(jugador => jugador.deportistaId);
-        					const concatJugadores = idJugadoresLocales.concat(idJugadoresVisitantes);
-							values.jugadores = concatJugadores
 							onSubmit(values, reset);
 						}}
 					>
@@ -347,6 +360,7 @@ export const Eventos = ({ navigation }) => {
 									search={true}
 									onChange={value => {
 										setFieldValue('jugadoresLocales', value);
+										console.log(values.jugadoresLocales)
 									}}
 									renderSelectedItem={(item, unSelect) => (
 										<TouchableOpacity onPress={() => unSelect && unSelect(item)}>
@@ -391,6 +405,7 @@ export const Eventos = ({ navigation }) => {
 									searchPlaceholder="Buscar..."
 									onChange={value => {
 										setFieldValue('jugadoresVisitantes', value);
+										console.log(values.jugadoresVisitantes)
 									}}
 									renderSelectedItem={(item, unSelect) => (
 										<TouchableOpacity onPress={() => unSelect && unSelect(item)}>
@@ -507,7 +522,7 @@ const styles = StyleSheet.create({
 		height: '95%',
 	},
 	cartas:{
-		marginTop:20,
+		marginTop:10,
 		borderTopWidth:1,
 		borderColor:'#DDDDDD',
 		paddingBottom:280
@@ -678,4 +693,21 @@ const styles = StyleSheet.create({
         marginRight: 5,
         fontSize: 16,
     },
+	agregarJugadorButton:{
+		width: width*0.45,
+		height: 40,
+		alignSelf: 'center',
+		backgroundColor: "#003070",
+		flexDirection: 'row',
+		borderRadius: 10,
+		alignItems: 'center',
+		justifyContent: 'center',
+		// paddingBottom: 12,
+		// marginBottom: 12,
+	},
+	buttonText:{
+		marginLeft: 10,
+		color: "white",
+		fontSize: 16 / fontScale,
+	}
 })

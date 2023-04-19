@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Dimensions, Modal } from "react-native";
+import { StyleSheet, View, Text, Dimensions, Modal, TouchableWithoutFeedback } from "react-native";
 import Feather from 'react-native-vector-icons/Feather';
 import { aFacultities, aSports } from '../Utils/Constants';
 import TouchableCmp from '../assetsUI/TouchableCmp';
@@ -43,17 +43,10 @@ export const Filters = () => {
           setModalVisible(!modalVisible);
         }}
       >
-        <View
-          style={{
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0,0,0,0.5)'
-          }}
-        // onPress={() => {setModalVisible(!modalVisible);}}
-        >
-
+          <TouchableWithoutFeedback onPress={()=>setModalVisible(!modalVisible)}>
+            <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} />
+          </TouchableWithoutFeedback>
           <View style={styles.container}>
-
             <View style={styles.filterHeader}>
               {/* BOTON VOLVER */}
               <View style={{width: "25%",}}>
@@ -173,7 +166,6 @@ export const Filters = () => {
             </View>
 
           </View>
-        </View>
       </Modal>
 
       <View style={styles.btnFilter}>

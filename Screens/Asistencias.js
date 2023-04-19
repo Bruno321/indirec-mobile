@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Dimensions, Image, SafeAreaView, Text, View } from "react-native";
+import { Dimensions, Image, SafeAreaView, Text, View, StyleSheet } from "react-native";
 import { ActionButton, AsistenciasCard, FiltersView, Header, List, OrderView, SearchInput } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 import moment from "moment/moment";
 import 'moment/locale/es';
+import TouchableCmp from '../assetsUI/TouchableCmp';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Filters } from "../components/Filters";
 
-const { fontScale } = Dimensions.get('window');
+const { fontScale, width} = Dimensions.get('window');
 
 export const Asistencias = ({navigation}) => {
 	const [testData, setTestData] = useState([]);
@@ -71,11 +74,11 @@ export const Asistencias = ({navigation}) => {
 				<Header navigation={navigation} title={"Asistencias"}/>
         {/* <Text style={{ fontSize: 35 / fontScale, fontFamily: 'Fredoka-Medium', paddingLeft: 10}}>Asistencias</Text> */}
         <SearchInput />
-        <View style={{ flexDirection:'row', justifyContent: 'space-between' }}>
+        {/* <View style={{ flexDirection:'row', justifyContent: 'space-between' }}>
           <FiltersView />
           <OrderView />
-        </View>
-        <View style={{ flexDirection:'row', justifyContent: 'center' }}>
+        </View> */}
+        {/* <View style={{ flexDirection:'row', justifyContent: 'center' }}>
           <ActionButton
             style={{ marginTop: 20, marginBottom: 20 }}
             icon={<Image source={require('../assets/icons/list.png')}/>}
@@ -86,6 +89,16 @@ export const Asistencias = ({navigation}) => {
             widthPercentage={0.9}
             heightPercentage={0.04}
           />
+        </View> */}
+
+        <View style={{paddingVertical: 24, justifyContent: 'space-around', flexDirection: 'row'}}>
+          <Filters />
+          <TouchableCmp onPress={() => {navigation.navigate("Home")}}>
+            <View style={styles.agregarJugadorButton}>
+                <MaterialCommunityIcons name={'clipboard-list-outline'} size={24} color={'white'}/>
+                <Text style={styles.buttonText}>Pasar lista</Text>
+            </View>
+          </TouchableCmp>
         </View>
 
         {/* You can choose between the following options to show the data: */}
@@ -99,3 +112,58 @@ export const Asistencias = ({navigation}) => {
 			</View>
     )
 }
+
+const styles = StyleSheet.create({
+  main: {
+    height: '100%',
+    // position: 'relative',
+  },
+  paginacion:{
+    position: 'absolute',
+    bottom: 0,
+    marginBottom: 40,
+    height: 60,
+    width: "90%",
+    backgroundColor: 'rgba(255,0,0,0.2)',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    borderRadius: 50,
+    flexDirection: 'row',
+    overflow: 'hidden',
+  },
+  paginacionArrowSection:{
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+  paginacionArrowButton:{
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'orange',
+    width: "100%",
+    flex: 1,
+  },
+  paginacionSelectPage:{
+    width: "60%",
+    height: "100%",
+    backgroundColor: 'green',
+  },
+  agregarJugadorButton:{
+    width: width*0.45,
+    height: 40,
+    alignSelf: 'center',
+    backgroundColor: "#003070",
+    flexDirection: 'row',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // paddingBottom: 12,
+    // marginBottom: 12,
+  },
+  buttonText:{
+    marginLeft: 10,
+    color: "white",
+    fontSize: 16 / fontScale,
+  }
+});
