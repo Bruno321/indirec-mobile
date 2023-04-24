@@ -4,7 +4,6 @@ import Feather from 'react-native-vector-icons/Feather';
 import { aFacultities, aSports } from '../Utils/Constants';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import { ActionButton } from './ActionButton';
-import { List } from '../components';
 
 const { fontScale, width, height } = Dimensions.get('window');
 
