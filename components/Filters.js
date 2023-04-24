@@ -244,23 +244,25 @@ export const Filters = () => {
                 </TouchableCmp>
               </View>
             </View>
-            <FlatList 
-              data = {sportItems}
-              renderItem={({item}) =>
-                <TouchableCmp onPress={()=>setDepActual(item.label)}>
-                  <View style={styles.containerItem}>
-                    <View style={{ flexDirection: 'row', }}>
-                      <View style={styles.filterItem}>
-                        <Text style={styles.filterText}>{item.label}</Text>
-                      </View>
-                      <View style={depActual==item.value?{ width: '9%', height:30, backgroundColor:'#003070', borderRadius:45, borderWidth:1, borderColor:'grey' }:{width: '9%', height:30, backgroundColor:'#EEEEEF', borderRadius:45, borderWidth:1, borderColor:'grey'}}>
+            <SafeAreaView style={styles.flatContainer}>
+              <FlatList 
+                data = {sportItems}
+                renderItem={({item}) =>
+                  <TouchableCmp onPress={()=>setDepActual(item.label)}>
+                    <View style={styles.containerItem}>
+                      <View style={{ flexDirection: 'row', }}>
+                        <View style={styles.filterItem}>
+                          <Text style={styles.filterText}>{item.label}</Text>
+                        </View>
+                        <View style={depActual==item.value?{ width: '9%', height:30, backgroundColor:'#003070', borderRadius:45, borderWidth:1, borderColor:'grey' }:{width: '9%', height:30, backgroundColor:'#EEEEEF', borderRadius:45, borderWidth:1, borderColor:'grey'}}>
+                        </View>
                       </View>
                     </View>
-                  </View>
-                </TouchableCmp>
-              }
-              keyExtractor={item=>item.label}
-            />
+                  </TouchableCmp>
+                }
+                keyExtractor={item=>item.label}
+              />
+            </SafeAreaView>
             
 
             {/* Boton VER DEPORTISTAS */}
@@ -374,6 +376,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     overflow: 'hidden',
+    paddingHorizontal:'3.5%'
   },
   filterHeader: {
     width: '100%',
@@ -416,13 +419,14 @@ const styles = StyleSheet.create({
   containerItem: {
     display: 'flex',
     flexDirection: 'row',
-    width: '95%',
+    width: '100%',
     height: 60,
     paddingHorizontal: '2.5%',
     justifyContent: 'center',
     alignItems: 'center',
     borderTopWidth: 1,
     borderColor: '#C3BFBF',
+    // backgroundColor:'red'
   },
   filterItem: {
     width: '90%',
@@ -459,6 +463,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   flatContainer:{
-    marginBottom:130
+    marginBottom:130,
+    // paddingHorizontal: '3%',
   }
 })
