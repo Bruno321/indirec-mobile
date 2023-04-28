@@ -10,7 +10,7 @@ export const useFetchData = (path) => {
     setLoading(true);
     const response = await process(FIND, path, {}, {});
 
-    if (response?.data.ok) {
+    if (response.data) {
       setData(response.data.data);
     } else {
       Alert.alert(

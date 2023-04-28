@@ -9,14 +9,12 @@ export const UPDATE = 'PATCH';
 export const DELETE = 'DELETE';
 export const SAVE_WITH_FILE = 'SAVE_WITH_FILE';
 
-export const BASEPATH = '/api';
-
-const LOGINPATH = `${BASEPATH}/auth`;
+const LOGINPATH = `/auth`;
 
 export const token = async () => await AsyncStorage.getItem('token');
 
 const API = axios.create({
-  baseURL: "http://148.220.212.254:3000",
+  baseURL: "http://148.220.211.238:3030",
   headers: { 
     "Access-Control-Allow-Origin": null ,
     "Accept":"*/*"
@@ -24,7 +22,7 @@ const API = axios.create({
 });
 
 export async function login (email, password) {
-  return await API.post(LOGINPATH, { email, password });
+  return await API.post(LOGINPATH, { email, password, strategy:'local' });
 };
 
 /**

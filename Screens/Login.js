@@ -61,8 +61,8 @@ export const Login = () => {
             console.log(error.response);
           });
 
-        if (response?.data?.ok) {
-          iniciarSesion(response.data.token);
+        if (response.data) {
+          iniciarSesion(response.data.accessToken);
         }
 
         setLoading(false);
