@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Modal, ScrollView, SafeAreaView, Image, Button, Dimensions } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { Header } from '../components';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import Feather from 'react-native-vector-icons/Feather';
 
-const { width, height, fontScale } = Dimensions.get('window');
+const { width, fontScale } = Dimensions.get('window');
 
-export const ListadoJugadores = ({ dataSource, aSelected, setSelected }) => {
-    const [modalActive, setModalActive] = useState(false);
+export const ListadoJugadores = (props) => {
+    // console.log(props.route.params.var);
+    var dataSource = props.route.params.var.deportistas;
+    var aSelected = props.route.params.var.aSelected;
+    var setSelected = props.route.params.var.setSelected;
     const [aJugadores, setJugadores] = useState(dataSource || []);
-
     useEffect(() => {
         if (dataSource?.length) {
             setJugadores(dataSource);
@@ -17,11 +20,9 @@ export const ListadoJugadores = ({ dataSource, aSelected, setSelected }) => {
     }, [dataSource]);
 
     const isSelected = sId => aSelected.findIndex(j => j.deportistaId === sId) !== -1;
-
     const updateSelected = sId => {
         const nIndex = aSelected.findIndex(j => j.deportistaId === sId);
         const aTmp = [...aSelected];
-
         if (nIndex !== -1) {
             aTmp.splice(nIndex, 1);
             setSelected(aTmp);
@@ -133,7 +134,8 @@ export const ListadoJugadores = ({ dataSource, aSelected, setSelected }) => {
 
     return (
         <>
-            <View style={styles.View}>
+
+            {/* <View style={styles.View}>
                 <View style={styles.headerLista}>
                     <View style={styles.celda1HeaderLista}>
                         <Text style={styles.celda1y2Text}>#</Text>
@@ -142,56 +144,56 @@ export const ListadoJugadores = ({ dataSource, aSelected, setSelected }) => {
                         <Text style={styles.celda1y2Text}>Nombre Completo</Text>
                     </View>
                 </View>
-                {LoadSelected(aSelected)}
-            </View>
-            <View style={styles.viewEditar1}>
+            </View> */}
+            {/* <View style={styles.viewEditar1}>
                 <TouchableCmp onPress={() => { setModalActive(true) }}>
                     <View style={styles.viewEditar2}>
                         <Text style={styles.viewEditarText}>Editar equipo</Text>
                     </View>
                 </TouchableCmp>
-            </View>
-            <Modal
+            </View> */}
+            {/* <Modal
                 animationType={'fade'}
                 transparent
                 visible={modalActive}
                 onRequestClose={() => setModalActive(false)}
                 propagateSwipe={true}
             >
-                <View style={styles.ModalStyle}>
-                    <SafeAreaView style={{backgroundColor: "#003070"}}/>
-                    <View style={styles.headerComponent}>
-                        <View style={styles.menu}>
-                            <Feather name={'arrow-left'} size={35} color={'white'} onPress={() => setModalActive(false)} />
-                        </View>
+            </Modal> */}
+            <View style={styles.ModalStyle}>
+                <SafeAreaView style={{ backgroundColor: "#003070" }} />
+                <Header navigation={props.navigation} title={"Lista de Jugadores"} funcion={"goback"} />
+                <View style={styles.ModalView1}>
+                    <Text style={styles.ModalView1a}>Lista de Jugadores</Text>
+                    <Text style={styles.ModalView1b}>Troyanos Uaq</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={styles.ModalView1c}>Basketball</Text>
+                        <Text style={styles.ModalView1c}>Varonil</Text>
                     </View>
-                    <View style={styles.ModalView1}>
-                        <Text style={styles.ModalView1a}>Lista de Jugadores</Text>
-                        <Text style={styles.ModalView1b}>Troyanos Uaq</Text>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={styles.ModalView1c}>Basketball</Text>
-                            <Text style={styles.ModalView1c}>Varonil</Text>
-                        </View>
-                        <Text style={styles.ModalView1d} numberOfLines={2}>Facultad de Informática - Campus Juriquilla</Text>
-                    </View>
-                    <View style={styles.ModalView2}>
-                        <View style={styles.headerLista}>
-                            <View style={styles.celda1HeaderLista}>
-                                <Text style={styles.celda1y2Text}>#</Text>
-                            </View>
-                            <View style={styles.celda2HeaderLista}>
-                                <Text style={styles.celda1y2Text}>Nombre Completo</Text>
-                            </View>
-                            <View style={styles.celda3HeaderLista}>
-                                <Button title='Limpiar' color={"#003070"} onPress={() => setSelected([])} />
-                            </View>
-                        </View>
-                        <ScrollView>
-                            {showJugadores(aJugadores)}
-                        </ScrollView>
-                    </View>
+                    <Text style={styles.ModalView1d} numberOfLines={2}>Facultad de Informática - Campus Juriquilla</Text>
                 </View>
-            </Modal>
+                <View style={styles.ModalView2}>
+                    <View style={styles.headerLista}>
+                        <View style={styles.celda1HeaderLista}>
+                            <Text style={styles.celda1y2Text}>#</Text>
+                        </View>
+                        <View style={styles.celda2HeaderLista}>
+                            <Text style={styles.celda1y2Text}>Nombre Completo</Text>
+                        </View>
+                        <View style={styles.celda3HeaderLista}>
+                            <TouchableCmp onPress={() => setSelected([])}>
+                                <View style={styles.celda3HeaderLista2}>
+                                    <Text style={styles.celda1y2Text}>Limpiar</Text>
+                                </View>
+                            </TouchableCmp>
+                        </View>
+                    </View>
+                    <ScrollView>
+                        
+                        {showJugadores(aJugadores)}
+                    </ScrollView>
+                </View>
+            </View>
         </>
     )
 }
@@ -224,6 +226,14 @@ const styles = StyleSheet.create({
         width: "40%",
         justifyContent: 'center',
         height: 40,
+        // backgroundColor: '0F0'
+    },
+    celda3HeaderLista2: {
+        // backgroundColor: '#0030',
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     celda1y2Text: {
         color: 'white',
@@ -358,6 +368,7 @@ const styles = StyleSheet.create({
     },
     ModalView2: {
         height: '60%',
+        // backgroundColor: 'red',
     },
     ModalView3: {
         width: '100%',

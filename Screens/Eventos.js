@@ -519,13 +519,15 @@ export const Eventos = ({ navigation }) => {
 const styles = StyleSheet.create({
 	container:{
 		backgroundColor:'#FFF',
-		height: '95%',
+		flex: 1,
+		// height: '95%',
 	},
 	cartas:{
-		marginTop:10,
+		// marginTop:10,
 		borderTopWidth:1,
 		borderColor:'#DDDDDD',
-		paddingBottom:280
+		flex: 1,
+		// paddingBottom:280
 	},
 	title:{
 		fontSize:35,

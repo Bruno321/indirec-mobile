@@ -12,6 +12,7 @@ const LargeText = ({ children, style = {}, numberOfLineas }) => {
 };
 
 export const DeportistaAssistance = ( { navigation , route} ) => {
+    console.log(route.params);
     return (
         <View>
             <SafeAreaView style={{ backgroundColor: "#003070" }} />
@@ -41,7 +42,7 @@ export const DeportistaAssistance = ( { navigation , route} ) => {
                 </Row>
                 <Row style={{ backgroundColor: 'rgb(255,200,0)' }}>
                     <Col>
-                        <Text>WIP SELECTOR DE FECHA</Text>
+                        <Text>☢WORK IN PROGRESS FECHA FILTRADA☢</Text>
                     </Col>
                 </Row>
                 <Row style={{ backgroundColor: 'rgb(255,200,0)' }}>

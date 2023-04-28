@@ -66,9 +66,8 @@ const styles = StyleSheet.create({
 		// width: '100%',
 		fontSize: 25 / fontScale,
 		paddingLeft: 5 / fontScale,
-
-		fontFamily: 'Fredoka-Medium',
 		alignSelf: 'center',
+		fontWeight: 'bold',
 		// alignItems: 'center',
 	},
 	safeareaview:{

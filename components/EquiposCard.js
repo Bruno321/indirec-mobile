@@ -2,12 +2,11 @@ import { Dimensions, View, Text, StyleSheet } from "react-native";
 import { ActionButton } from './ActionButton';
 import MarqueeText from 'react-native-marquee';
 
-const { fontScale } = Dimensions.get('window');
+const { fontScale, width }= Dimensions.get('window');
 
 export const EquiposCard = ({props}) => {
 
     return (
-        <View style={{paddingLeft:0}}>
             <View style={styles.card}>
                 <View style={styles.primera}>
                     <View style={styles.detalles}>
@@ -43,7 +42,6 @@ export const EquiposCard = ({props}) => {
                     </View>
                 </View>
             </View>
-        </View>
     );
 };
 
@@ -51,14 +49,14 @@ const styles = StyleSheet.create({
     card:{
         backgroundColor:'#FFF',
         height:150,
-        width:'100%',
+        width: width,
         borderBottomWidth:1,
         borderColor:'#DDDDDD',
-        paddingBottom:20,
-        paddingTop:15,
-        paddingHorizontal:30,
-        flexDirection:'row',
-        justifyContent:'space-between',
+        // paddingBottom:20,
+        // paddingTop:15,
+        // paddingHorizontal:30,
+        // flexDirection:'row',
+        // justifyContent:'space-between',
         overflow:'hidden'
     },
     btnInfo:{
@@ -90,8 +88,9 @@ const styles = StyleSheet.create({
         color:'white'
     },
     primera:{
-        justifyContent:'space-between',
-        width:'65%'
+        // justifyContent:'space-between',
+        // width:'65%',
+        backgroundColor: 'red',
     },
     textoSegunda:{
         alignItems:'flex-end',
@@ -103,5 +102,6 @@ const styles = StyleSheet.create({
     },
     detalles:{
         overflow:'scroll',
+        backgroundColor: 'green',
     }
 })

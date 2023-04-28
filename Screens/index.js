@@ -9,3 +9,4 @@ export * from './Equipos';
 export * from './Eventos';
 export * from './EventosDetails';
 export * from './Deportista.assistance';
+export * from './ListadoJugadores';

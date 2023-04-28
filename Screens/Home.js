@@ -137,10 +137,6 @@ export const  Home = ()  => {
   return (
     <View style={styles.container}>
       <SafeAreaView style={{backgroundColor: "#003070"}}/>
-      <StatusBar
-        backgroundColor="#000"
-        barStyle={"light-content"}
-        hidden={false} />
       <Header navigation={navigation} title={"Pase de Lista"}/>
       <View style={styles.cuadrante2}>
         <Text style={styles.texto1}>Bienvenido</Text>
@@ -182,24 +178,20 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'white',
   },
-  logoTexto:{
-    width: Dimensions.get('window').width*0.5,
-    resizeMode: 'contain',
-  },
   cuadrante2:{
-    height: 170,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   cameraView:{
     width: '100%',
-    height: Dimensions.get('window').height*0.5,
+    height: Dimensions.get('window').width,
     justifyContent: 'center',
     overflow: 'hidden',
     backgroundColor: '#F0F0F0'
   },
   cuadrante3:{
-    height: 160,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },

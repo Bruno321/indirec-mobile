@@ -100,6 +100,9 @@ export const Asistencias = ({navigation}) => {
             </View>
           </TouchableCmp>
         </View>
+        <View style={styles.viewDíaFiltrado}>
+          <Text style={styles.viewDíaFiltradoText}>☢WORK IN PROGRESS FECHA FILTRADA☢</Text>
+        </View>
 
         {/* You can choose between the following options to show the data: */}
 
@@ -165,5 +168,16 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     color: "white",
     fontSize: 16 / fontScale,
+  },
+  viewDíaFiltrado:{
+    backgroundColor: '#CCC',
+    width: width*1,
+    height: 40,
+    justifyContent: 'center',
+    paddingLeft: 10,
+  },
+  viewDíaFiltradoText:{
+    fontSize: 18/fontScale,
+    fontWeight: "bold",
   }
 });
