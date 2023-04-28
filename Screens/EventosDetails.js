@@ -12,8 +12,7 @@ const { fontScale } = Dimensions.get('window');
 export const EventosDetails = (props) =>{
 	const [isModalVisible, setModalVisible] = useState(false);
     const [equipoSelec, setEquipoSelec] = useState();
-    let datos = props.route.params.datos
-    console.log("AAAAAAAAAAA:" + datos.deportista[0])
+    let datos = props.route.params.datos //id, nombre, fecha, hora, equipoloca, etc
 
     const Item = ({title,apellido}) => (
         <View style={styles.item}>
@@ -25,17 +24,17 @@ export const EventosDetails = (props) =>{
             <Header navigation={props.navigation} title={"Datos del Evento"} funcion={"goback"}/>
             <ScrollView style={styles.modal} contentContainerStyle={[styles.contentContainer]}>
                 <View style={styles.titulo}>
-                    <Text style={styles.title}>{datos.nombreEvento}</Text>
+                    <Text style={styles.title}>{datos.nombre}</Text>
                 </View>
                 <View style={styles.fecha}>
                     <Text style={styles.txtTitulo}>Fecha</Text>
-                    <Text style={styles.txt}>{datos.fechaEvento} -{datos.horaEvento}</Text>
+                    <Text style={styles.txt}>{datos.fecha}     {datos.hora}</Text>
                 </View>
                 <View style={styles.equipos}>
                     <Text style={styles.txtTitulo}>Equipo local</Text>
                     <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                        <Text style={styles.txt}>{datos.equipoLocal==datos.equipos[0]?.equipoId?datos.equipos[0]?.nombre:datos.equipos[1]?.nombre}</Text>
-                        <TouchableCmp onPress={()=>{setModalVisible(true),setEquipoSelec(datos.equipoLocal)}}>
+                        <Text style={styles.txt}>{datos.EquipoLocal.nombre}</Text>
+                        <TouchableCmp onPress={()=>{setModalVisible(true),setEquipoSelec("local")}}> 
                             <View style={{backgroundColor:'#003070',width:Dimensions.get('window').width*0.3,justifyContent:'center',borderRadius:15}}>
                                 <Text style={{textAlign:'center',color:'white'}}>Ver jugadores</Text>
                             </View>
@@ -43,8 +42,8 @@ export const EventosDetails = (props) =>{
                     </View>
                     <Text style={styles.txtTitulo}>Equipo visitante</Text>
                     <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                        <Text style={styles.txt}>{datos.equipoVisitante==datos.equipos[1]?.equipoId?datos.equipos[1]?.nombre:datos.equipos[0]?.nombre}</Text>
-                        <TouchableCmp onPress={()=>{setModalVisible(true),setEquipoSelec(datos.equipoVisitante)}}>
+                        <Text style={styles.txt}>{datos.EquipoVisitante.nombre}</Text>
+                        <TouchableCmp onPress={()=>{setModalVisible(true),setEquipoSelec("visitante")}}>
                             <View style={{backgroundColor:'#003070',width:Dimensions.get('window').width*0.3,justifyContent:'center',borderRadius:15}}>
                                 <Text style={{textAlign:'center',color:'white'}}>Ver jugadores</Text>
                             </View>
@@ -87,14 +86,15 @@ export const EventosDetails = (props) =>{
                     }
                 </View>
             </ScrollView>
-            <Modal isVisible={isModalVisible} onRequestClose={() => {setModalVisible(false)}}>
+            <Modal isVisible={isModalVisible} onRequestClose={() => {setModalVisible(false),setEquipoSelec}}>
                 <View style={{backgroundColor:'white',height:Dimensions.get('window').height*.5,paddingHorizontal:15, paddingTop:20,borderRadius:15}}>
-                    <Text numberOfLines={2} style={{fontFamily: 'Fredoka-Medium',fontSize: 25 / fontScale,textAlign:'center'}}>Jugadores equipo {equipoSelec==datos.equipos[0]?.equipoId?datos.equipos[0]?.nombre:datos.equipos[1]?.nombre}</Text>
+                    {/* <Text numberOfLines={2} style={{fontFamily: 'Fredoka-Medium',fontSize: 25 / fontScale,textAlign:'center'}}>Jugadores equipo {datos.EquipoLocal}</Text> */}
+                    <Text numberOfLines={2} style={{fontFamily: 'Fredoka-Medium',fontSize: 25 / fontScale,textAlign:'center'}}>{equipoSelec=="local"?datos.EquipoLocal.nombre:datos.EquipoVisitante.nombre}</Text>
                     <View>
                         <FlatList
-                            data={datos.deportista}
-                            renderItem={({item}) => equipoSelec==item.equipoId?<Item title={item.nombres} apellido={item.apellidos}/>:""}
-                            keyExtractor={item => item.deportistaId}
+                            data={equipoSelec=='local'?datos.eventos_details.filter(obj => obj.deportista.equipo.nombre == datos.EquipoLocal.nombre):datos.eventos_details.filter(obj => obj.deportista.equipo.nombre == datos.EquipoVisitante.nombre)}
+                            renderItem={({item}) => <Item title={item.deportista.nombres} apellido={item.deportista.apellidos}/>}
+                            keyExtractor={item => item.deportista.id}
                         />
                     </View>
                 </View>

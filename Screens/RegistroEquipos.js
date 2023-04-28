@@ -13,8 +13,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
 import * as yup from "yup";
-import { Header, ListadoJugadores } from '../components';
-import { aCampus, aSports, aFacultities } from '../Utils/Constants';	
+import { Header, ListadoJugadores, ActionButton } from '../components';
+import { aCampus, aSports, aFacultities } from '../Utils/Constants';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useFetchData } from '../Hooks/Fetch.hook';
 import TouchableCmp from '../assetsUI/TouchableCmp';
@@ -77,8 +77,8 @@ export const RegistroEquipos = () => {
 		value: `Facultad de ${oFaculty}`,
 	}));
 	const categoria = [
-		{label: "Masculino", value: 0},
-		{label: "Femenino", value: 1},
+		{ label: "Masculino", value: 0 },
+		{ label: "Femenino", value: 1 },
 	];
 	const [aSelected, setSelected] = useState([]);
 	const [deportistas] = useFetchData('deportistas');
@@ -97,7 +97,7 @@ export const RegistroEquipos = () => {
 				'Oops...',
 				'Algo salio mal, intenta mas tarde',
 				[
-					{text:'Okay'},
+					{ text: 'Okay' },
 				]
 			);
 		});
@@ -107,7 +107,7 @@ export const RegistroEquipos = () => {
 				'Equipo guardado',
 				response.data.message,
 				[
-					{text:'Okay'},
+					{ text: 'Okay' },
 				]
 			);
 			resetForm();
@@ -118,161 +118,206 @@ export const RegistroEquipos = () => {
 
 	return (
 		<ScrollView style={styles.general} showsVerticalScrollIndicator={false}>
-		<SafeAreaView style={{backgroundColor: "#003070"}}/>
-		<Header navigation={navigation}  title={"Registrar equipo"}/>
+			<SafeAreaView style={{ backgroundColor: "#003070" }} />
+			<Header navigation={navigation} title={"Registrar equipo"} />
 
 			<View style={styles.center}>
 				<View style={styles.viewForm}>
-				<Formik
-					initialValues={oInitialState}
-					validationSchema={validationSchema}
-					onSubmit={(values, { resetForm }) => {
-						onSubmit(values, resetForm);
-					}}
-				>
-				{({ setFieldValue, handleChange, handleSubmit, values, errors, touched }) => (
-					<>
-						<Text style={styles.campos}>Nombre del equipo:</Text>
-						<TextInput 
-							placeholder='Nombre del equipo'
-							style={styles.input}
-							onChangeText={handleChange('nombre')}
-							value={values.nombre}
-							/>
-						<Text style={styles.error}>{touched.nombre && errors.nombre}</Text>
+					<Formik
+						initialValues={oInitialState}
+						validationSchema={validationSchema}
+						onSubmit={(values, { resetForm }) => {
+							onSubmit(values, resetForm);
+						}}
+					>
+						{({ setFieldValue, handleChange, handleSubmit, values, errors, touched }) => (
+							<>
+								<Text style={styles.campos}>Nombre del equipo:</Text>
+								<TextInput
+									placeholder='Nombre del equipo'
+									style={styles.input}
+									onChangeText={handleChange('nombre')}
+									value={values.nombre}
+								/>
+								<Text style={styles.error}>{touched.nombre && errors.nombre}</Text>
 
-						<Text style={styles.campos}>Deporte:</Text>
-							<Dropdown 
-								data={sportItems}
-								labelField="label"
-								valueField="value"
-								placeholder='Seleccione una opción'
-								style={styles.dropdown1DropdownStyle}
-								containerStyle={styles.dropdown1DropdownStyle}
-								placeholderStyle={styles.dropdown1PlaceholderStyle}
-								selectedTextStyle={{color: "#000"}}
-								itemContainerStyle={{backgroundColor: 'red',}}
-								itemTextStyle={{color: 'green',}}
-								onChange={({ value }) => {
-									setFieldValue('deporte', value);
-								}}
-								value={values.deporte}
+								<Text style={styles.campos}>Deporte:</Text>
+								<Dropdown
+									data={sportItems}
+									labelField="label"
+									valueField="value"
+									placeholder='Seleccione una opción'
+									style={styles.dropdown1DropdownStyle}
+									containerStyle={styles.dropdown1DropdownStyle}
+									placeholderStyle={styles.dropdown1PlaceholderStyle}
+									// selectedTextStyle={{color: "#000"}}
+									// itemContainerStyle={{}}
+									// itemTextStyle={{color: 'green',}}
+									onChange={({ value }) => {
+										setFieldValue('deporte', value);
+									}}
+									value={values.deporte}
 
-								
-	// style?: StyleProp<ViewStyle>;
-    // containerStyle?: StyleProp<ViewStyle>;
-    // placeholderStyle?: StyleProp<TextStyle>;
-    // selectedTextStyle?: StyleProp<TextStyle>;
-	// itemContainerStyle?: StyleProp<ViewStyle>;
-    // itemTextStyle?: StyleProp<TextStyle>;
-    // inputSearchStyle?: StyleProp<TextStyle>;
-    // iconStyle?: StyleProp<ImageStyle>;
-							/>
-						<Text style={styles.error}>{touched.deporte && errors.deporte}</Text>
 
-						<Text style={styles.campos}>Categoría:</Text>
-						<RadioButtonRN
-							style={styles.radioButtonStyle}
-							data={categoria}
-							textStyle={styles.radioButtonTextStyle}
-							boxStyle={styles.radioButtonBoxStyle}
-							activeColor={!values.categoria ? "#003070" : "#808"}
-							selectedBtn={({ value }) => setFieldValue('categoria', value)}
-						/>
-						<Text style={styles.error}>{touched.categoria && errors.categoria}</Text>
+								// style?: StyleProp<ViewStyle>;
+								// containerStyle?: StyleProp<ViewStyle>;
+								// placeholderStyle?: StyleProp<TextStyle>;
+								// selectedTextStyle?: StyleProp<TextStyle>;
+								// itemContainerStyle?: StyleProp<ViewStyle>;
+								// itemTextStyle?: StyleProp<TextStyle>;
+								// inputSearchStyle?: StyleProp<TextStyle>;
+								// iconStyle?: StyleProp<ImageStyle>;
+								/>
+								<Text style={styles.error}>{touched.deporte && errors.deporte}</Text>
 
-						<Text style={styles.campos}>Facultad:</Text>
-							<Dropdown 
-								data={facultitiesItems}
-								labelField="label"
-								valueField="value"
-								placeholder='Seleccione una opción'
-								style={styles.dropdown1DropdownStyle}
-								placeholderStyle={styles.dropdown1PlaceholderStyle}
-								containerStyle={styles.dropdown1DropdownStyle}
-								onChange={({ value }) => {
-									setFieldValue('facultad', value);
-								}}
-								value={values.facultad}
-								search={true}
-							/>
-						<Text style={styles.error}>{touched.facultad && errors.facultad}</Text>
+								<Text style={styles.campos}>Categoría:</Text>
+								<RadioButtonRN
+									style={styles.radioButtonStyle}
+									data={categoria}
+									textStyle={styles.radioButtonTextStyle}
+									boxStyle={styles.radioButtonBoxStyle}
+									activeColor={!values.categoria ? "#003070" : "#808"}
+									selectedBtn={({ value }) => setFieldValue('categoria', value)}
+								/>
+								<Text style={styles.error}>{touched.categoria && errors.categoria}</Text>
 
-						<Text style={styles.campos}>Campus:</Text>
-							<Dropdown 
-								data={campusItems}
-								labelField="label"
-								valueField="value"
-								placeholder='Seleccione una opción'
-								style={styles.dropdown1DropdownStyle}
-								placeholderStyle={styles.dropdown1PlaceholderStyle}
-								containerStyle={styles.dropdown1DropdownStyle}
-								itemTextStyle={{color: 'red',}}
-								onChange={({ value }) => {
-									setFieldValue('campus', value);
-								}}
-								value={values.campus}
-							/>
-						<Text style={styles.error}>{touched.campus && errors.campus}</Text>
+								<Text style={styles.campos}>Facultad:</Text>
+								<Dropdown
+									data={facultitiesItems}
+									labelField="label"
+									valueField="value"
+									placeholder='Seleccione una opción'
+									style={styles.dropdown1DropdownStyle}
+									placeholderStyle={styles.dropdown1PlaceholderStyle}
+									containerStyle={styles.dropdown1DropdownStyle}
+									onChange={({ value }) => {
+										setFieldValue('facultad', value);
+									}}
+									value={values.facultad}
+									search={true}
+								/>
+								<Text style={styles.error}>{touched.facultad && errors.facultad}</Text>
 
-						{/* ENTRENADOR */}
-						<Text style={{...styles.campos, marginTop: 50}}>Datos del entrenador:</Text>
+								<Text style={styles.campos}>Campus:</Text>
+								<Dropdown
+									data={campusItems}
+									labelField="label"
+									valueField="value"
+									placeholder='Seleccione una opción'
+									style={styles.dropdown1DropdownStyle}
+									placeholderStyle={styles.dropdown1PlaceholderStyle}
+									containerStyle={styles.dropdown1DropdownStyle}
+									// itemTextStyle={{color: 'red',}}
+									onChange={({ value }) => {
+										setFieldValue('campus', value);
+									}}
+									value={values.campus}
+								/>
+								<Text style={styles.error}>{touched.campus && errors.campus}</Text>
 
-						<Text style={styles.campos}>Nombre(s):</Text>
-						<TextInput 
-							placeholder='Nombre del entrenador'
-							style={styles.input}
-							onChangeText={handleChange('nombreEntrenador')}
-							value={values.nombreEntrenador}
-						/>
-						<Text style={styles.error}>{touched.nombreEntrenador && errors.nombreEntrenador}</Text>
-						
-						<Text style={styles.campos}>Apellidos:</Text>
-						<TextInput 
-							placeholder='Apellidos del entrenador'
-							style={styles.input}
-							onChangeText={handleChange('apellidoEntrenador')}
-							value={values.apellidoEntrenador}
-						/>
-						<Text style={styles.error}>{touched.apellidoEntrenador && errors.apellidoEntrenador}</Text>
-						
-						{/* ASISTENTE */}
-						<Text style={{...styles.campos, marginTop: 50}}>Datos del asistente:</Text>
+								{/* ENTRENADOR */}
+								<Text style={{ ...styles.campos, marginTop: 50 }}>Datos del entrenador:</Text>
 
-						<Text style={styles.campos}>Nombre(s):</Text>
-						<TextInput 
-							placeholder='Nombre del asistente'
-							style={styles.input}
-							onChangeText={handleChange('nombreAsistente')}
-							value={values.nombreAsistente}
-						/>
-						<Text style={styles.error}>{touched.nombreAsistente && errors.nombreAsistente}</Text>
+								<Text style={styles.campos}>Nombre(s):</Text>
+								<TextInput
+									placeholder='Nombre del entrenador'
+									style={styles.input}
+									onChangeText={handleChange('nombreEntrenador')}
+									value={values.nombreEntrenador}
+								/>
+								<Text style={styles.error}>{touched.nombreEntrenador && errors.nombreEntrenador}</Text>
 
-						<Text style={styles.campos}>Apellidos:</Text>
-						<TextInput 
-							placeholder='Apellidos del asistente' 
-							style={styles.input}
-							onChangeText={handleChange('apellidoAsistente')}
-							value={values.apellidoAsistente}
-						/>
-						<Text style={styles.error}>{touched.apellidoAsistente && errors.apellidoAsistente}</Text>
-						
-						{/* LISTA DE JUGADORES */}
-						<Text style={styles.campos}>Lista de jugadores:</Text>
-						<ListadoJugadores dataSource={deportistas} aSelected={aSelected} setSelected={setSelected}/>
+								<Text style={styles.campos}>Apellidos:</Text>
+								<TextInput
+									placeholder='Apellidos del entrenador'
+									style={styles.input}
+									onChangeText={handleChange('apellidoEntrenador')}
+									value={values.apellidoEntrenador}
+								/>
+								<Text style={styles.error}>{touched.apellidoEntrenador && errors.apellidoEntrenador}</Text>
 
-						<View style={styles.viewButton}>
-							<TouchableCmp onPress={handleSubmit}>
-								<View style={styles.viewRegistrar}>
-									{loading ? <ActivityIndicator color="white"/> : <Text style={styles.registrar}>Registrar Equipo</Text>}
+								{/* ASISTENTE */}
+								<Text style={{ ...styles.campos, marginTop: 50 }}>Datos del asistente:</Text>
+
+								<Text style={styles.campos}>Nombre(s):</Text>
+								<TextInput
+									placeholder='Nombre del asistente'
+									style={styles.input}
+									onChangeText={handleChange('nombreAsistente')}
+									value={values.nombreAsistente}
+								/>
+								<Text style={styles.error}>{touched.nombreAsistente && errors.nombreAsistente}</Text>
+
+								<Text style={styles.campos}>Apellidos:</Text>
+								<TextInput
+									placeholder='Apellidos del asistente'
+									style={styles.input}
+									onChangeText={handleChange('apellidoAsistente')}
+									value={values.apellidoAsistente}
+								/>
+								<Text style={styles.error}>{touched.apellidoAsistente && errors.apellidoAsistente}</Text>
+
+								{/* LISTA DE JUGADORES */}
+								<Text style={styles.campos}>Lista de jugadores:</Text>
+								<View style={styles.viewHeaderLista}>
+									<View style={styles.headerLista}>
+										<View style={styles.celda1HeaderLista}>
+											<Text style={styles.celda1y2Text}>#</Text>
+										</View>
+										<View style={styles.celda2HeaderLista}>
+											<Text style={styles.celda1y2Text}>Nombre Completo</Text>
+										</View>
+									</View>
 								</View>
-							</TouchableCmp>
-						</View>
-					</>
-				)}
-			</Formik>
+								{
+									aSelected.map(x =>
+										<View key={x.deportistaId + "SelView1"} style={styles.ViewJugador}>
+											<View key={x.deportistaId + "SelView2"} style={styles.celda3a}>
+												<Text
+													key={x.deportistaId + "SelText1"}
+													style={styles.celda3y4Texta}
+													numberOfLines={1}
+												>
+													{x.numJugador}
+												</Text>
+											</View>
+							
+											<View key={x.deportistaId + "SelView3"} style={styles.celda4a}>
+												<Text
+													key={x.deportistaId + "SelText2"}
+													style={styles.celda3y4Texta}
+													numberOfLines={2}
+												>
+													{x.nombres}
+												</Text>
+											</View>
+										</View>
+									)
+								}
+								<View style={{ borderRadius: 18, overflow: 'hidden', height: 60 }}>
+									<ActionButton
+										text="Editar Jugadores"
+										backgroundColor="#003070"
+										color="#FFF"
+										icon="edit"
+										style={{ width: "100%", alignSelf: 'center', height: 60, borderRadius: 18 }}
+										handler={() => { navigation.navigate("ListadoJugadores", {var:{deportistas, aSelected, setSelected}}) }}
+									/>
+								</View>
+								{/* <ListadoJugadores dataSource={deportistas} aSelected={aSelected} setSelected={setSelected}/> */}
 
-			</View>
+								<View style={styles.viewButton}>
+									<TouchableCmp onPress={handleSubmit}>
+										<View style={styles.viewRegistrar}>
+											{loading ? <ActivityIndicator color="white" /> : <Text style={styles.registrar}>Registrar Equipo</Text>}
+										</View>
+									</TouchableCmp>
+								</View>
+							</>
+						)}
+					</Formik>
+
+				</View>
 
 			</View>
 		</ScrollView>
@@ -280,70 +325,72 @@ export const RegistroEquipos = () => {
 }
 
 const styles = StyleSheet.create({
-	general:{
-		backgroundColor:'white',
+	general: {
+		backgroundColor: 'white',
 	},
-	center:{
-		alignItems:'center'
+	center: {
+		alignItems: 'center'
 	},
-	viewForm:{
+	viewForm: {
 		width: width / 1.25,
 		marginTop: height / 28,
 	},
-	campos:{
+	campos: {
 		fontSize: 16 / fontScale,
-		marginTop:8
+		// marginTop:8
 	},
-	input:{
+	input: {
 		fontSize: 20 / fontScale,
 		width: width / 1.25,
-		borderBottomWidth:1,
-		borderBottomColor:'black',
+		borderBottomWidth: 1,
+		borderBottomColor: 'black',
 		color: '#000',
 	},
 	dropdown1DropdownStyle: {
 		backgroundColor: '#FFF',
-		marginTop:-1.5,
-		borderBottomWidth:1,
-		borderBottomColor:'black',
+		marginTop: -1.5,
+		borderBottomWidth: 1,
+		borderBottomColor: 'black',
 		// color: "#F00",
+		// borderRadius: 18,
+		overflow: 'hidden',
 	},
-	dropdown1PlaceholderStyle:{
+	dropdown1PlaceholderStyle: {
 		fontSize: 20 / fontScale,
 		color: "#AAA"
 	},
-	registrar:{
+	registrar: {
 		// fontSize:16,
 		fontSize: 20 / fontScale,
 
-		color:'white',
-		textAlign:'center',
+		color: 'white',
+		textAlign: 'center',
 	},
-	registrarFalse:{
+	registrarFalse: {
 		fontSize: 18 / fontScale,
 
 		// fontSize:16,
-		color:'#DEDEDE',
-		textAlign:'center',
+		color: '#DEDEDE',
+		textAlign: 'center',
 	},
-	viewRegistrar:{
+	viewRegistrar: {
 		width: width / 1.25,
-		height:55,
-		borderRadius:10,
-		backgroundColor:'#003070',
-		justifyContent:'center',
-		overflow:'hidden',
+		height: 55,
+		borderRadius: 10,
+		backgroundColor: '#003070',
+		justifyContent: 'center',
+		overflow: 'hidden',
 	},
-	viewButton:{
-		backgroundColor:'red',
+	viewButton: {
+		backgroundColor: 'red',
 		width: width / 1.25,
-		height:55,
-		borderRadius:10,
-		backgroundColor:'#003070',
-		justifyContent:'center',
-		marginTop:40,
-		marginBottom:30,
-		overflow:'hidden',
+		height: 55,
+		borderRadius: 10,
+		backgroundColor: '#003070',
+		justifyContent: 'center',
+		marginTop: 40,
+		marginBottom: 30,
+		overflow: 'hidden',
 		shadowColor: "#000",
 		shadowOffset: {
 			width: 0,
@@ -352,25 +399,88 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.23,
 		shadowRadius: 2.62,
 		elevation: 4,
-		backgroundColor:'red',
+		backgroundColor: 'red',
 	},
-	radioButtonStyle:{
+	radioButtonStyle: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		// backgroundColor: 'red',
 
 	},
-	radioButtonBoxStyle:{
+	radioButtonBoxStyle: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		width: '45%',
 	},
-	radioButtonTextStyle:{
+	radioButtonTextStyle: {
 		fontSize: 18 / fontScale,
 		marginLeft: 10
 	},
-	error:{
+	error: {
 		fontSize: 18 / fontScale,
 		color: '#BA1200',
 	},
+	View: {
+        marginTop: 10,
+        width: "100%",
+        borderRadius: 10,
+        overflow: 'hidden',
+        borderWidth: 2,
+        borderColor: "#C0C0C0",
+    },
+    headerLista: {
+        backgroundColor: '#003070',
+        flexDirection: 'row',
+    },
+	ViewJugador: {
+        flexDirection: 'row',
+        borderTopWidth: 1,
+        borderTopColor: "#C0C0C0",
+        height: 41,
+    },
+	celda3a: {
+        backgroundColor: '#FFF',
+        width: "20%",
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 40,
+    },
+	celda3y4Texta: {
+        color: 'black',
+        fontFamily: 'Fredoka-Light',
+        fontSize: 12,
+    },
+	celda4a: {
+        backgroundColor: '#FFF',
+        width: "50%",
+        justifyContent: 'center',
+    },
+	viewHeaderLista: {
+        marginTop: 10,
+        width: "100%",
+        borderRadius: 10,
+        overflow: 'hidden',
+        borderWidth: 2,
+        borderColor: "#C0C0C0",
+    },
+	headerLista: {
+        backgroundColor: '#003070',
+        flexDirection: 'row',
+    },
+	celda1HeaderLista: {
+        width: "20%",
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 40,
+    },
+    celda2HeaderLista: {
+        width: "40%",
+        justifyContent: 'center',
+        height: 40,
+    },
+	celda1y2Text: {
+        color: 'white',
+        fontFamily: 'Fredoka-Light',
+        fontSize: 12,
+    },
 });

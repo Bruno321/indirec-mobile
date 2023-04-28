@@ -12,14 +12,14 @@ const { fontScale, width} = Dimensions.get('window');
 
 export const Asistencias = ({navigation}) => {
 	const [testData, setTestData] = useState([]);
-	const [asistencias, loading] = useFetchData('deportistas/asistencias');
+	const [asistencias, loading] = useFetchData('asistencias');
 
 	// ? Testing purposes
 	useEffect(() => {
 		if (!loading) {
 			if (!asistencias.length) {
 				setTestData([{
-					deportistum: {
+					deportista: {
 						nombres: "Juan Perez",
 					},
 					horaEntrada: "2021-05-01T20:00:00.000Z",
@@ -100,6 +100,9 @@ export const Asistencias = ({navigation}) => {
             </View>
           </TouchableCmp>
         </View>
+        <View style={styles.viewDíaFiltrado}>
+          <Text style={styles.viewDíaFiltradoText}>☢WORK IN PROGRESS FECHA FILTRADA☢</Text>
+        </View>
 
         {/* You can choose between the following options to show the data: */}
 
@@ -165,5 +168,16 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     color: "white",
     fontSize: 16 / fontScale,
+  },
+  viewDíaFiltrado:{
+    backgroundColor: '#CCC',
+    width: width*1,
+    height: 40,
+    justifyContent: 'center',
+    paddingLeft: 10,
+  },
+  viewDíaFiltradoText:{
+    fontSize: 18/fontScale,
+    fontWeight: "bold",
   }
 });

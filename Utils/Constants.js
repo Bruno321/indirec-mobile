@@ -1,16 +1,16 @@
 export  const aFacultities = [
-  "Bellas Artes",
-  "Ciencias Naturales",
-  "Ciencias Políticas y Sociales",
-  "Derecho", "Enfermería",
-  "Filosofía",
-  "Informática",
-  "Ingeniería",
-  "Lenguas y Letras",
-  "Medicina",
-  "Psicología",
-  "Contaduría",
-  "Química",
+  "Facultad de Bellas Artes",
+  "Facultad de Ciencias Naturales",
+  "Facultad de Ciencias Políticas y Sociales",
+  "Facultad de Derecho", "Enfermería",
+  "Facultad de Filosofía",
+  "Facultad de Informática",
+  "Facultad de Ingeniería",
+  "Facultad de Lenguas y Letras",
+  "Facultad de Medicina",
+  "Facultad de Psicología",
+  "Facultad de Contaduría",
+  "Facultad de Química",
 ];
 
 // ! CHANGE THIS LATER

@@ -65,7 +65,7 @@ const oInitialState = {
 	apellidos: '',
 	sexo: '',
 	facultad: '',
-	jugadorSeleccionado: false,
+	jugadorSeleccionado: 0,
 	numSeguroSocial: '',
 	numJugador: '',
 	deporte: '',
@@ -149,7 +149,7 @@ export const Registro = () => {
     })
 
 	const facultitiesItems = aFacultities.map(oFaculty => ({
-		label: `Facultad de ${oFaculty}`,
+		label: `${oFaculty}`,
 		value: oFaculty,
 	}));
 
@@ -225,16 +225,18 @@ export const Registro = () => {
 		}
 		
 		const objStr = JSON.stringify(oSend);
-		console.log("este es el response" + objStr)
+		// console.log("este es el response" + objStr)
 		let response
 		try{
-			response = await process(SAVE_WITH_FILE, 'deportistas', oSend); 
+			response = await process(SAVE_WITH_FILE, 'deportistas', oSend).catch(e=>console.log(e.response.data))
+			console.log(response)
 		}catch(e){
 			let objErr = JSON.stringify(e.response)
 			console.log("error: " + objErr)
 			setLoading(false);
 		}
-		if (response?.data?.ok) {
+		
+		if (response.data) {
 			Alert.alert(
 				'Jugador agregado exitosamente',
 				response.data.message,
@@ -245,13 +247,11 @@ export const Registro = () => {
 					},
 				]
 			);
-			const { nombres: nombre, apellidos, deportistaId: idPropio } = response.data?.data;
-            const [apellidoP, apellidoM] = apellidos.split(" ");
+			const { nombres, apellidos, id } = response.data;
             setDeportistaData({
-                nombre,
-                apellidoP,
-                apellidoM,
-                idPropio,
+                nombres,
+                apellidos,
+                id,
             })
 			reset();
 		} else {

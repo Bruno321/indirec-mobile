@@ -26,9 +26,9 @@ export const EventosCard = ({props,navigation}) => {
                             loop={true}
                             delay={2000}
                         >
-                            {props.equipoLocal==props.equipos[0]?.equipoId?props.equipos[0]?.nombre:props.equipos[1]?.nombre} vs {props.equipoVisitante==props.equipos[1]?.equipoId?props.equipos[1]?.nombre:props.equipos[0]?.nombre}
+                            {props.EquipoLocal.nombre} vs {props.EquipoVisitante.nombre}
                         </MarqueeText>
-                        <Text style={styles.details} numberOfLines={1}>{props.fechaEvento} - {props.horaEvento}</Text>
+                        <Text style={styles.details} numberOfLines={1}>{props.fecha} - {props.hora}</Text>
                     </View>
                     <View style={styles.detalles}>
                         <Text style={styles.camp} numberOfLines={1}>{props.canchaJugada}</Text>
@@ -54,17 +54,17 @@ export const EventosCard = ({props,navigation}) => {
             <Modal isVisible={isModalVisible} onRequestClose={() => {setModalVisible(false)}}>
                 <ScrollView style={styles.modal} contentContainerStyle={[styles.contentContainer]}>
                     <View style={styles.titulo}>
-                        <Text style={styles.title}>{props.nombreEvento}</Text>
+                        <Text style={styles.title}>{props.nombre}</Text>
                     </View>
                     <View style={styles.fecha}>
                         <Text style={styles.txtTitulo}>Fecha</Text>
-                        <Text style={styles.txt}>{props.fechaEvento} - {props.horaEvento}</Text>
+                        <Text style={styles.txt}>{props.fecha} - {props.hora}</Text>
                     </View>
                     <View style={styles.equipos}>
                         <Text style={styles.txtTitulo}>Equipo local</Text>
-                        <Text style={styles.txt}>{props.equipoLocal==props.equipos[0]?.equipoId?props.equipos[0]?.nombre:props.equipos[1]?.nombre}</Text>
+                        <Text style={styles.txt}>{props.EquipoLocal.nombre}</Text>
                         <Text style={styles.txtTitulo}>Equipo visitante</Text>
-                        <Text style={styles.txt}>{props.equipoVisitante==props.equipos[1]?.equipoId?props.equipos[1]?.nombre:props.equipos[0]?.nombre}</Text>
+                        <Text style={styles.txt}>{props.EquipoVisitante.nombre}</Text>
                     </View>
                     <View style={styles.director}>
                         <Text style={styles.txtTitulo}>Director técnico local</Text>
