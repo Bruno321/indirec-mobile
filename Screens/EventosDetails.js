@@ -1,4 +1,4 @@
-import { Dimensions, View, Text, StyleSheet, ScrollView, TouchableOpacity, TouchableNativeFeedback, Platform, FlatList } from "react-native";
+import { Dimensions, View, Text, StyleSheet, ScrollView, TouchableOpacity, TouchableNativeFeedback, Platform, FlatList, TouchableWithoutFeedback } from "react-native";
 import { ActionButton } from '../components/ActionButton';
 import MarqueeText from 'react-native-marquee';
 import Modal from "react-native-modal";
@@ -14,9 +14,19 @@ export const EventosDetails = (props) =>{
     const [equipoSelec, setEquipoSelec] = useState();
     let datos = props.route.params.datos //id, nombre, fecha, hora, equipoloca, etc
 
-    const Item = ({title,apellido}) => (
+    const mostrarJugadores = () =>{
+        if(equipoSelec=='local')
+            return datos.eventos_details.filter(obj => obj.deportista.equipo.nombre == datos.EquipoLocal.nombre)
+        else
+            return datos.eventos_details.filter(obj => obj.deportista.equipo.nombre == datos.EquipoVisitante.nombre)
+    }
+
+    const Item = ({title,apellido,num}) => (
         <View style={styles.item}>
-          <Text style={{}}>{title} {apellido}</Text>
+            <View style={styles.item2}>
+                <Text style={styles.itemTxt}>{title} {apellido}</Text>
+                {num&&<Text style={styles.itemTxt}>#{num}</Text>}
+            </View>
         </View>
     );
     return(
@@ -87,17 +97,32 @@ export const EventosDetails = (props) =>{
                 </View>
             </ScrollView>
             <Modal isVisible={isModalVisible} onRequestClose={() => {setModalVisible(false),setEquipoSelec}}>
+                <TouchableWithoutFeedback onPress={() => {setModalVisible(false),setEquipoSelec}}>
+                    <View style={styles.salir1} />
+                </TouchableWithoutFeedback>
                 <View style={{backgroundColor:'white',height:Dimensions.get('window').height*.5,paddingHorizontal:15, paddingTop:20,borderRadius:15}}>
                     {/* <Text numberOfLines={2} style={{fontFamily: 'Fredoka-Medium',fontSize: 25 / fontScale,textAlign:'center'}}>Jugadores equipo {datos.EquipoLocal}</Text> */}
                     <Text numberOfLines={2} style={{fontFamily: 'Fredoka-Medium',fontSize: 25 / fontScale,textAlign:'center'}}>{equipoSelec=="local"?datos.EquipoLocal.nombre:datos.EquipoVisitante.nombre}</Text>
-                    <View>
+                    <View style={styles.modalBody}>
                         <FlatList
-                            data={equipoSelec=='local'?datos.eventos_details.filter(obj => obj.deportista.equipo.nombre == datos.EquipoLocal.nombre):datos.eventos_details.filter(obj => obj.deportista.equipo.nombre == datos.EquipoVisitante.nombre)}
-                            renderItem={({item}) => <Item title={item.deportista.nombres} apellido={item.deportista.apellidos}/>}
+                            data={mostrarJugadores()}
+                            renderItem={({item}) => <Item title={item.deportista.nombres} apellido={item.deportista.apellidos} num={item.deportista.numJugador}/>}
                             keyExtractor={item => item.deportista.id}
                         />
+                        <View style={{alignItems:'center'}}>
+                            <View style={{overflow:'hidden', width:'80%',borderRadius:15}}>
+                                <TouchableCmp onPress={() => {setModalVisible(false),setEquipoSelec}}>
+                                    <View style={styles.butonmodal}>
+                                        <Text style={styles.butonmodalTxt}>Cerrar</Text>
+                                    </View>
+                                </TouchableCmp>
+                            </View>
+                        </View>
                     </View>
                 </View>
+                <TouchableWithoutFeedback onPress={() => {setModalVisible(false),setEquipoSelec}}>
+                    <View style={styles.salir1} />
+                </TouchableWithoutFeedback>
             </Modal>
         </View>
     )
@@ -166,6 +191,43 @@ const styles = StyleSheet.create({
         marginTop:50,
         alignItems:'flex-end',
         overflow:'hidden'
+    },
+    salir1:{
+        height:'25%',
+        width:'110%',
+        marginLeft:'-5%'
+    },
+    butonmodal:{
+        borderRadius:15,
+        backgroundColor:'#003070',
+        width:'100%',
+        padding:10,
+        justifyContent:'center',
+        overflow:'hidden'
+    },
+    butonmodalTxt:{
+        color:'white',
+        fontWeight:'bold',
+        fontSize:20/fontScale,
+        textAlign:'center'
+    },
+    modalBody:{
+        justifyContent:'space-between',
+        height:'80%',
+        marginTop:20
+    },
+    item:{
+        // backgroundColor:'green',
+        marginBottom:5,
+        paddingHorizontal:5,
+        borderBottomWidth:1,
+        borderColor:'#B8B8B8'
+    },
+    item2:{
+        flexDirection:'row',
+        justifyContent:'space-between'
+    },
+    itemTxt:{
+        fontSize:16/fontScale,
     }
-
 })
