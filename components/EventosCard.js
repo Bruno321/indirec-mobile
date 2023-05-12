@@ -20,7 +20,7 @@ export const EventosCard = ({ props, navigation }) => {
   const [isModalVisible, setModalVisible] = useState(false);
 
   const redirect = () => {
-    navigation.navigate("EventosDetails", { datos: props });
+    navigation.navigate("Eventos.details", { datos: props });
   };
 
   return (

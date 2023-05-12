@@ -8,7 +8,9 @@ import { REACT_APP_API_URL } from '@env';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import moment from 'moment/moment';
 
-export const  Home = ()  => {
+const { fontScale, width} = Dimensions.get('window');
+
+export const  PaseDeLista = ()  => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [dataScaneo, setDataScaneo] = useState({});
@@ -22,7 +24,7 @@ export const  Home = ()  => {
     return (
       <View style={styles.ModalAlerta}>
         <Text style={styles.Modal1Text1}>Escaneo exitoso</Text>
-        <Text style={styles.Modal1Text2}>{dataResponse?.message?.includes('entrada') ? 'Bienvenido' : 'Hasta pronto'}!</Text>
+        <Text style={styles.Modal1Text2}>{dataResponse.horaSalida ? 'Adios' : 'Hola'}!</Text>
         <Text style={styles.Modal1Text3}>{dataResponse?.deportista?.nombres} {dataResponse?.deportista?.apellidos}</Text>
         
         <Image style={styles.Modal1Image} source={{ uri: `${REACT_APP_API_URL}${BASEPATH}/${dataResponse?.deportista?.foto}` }}></Image>
@@ -86,12 +88,12 @@ export const  Home = ()  => {
           fecha: datos.fecha
         };
         const response = await process(SAVE, 'asistencias', oSend).catch(e => {
-          console.log(e.response);
+          console.log("ERROR 1>" + e.response);
           setRegistroCheck(false);
         });
 
         if (response.data) {
-          console.log(response);
+          console.log("RESPONSE 1> " + JSON.stringify(response));
           setDataResponse(response.data);
           setRegistroCheck(true);
         }
@@ -163,7 +165,7 @@ export const  Home = ()  => {
         <View style={styles.ModalTouchable}>
           <TouchableCmp>
             <Text style={styles.botonRegistrarDeportista} onPress={() => {
-              navigation.navigate("Registro");
+              navigation.navigate("RegistroDeportistas");
               }}>Registrar Deportista</Text>
           </TouchableCmp>
         </View>
@@ -196,15 +198,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   texto1:{
-    fontFamily: 'Fredoka-Medium',
-    fontSize: Dimensions.get('window').width*0.03,
+    fontSize: 45 / fontScale,
     textAlign: 'center',
-    fontSize:30,
     marginBottom: 12
   },
   texto2:{
-    fontFamily: 'Fredoka-Light',
     width: Dimensions.get('window').width*0.75,
+    fontSize: 20 / fontScale,
     textAlign: 'center',
   },
   ModalCentrado:{
@@ -214,34 +214,29 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.4)',
   },
   ModalAlerta:{
-    height: 400,
     justifyContent: 'space-between',
     width: Dimensions.get('window').width*0.9,
-    paddingVertical: Dimensions.get('window').height*0.025,
+    paddingVertical: 20,
     backgroundColor: 'white',
-    borderRadius: 20,
+    borderRadius: 18,
     alignItems: 'center',
   },
   Modal1Text1:{
-    fontFamily: 'Fredoka-Medium',
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 20 / fontScale,
     color: '#007505',
   },
   Modal1Text2:{
-    fontFamily: 'Fredoka-Light',
-    fontSize: 18,
+    fontSize: 18 / fontScale,
   },
   Modal1Text3:{
-    fontFamily: 'Fredoka-Medium',
     textAlign: 'center',
-    fontSize: 25,
+    fontSize: 25 / fontScale,
     color: '#003070',
   },
   Modal1Text4:{
-    fontFamily: 'Fredoka-Light',
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 18 / fontScale,
     width: Dimensions.get('window').width*0.66,
     color: '#666666',
   },
@@ -251,18 +246,16 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   Modal2Text1:{
-    fontFamily: 'Fredoka-Medium',
     textAlign: 'center',
-    fontSize: 32,
+    fontSize: 32 / fontScale,
     paddingLeft: 60,
     paddingRight: 60,
     paddingTop: 20,
     color: '#FA8018',
   },
   Modal2Text2:{
-    fontFamily: 'Fredoka-Light',
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 18 / fontScale,
     width: Dimensions.get('window').width*0.66,
     color: '#666666',
     marginBottom: Dimensions.get('window').height*0.05,
@@ -272,7 +265,6 @@ const styles = StyleSheet.create({
     borderRadius: 12.5,
   },
   ModalCerrarButton:{
-    fontFamily: 'Fredoka-Light',
     width: Dimensions.get('window').width*0.8,
     height: 60,
     backgroundColor: '#003070',
@@ -288,7 +280,6 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   botonRegistrarDeportista:{
-    fontFamily: 'Fredoka-Medium',
     width: Dimensions.get('window').width*0.9,
     height: 60,
     backgroundColor: '#FFF',

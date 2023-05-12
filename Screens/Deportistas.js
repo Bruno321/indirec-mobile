@@ -1,5 +1,5 @@
-import { Dimensions ,Text, View, SafeAreaView, StyleSheet } from "react-native";
-import { ActionButton ,FiltersView, Header, List, OrderView, SearchInput, DeportistasCard, Pressable } from '../components';
+import { Dimensions ,Text, View, SafeAreaView, StyleSheet, TextInput } from "react-native";
+import { ActionButton ,FiltersView, Header, List, OrderView, DeportistasCard, Pressable } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import Feather from 'react-native-vector-icons/Feather';
@@ -54,7 +54,6 @@ export const Deportistas = ({ navigation }) => {
       <View style={styles.main}>
         <SafeAreaView style={{backgroundColor: "#003070"}}/>
         <Header navigation={navigation} title={"Deportistas"}/>
-        <SearchInput />
         
         <View style={{paddingVertical: 24, justifyContent: 'space-around', flexDirection: 'row'}}>
           {/* <View style={{flexDirection: 'row'}}> */}
@@ -71,7 +70,7 @@ export const Deportistas = ({ navigation }) => {
 
           <Filters />
 
-          <TouchableCmp onPress={() => {navigation.navigate("Registro")}}>
+          <TouchableCmp onPress={() => {navigation.navigate("RegistroDeportistas")}}>
             <View style={styles.agregarJugadorButton}>
                 <Feather name={'user-plus'} size={24} color={'white'}/>
                 <Text style={styles.buttonText}>Agregar Jugador</Text>

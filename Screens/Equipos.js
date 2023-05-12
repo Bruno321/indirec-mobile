@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Dimensions, SafeAreaView } from "react-native";
-import { EquiposCard , FiltersView, Header, List, OrderView, SearchInput } from '../components';
+import { EquiposCard , FiltersView, Header, List, OrderView} from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 import { Filters } from "../components/FilterEquipos";
 
@@ -12,7 +12,6 @@ export const Equipos = ({ navigation }) => {
 		<View style={styles.container}>
 			<SafeAreaView style={{backgroundColor: "#003070"}}/>
 			<Header navigation={navigation} title={"Equipos"}/>
-			<SearchInput />
 			<View style={{paddingVertical: 24, justifyContent: 'space-around', flexDirection: 'row'}}>
 				<Filters />
 			</View>

@@ -11,6 +11,4 @@ export * from './Header';
 export * from './List';
 export * from './ListadoJugadores';
 export * from './Order';
-export * from './registroOffline';
-export * from './registroOnline';
 export * from './SearchInput';

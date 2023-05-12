@@ -16,7 +16,6 @@ import {
   Header,
   List,
   OrderView,
-  SearchInput,
 } from "../components";
 import { useFetchData } from "../Hooks/Fetch.hook";
 import { Ionicons } from "@expo/vector-icons";
@@ -226,7 +225,6 @@ export const Eventos = ({ navigation }) => {
     <View style={styles.container}>
       <SafeAreaView style={{ backgroundColor: "#003070" }} />
       <Header navigation={navigation} title={"Eventos"} />
-      <SearchInput />
       {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 				<FiltersView />
 				<OrderView />

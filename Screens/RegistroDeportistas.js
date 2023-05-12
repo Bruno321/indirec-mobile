@@ -132,7 +132,7 @@ const validationSchema = yup.object().shape({
 		.required('La foto es requerida'),
 });
 
-export const Registro = () => {
+export const RegistroDeportistas = () => {
 	const [kardex, setKardex] = useState(filePickerText);
 	const [identificacion, setIdentificacion] = useState(filePickerText);
 	const [foto, setFoto] = useState(filePickerText);
@@ -559,11 +559,10 @@ export const Registro = () => {
 							visible={showModal}
 							onRequestClose={() => {
 							Alert.alert('Modal has been closed.');
-							setModalVisible(!modalVisible);
 							}}>
 							<View style={styles.containerModalQR}>
 								<View style={styles.headerIndereq}>
-									<Image source={require('../images/logoIndereqText.png')}/>
+									{/* <Image source={require('../images/logoIndereqText.png')}/> */}
 								</View>
 								<View>
 									<Text style={{...styles.componentText, fontWeight: "bold", fontSize: 30}}>QR Generado</Text>
@@ -574,10 +573,10 @@ export const Registro = () => {
 										value={`${JSON.stringify(deportistaData)}`}
 										size={Dimensions.get('window').width*0.7}
 									/>
-									<Image 
+									{/* <Image 
 										source={require('../images/logo.png')} 
 										style={{width: 70, height: 70, position: 'absolute'}}
-									/>
+									/> */}
 								</View>
 								<Text style={styles.componentText}>No olvides escanear el código QR</Text>
 								<TouchableCmp onPress={() => setShowModal(!showModal)}>

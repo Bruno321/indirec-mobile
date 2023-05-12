@@ -1,7 +1,10 @@
-import { Dimensions, Image, View, StyleSheet, Text, SafeAreaView, ScrollView } from 'react-native';
-import { ActionButton, Col, Header, Row } from '../components';
+import { Dimensions, Image, View, StyleSheet, Text, SafeAreaView, ScrollView, Alert, Modal} from 'react-native';
+import { ActionButton, Col, Header, Row} from '../components';
+import TouchableCmp from '../assetsUI/TouchableCmp';
+import { useState } from 'react';
 import { REACT_APP_API_URL } from '@env';
 import { BASEPATH } from '../Service/Api';
+import QRCode from 'react-native-qrcode-svg';
 
 const { width, height, fontScale } = Dimensions.get('window');
 
@@ -13,8 +16,10 @@ const LargeText = ({ children, style = {}, numberOfLineas}) => {
 };
 
 export const DeportistaDetails = ({ navigation, route }) => {
+	const [showModal, setShowModal] = useState(false);
   const { data } = route.params,
     profilePicture = data.props.foto ? { uri: `${REACT_APP_API_URL}${BASEPATH}/${data.props.foto}` } : require('../images/ImagenEjemploDeportista.jpg');
+    console.log(data);
   return (
 
     <View style={{height: "100%"}}>
@@ -93,6 +98,20 @@ export const DeportistaDetails = ({ navigation, route }) => {
           <Col style={{width: "90%", height: 60, marginTop: 10}}>
             <View style={{borderRadius: 18, overflow: 'hidden', height: 60}}>
               <ActionButton
+                text="Regenerar QR"
+                backgroundColor="#FFF"
+                color="#003070"
+                icon="qrcode"
+                style={{width: "100%", alignSelf: 'center', height: 60, marginBottom: 5, borderWidth: 2, borderColor: "#003070", borderRadius: 18 }}
+                handler={() => {setShowModal(!showModal)}}
+              />
+            </View>
+          </Col>
+        </Row>
+        <Row>
+          <Col style={{width: "90%", height: 60, marginTop: 10}}>
+            <View style={{borderRadius: 18, overflow: 'hidden', height: 60}}>
+              <ActionButton
                 text="Descargar Kardex"
                 backgroundColor="#FFF"
                 color="#003070"
@@ -118,6 +137,35 @@ export const DeportistaDetails = ({ navigation, route }) => {
           </Col>
         </Row>
       </ScrollView>
+      <Modal
+							animationType="slide"
+							transparent={false}
+							visible={showModal}
+							onRequestClose={() => {
+							Alert.alert('Modal has been closed.');
+							setModalVisible(!modalVisible);
+							}}>
+							<View style={styles.containerModalQR}>
+								<View style={styles.headerIndereq}>
+								</View>
+								<View>
+									<Text style={{...styles.componentText, fontWeight: "bold", fontSize: 30}}>QR Generado</Text>
+									<Text style={styles.componentText}>Los datos han sido guardados exitosamente</Text>
+								</View>
+								<View style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+									<QRCode
+										value={'{"nombres":"' + data.props.nombres + '","apellidos":"' + data.props.apellidos + '","id":"' + data.props.id + '"}'}
+										size={Dimensions.get('window').width*0.7}
+									/>
+								</View>
+								<Text style={styles.componentText}>No olvides escanear el código QR</Text>
+								<TouchableCmp onPress={() => setShowModal(!showModal)}>
+									<View style={styles.viewButtonCerrar}>
+										<Text style={{color: 'white'}}>Cerrar</Text>
+									</View>
+								</TouchableCmp>
+							</View>
+			</Modal>
     </View>
   );
 };
@@ -169,5 +217,32 @@ const styles = StyleSheet.create({
     color: "#003070",
     paddingBottom: 20 / fontScale,
     marginTop: width * 0.05
-  }
+  },
+  containerModalQR: {
+		paddingBottom: 50,
+		flex: 1,
+		justifyContent: 'space-between',
+		alignItems: 'center',
+	},
+  headerIndereq: {
+		width: '100%',
+		height: 80,
+		backgroundColor: '#003070',
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+  componentText: {
+		textAlign: 'center',
+		marginBottom: 10,
+	},
+  viewButtonCerrar: {
+		backgroundColor: '#003070',
+		width: Dimensions.get('window').width*0.65,
+		height: Dimensions.get('window').height*0.06,
+		borderRadius: 10,
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center'
+	}
 });

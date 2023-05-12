@@ -134,32 +134,6 @@ export const ListadoJugadores = (props) => {
 
     return (
         <>
-
-            {/* <View style={styles.View}>
-                <View style={styles.headerLista}>
-                    <View style={styles.celda1HeaderLista}>
-                        <Text style={styles.celda1y2Text}>#</Text>
-                    </View>
-                    <View style={styles.celda2HeaderLista}>
-                        <Text style={styles.celda1y2Text}>Nombre Completo</Text>
-                    </View>
-                </View>
-            </View> */}
-            {/* <View style={styles.viewEditar1}>
-                <TouchableCmp onPress={() => { setModalActive(true) }}>
-                    <View style={styles.viewEditar2}>
-                        <Text style={styles.viewEditarText}>Editar equipo</Text>
-                    </View>
-                </TouchableCmp>
-            </View> */}
-            {/* <Modal
-                animationType={'fade'}
-                transparent
-                visible={modalActive}
-                onRequestClose={() => setModalActive(false)}
-                propagateSwipe={true}
-            >
-            </Modal> */}
             <View style={styles.ModalStyle}>
                 <SafeAreaView style={{ backgroundColor: "#003070" }} />
                 <Header navigation={props.navigation} title={"Lista de Jugadores"} funcion={"goback"} />
@@ -238,7 +212,7 @@ const styles = StyleSheet.create({
     celda1y2Text: {
         color: 'white',
         fontFamily: 'Fredoka-Light',
-        fontSize: 12,
+        fontSize: 12 / fontScale,
     },
     ViewJugador: {
         flexDirection: 'row',
@@ -273,12 +247,12 @@ const styles = StyleSheet.create({
     celda3y4Texta: {
         color: 'black',
         fontFamily: 'Fredoka-Light',
-        fontSize: 12,
+        fontSize: 12 / fontScale,
     },
     celda3y4Textb: {
         color: '#888',
         fontFamily: 'Fredoka-Light',
-        fontSize: 12,
+        fontSize: 12 / fontScale,
     },
     celda5a: {
         // backgroundColor: '#F00',
@@ -328,7 +302,7 @@ const styles = StyleSheet.create({
     viewEditarText: {
         color: '#003070',
         fontFamily: 'Fredoka-Light',
-        fontSize: 12,
+        fontSize: 12 / fontScale,
     },
     // 
     // 

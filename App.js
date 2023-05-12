@@ -10,8 +10,8 @@ import * as Font from "expo-font";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   Login,
-  Home,
-  Registro,
+  PaseDeLista,
+  RegistroDeportistas,
   Deportistas,
   Asistencias,
   DeportistaDetails,
@@ -20,7 +20,8 @@ import {
   Eventos,
   EventosDetails,
   DeportistaAssistance,
-  ListadoJugadores
+  ListadoJugadores,
+  EquiposDetails
 } from './Screens/index';
 
 SplashScreen.preventAutoHideAsync();
@@ -106,13 +107,13 @@ export default function App() {
               title: 'Asistencias'
             }}
           />
-          <Drawer.Screen name="Registro" component ={Registro} 
+          <Drawer.Screen name="RegistroDeportistas" component ={RegistroDeportistas} 
             options={{
               drawerIcon: () => <Image source={require('./assets/icons/register.png')}/>,
               title: 'Registrar deportista'
             }}
           />
-          <Drawer.Screen name="Home" component={Home} 
+          <Drawer.Screen name="PaseDeLista" component={PaseDeLista} 
             options={{
               drawerIcon: () => <Image source={require('./assets/icons/list.png')}/>,
               title: 'Pase de lista'
@@ -145,7 +146,8 @@ export default function App() {
           <>
             <Stack.Screen name="drawer" component={SideDrawer}/> 
             <Stack.Screen name="Deportista.details" component={DeportistaDetails}/> 
-            <Stack.Screen name="EventosDetails" component={EventosDetails}/> 
+            <Stack.Screen name="Eventos.details" component={EventosDetails}/> 
+            <Stack.Screen name="Equipos.details" component={EquiposDetails}/> 
             <Stack.Screen name="DeportistaAssistance" component={DeportistaAssistance}/> 
             <Stack.Screen name="ListadoJugadores" component={ListadoJugadores}/> 
           </>
