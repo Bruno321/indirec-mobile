@@ -10,7 +10,7 @@ export const AsistenciasCard = ({ props }) => {
     // const profilePicture = {uri: '../images/ImagenEjemploDeportista.png'};
     const navigation = useNavigation();
     return (
-        <TouchableCmp onPress={() => navigation.navigate("DeportistaAssistance", dataProps.deportista.nombres + " " + dataProps.deportista.apellidos)}>
+        <TouchableCmp onPress={() => navigation.navigate("DeportistaAssistance", dataProps)}>
             <View style={styles.main}>
                 <View style={styles.imageView}>
                     <Image source={require('../images/ImagenEjemploDeportista.png')} style={styles.profilePic} />
