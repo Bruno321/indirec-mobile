@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { FIND, process } from '../Service/Api';
 
 export const useFetchData = (path, queries = '', skip = 0, limit=0) => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({ data: [] });
   const [loading, setLoading] = useState(false);
   const [params, setParams] = useState({ queries, skip, limit });
 
@@ -11,8 +11,8 @@ export const useFetchData = (path, queries = '', skip = 0, limit=0) => {
     setLoading(true);
     const response = await process(FIND, path, {}, params);
 
-    if (response.data) {
-      setData(response.data.data);
+    if (response?.status === 200) {
+      setData(response.data);
     } else {
       Alert.alert(
         'Error', 
