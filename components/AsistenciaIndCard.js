@@ -6,11 +6,14 @@ moment.locale('es');
 const { fontScale, width } = Dimensions.get('window');
 
 export const AsistenciaIndCard = ({ props, estilo }) => {
+    var tiempoTranscurridoEnMinutos = "Sin datos"
 
-    const entrada = new Date(props.horaEntrada);
-    const salida = new Date(props.horaSalida);
-    const tiempoTranscurrido = salida.getTime() - entrada.getTime();
-    const tiempoTranscurridoEnMinutos = Math.floor(tiempoTranscurrido / (1000 * 60))
+    if(props.horaSalida){
+        const entrada = new Date(props.horaEntrada);
+        const salida = new Date(props.horaSalida);
+        const tiempoTranscurrido = salida.getTime() - entrada.getTime();
+        tiempoTranscurridoEnMinutos = Math.floor(tiempoTranscurrido / (1000 * 60))
+    }
 
     function convertirMinutosAHoras(minutos) {
         if (minutos < 60) {
@@ -22,6 +25,7 @@ export const AsistenciaIndCard = ({ props, estilo }) => {
         }
     }
 
+
     return (
         <View style={estilo?styles.tabla2:styles.tabla}>
             <View style={styles.dia}>
@@ -31,10 +35,10 @@ export const AsistenciaIndCard = ({ props, estilo }) => {
                 <Text style={styles.tablaTxt} numberOfLines={1}>{moment(props.horaEntrada).format("h:mm a")}</Text>
             </View>
             <View style={styles.salida}>
-                <Text style={styles.tablaTxt} numberOfLines={1}>{moment(props.horaSalida).format("h:mm a")}</Text>
+                <Text style={styles.tablaTxt} numberOfLines={1}>{props.horaSalida?moment(props.horaSalida).format("h:mm a"):"Sin datos"}</Text>
             </View>
             <View style={styles.total}>
-                <Text style={styles.tablaTxt} numberOfLines={1}>{convertirMinutosAHoras(tiempoTranscurridoEnMinutos)}</Text>
+                <Text style={styles.tablaTxt} numberOfLines={1}>{props.horaSalida?convertirMinutosAHoras(tiempoTranscurridoEnMinutos):tiempoTranscurridoEnMinutos}</Text>
             </View>
         </View>
     )
