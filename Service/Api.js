@@ -42,15 +42,13 @@ export async function process(operation, model, payload = {}, params = {}) {
   };
 
   switch (operation) {
-    // case FIND:
-    //   return await API.get(
-    //     `/api/${model}?${queries ? queries + '&' : ''}${
-    //       limit ? '$limit=' + limit : ''
-    //     }&$skip=${skip}`,
-    //     oAuth
-    //   );
     case FIND:
-      return await API.get(`/${model}`, oAuth);
+      return await API.get(
+        `/${model}?${queries ? queries + '&' : ''}${
+          limit ? '$limit=' + limit : ''
+        }&$skip=${skip}`,
+        oAuth
+      );
     case SAVE:
       return await API.post(`/${model}`, payload, oAuth);
     case SAVE_WITH_FILE:
