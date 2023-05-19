@@ -7,7 +7,7 @@ import { ActionButton } from './ActionButton';
 
 const { fontScale, width, height } = Dimensions.get('window');
 
-export const Filters = () => {
+export const Filters = ({change, reset}) => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState({});
@@ -368,8 +368,8 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: height * 0.68,
-    position: 'absolute',
     bottom: 0,
+    position: 'absolute',
     alignSelf: 'center',
     alignItems: 'center',
     backgroundColor: 'white',

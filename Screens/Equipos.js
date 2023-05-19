@@ -1,24 +1,26 @@
 import { View, Text, StyleSheet, Dimensions, SafeAreaView } from "react-native";
 import { EquiposCard , FiltersView, Header, List, OrderView} from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
-import { Filters } from "../components/FilterEquipos";
-
-const { fontScale } = Dimensions.get('window');
+import { SearchInput, Filters} from "../components";
+const { fontScale, width } = Dimensions.get('window');
 
 export const Equipos = ({ navigation }) => {
-	const [equipos, loading] = useFetchData('equipos');
+	const [equipos, loading, change, update] = useFetchData('equipos');
 
 	return (
 		<View style={styles.container}>
 			<SafeAreaView style={{backgroundColor: "#003070"}}/>
 			<Header navigation={navigation} title={"Equipos"}/>
-			<View style={{paddingVertical: 24, justifyContent: 'space-around', flexDirection: 'row'}}>
-				<Filters />
+			<View style={{ alignItems: 'center', height: 120, width: width }}>
+			<View style={{ flexDirection: 'column', height: "100%", justifyContent: 'space-evenly', width: "95%", backgroundColor: 'red',}}>
+				<SearchInput change={change} reset={update} screen={"equipos"} />
+            	<Filters change={change} reset={update} />
+			</View>
 			</View>
 
 			<View style={styles.cartas} showsVerticalScrollIndicator={false}>
 				<List 
-					dataSource={equipos}
+					dataSource={equipos.data}
 					loading={loading}
 					renderItem= {row => <EquiposCard props={row} />}
 				/>
