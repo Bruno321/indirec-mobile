@@ -24,7 +24,7 @@ export const useFetchData = (path, queries = '', skip = 0, limit=0) => {
     }
 
     setLoading(false);
-  }, [process]);
+  }, [process, params]);
 
   useEffect(() => {
     getData();
