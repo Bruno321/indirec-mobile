@@ -1,9 +1,10 @@
 import { View, Text, ScrollView, StyleSheet, Dimensions, Button, SafeAreaView } from "react-native";
 import { Header, Row, Col, List, AsistenciaIndCard } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import TouchableCmp from "../assetsUI/TouchableCmp";
+import { process, SAVE } from "../Service/Api";
 
 ///////////////////////////////////////////////////
 const { width, height, fontScale } = Dimensions.get('window');
@@ -15,60 +16,65 @@ const LargeText = ({ children, style = {}, numberOfLineas }) => {
     );
 };
 
-export const DeportistaAssistance = ( { navigation , route} ) => {
-    const [asistencias, loading] = useFetchData('asistencias');
+export const DeportistaAssistance = ({ navigation, route }) => {
+    var deportistaId = route.params.deportista.id;
+    var deportistaNombre = route.params.deportista.nombres + " " + route.params.deportista.apellidos;
+    const [asistencias, loading] = useFetchData('asistencias', `deportista_id=${deportistaId}`, 0, 50);
     const [testData, setTestData] = useState([]);
     const [isDark, setIsDark] = useState(false);
 
-    useEffect(() => {
-		if (!loading) {
-			if (!asistencias.length) {
-				setTestData([{
-					deportista: {
-						nombres: "Juan Perez",
-					},
-					horaEntrada: "2021-05-01T20:00:00.000Z",
-					horaSalida: "2021-05-01T20:00:00.000Z",
-					fecha: "2021-05-01T20:00:00.000Z",
-				}]);
-			}
-		}
-	}, [loading]);
+    const [dateParams, setDateParams] = useState({
+        fechaInicio: null,
+        fechaFin: null,
+    });
 
-    var deportistaId = route.params.deportista.id;
-    var deportistaNombre = route.params.deportista.nombres + " " + route.params.deportista.apellidos;
+    const [tiempoEntrenado, setTiempoEntrenado] = useState(null);
 
-    var datosFiltrados = asistencias.filter(objeto => objeto.deportista.id == deportistaId);
+    const getTiempoEntrenado = useCallback(async () => {
+        let oSend = { deportistaId: deportistaId };
 
-    datosFiltrados.sort((a, b) => new Date(b.horaEntrada) - new Date(a.horaEntrada));
-
-    var tiempoTotal = 0;
-
-    for (let i = 0; i < datosFiltrados.length; i++) {
-        const entrada = new Date(datosFiltrados[i].horaEntrada);
-        const salida = new Date(datosFiltrados[i].horaSalida);
-        const tiempoTranscurrido = salida.getTime() - entrada.getTime();
-        const tiempoTranscurridoEnMinutos = Math.floor(tiempoTranscurrido / (1000 * 60));
-        tiempoTotal += tiempoTranscurridoEnMinutos;
-    }
-
-    function convertirMinutosAHoras(minutos) {
-        if (minutos < 60) {
-          return `${minutos} min`;
-        } else {
-          const horas = Math.floor(minutos / 60);
-          const minutosRestantes = minutos % 60;
-          return `${horas} h ${minutosRestantes} min`;
+        if (dateParams.fechaInicio && dateParams.fechaFin) {
+            oSend.fechaInicio = dateParams.fechaInicio;
+            oSend.fechaFin = dateParams.fechaFin;
         }
-      }
+
+        const response = await process(SAVE, 'tiempo-entrenamiento', oSend);
+        if (response?.status === 201) {
+            setTiempoEntrenado(response.data.total_trained);
+        }
+    }, [deportistaId, dateParams]);
+
+    useEffect(() => {
+        getTiempoEntrenado();
+    }, [getTiempoEntrenado]);
+
+    useEffect(() => {
+        if (!loading) {
+            if (!asistencias.data.length) {
+                setTestData([{
+                    deportista: {
+                        nombres: "Juan Perez",
+                    },
+                    horaEntrada: "2021-05-01T20:00:00.000Z",
+                    horaSalida: "2021-05-01T20:00:00.000Z",
+                    fecha: "2021-05-01T20:00:00.000Z",
+                }]);
+            }
+        }
+    }, [loading]);
+
+
+    // var datosFiltrados = asistencias.data.filter(objeto => objeto.deportista.id == deportistaId);
+
+    asistencias.data.sort((a, b) => new Date(b.horaEntrada) - new Date(a.horaEntrada));
 
     const toggleColor = () => {
         setIsDark((prevIsDark) => !prevIsDark);
         console.log("cambiando")
     };
-      
+
     return (
-        <View style={{flex:1, height:'100%'}}>
+        <View style={{ flex: 1, height: '100%' }}>
             <SafeAreaView style={{ backgroundColor: "#003070" }} />
             <Header navigation={navigation} title={"Asistencias del Deportista"} funcion={"goback"} />
             <View style={styles.centeredView}>
@@ -78,7 +84,7 @@ export const DeportistaAssistance = ( { navigation , route} ) => {
                         <Text style={styles.subtitle}>Dias entrenados a la semana: </Text>
                     </Col>
                     <Col style={styles.col2}>
-                        <Text style={styles.text}>{datosFiltrados.length}</Text>
+                        <Text style={styles.text}>{asistencias.data.length}</Text>
                     </Col>
                 </Row>
                 <Row>
@@ -86,7 +92,8 @@ export const DeportistaAssistance = ( { navigation , route} ) => {
                         <Text style={styles.subtitle}>Total entrenado esta semana: </Text>
                     </Col>
                     <Col style={styles.col2}>
-                        <Text style={styles.text}>{convertirMinutosAHoras(tiempoTotal)}</Text>
+                        {/* <Text style={styles.text}>{`${tiempoEntrenado || `No hay entrenamientos registrados para ${dateParams.fechaInicio && dateParams.fechaFin ? `el rango de fechas seleccionado` : "esta semana"}`}`}</Text> */}
+                        <Text style={styles.text}>{`${tiempoEntrenado || `Sin datos`}`}</Text>
                     </Col>
                 </Row>
                 <Row style={{ paddingVertical: 20 / fontScale }}>
@@ -98,7 +105,7 @@ export const DeportistaAssistance = ( { navigation , route} ) => {
                     <View style={styles.btnSemana}>
                         <TouchableCmp>
                             <View style={styles.btnSemana2}>
-                                <Feather name={'calendar'} size={20} color={"#003070"}/>
+                                <Feather name={'calendar'} size={20} color={"#003070"} />
                                 <Text style={styles.btnTxt}>24-03-2023</Text>
                             </View>
                         </TouchableCmp>
@@ -106,7 +113,7 @@ export const DeportistaAssistance = ( { navigation , route} ) => {
                     <View style={styles.btnSemana}>
                         <TouchableCmp>
                             <View style={styles.btnSemana2}>
-                                <Feather name={'calendar'} size={20} color={"#003070"}/>
+                                <Feather name={'calendar'} size={20} color={"#003070"} />
                                 <Text style={styles.btnTxt}>24-03-2023</Text>
                             </View>
                         </TouchableCmp>
@@ -128,7 +135,7 @@ export const DeportistaAssistance = ( { navigation , route} ) => {
                 </View>
             </View>
             <View>
-                <List dataSource={datosFiltrados.length ? datosFiltrados : testData} renderItem={row => <AsistenciaIndCard props={row} estilo={isDark}/>} loading={loading}/>
+                <List dataSource={asistencias.data.length ? asistencias.data : testData} renderItem={row => <AsistenciaIndCard props={row} estilo={isDark} />} loading={loading} />
             </View>
         </View>
     );
@@ -163,7 +170,7 @@ const styles = StyleSheet.create({
         fontSize: 30 / fontScale,
         fontWeight: '600',
         // fontFamily: "Fredoka-Medium",
-        
+
         textAlign: 'center',
         width: "100%",
         // backgroundColor: '#003070',
@@ -171,60 +178,60 @@ const styles = StyleSheet.create({
         paddingBottom: 20 / fontScale,
         marginTop: width * 0.05
     },
-    viewSemana:{
-        flexDirection:'row',
-        width:"80%",
-        justifyContent:'space-between',
-        marginLeft:'10%'
+    viewSemana: {
+        flexDirection: 'row',
+        width: "80%",
+        justifyContent: 'space-between',
+        marginLeft: '10%'
     },
-    btnSemana:{
-        borderRadius:15,
-        width:'45%',
+    btnSemana: {
+        borderRadius: 15,
+        width: '45%',
         borderColor: "#003070",
-        borderWidth:1,
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'space-between',
-        overflow:'hidden'
+        borderWidth: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        overflow: 'hidden'
     },
-    btnSemana2:{
-        padding:10,
-        width:'100%',
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'space-between',
+    btnSemana2: {
+        padding: 10,
+        width: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
-    btnTxt:{
+    btnTxt: {
         fontSize: 18 / fontScale,
-        color:"#003070",
+        color: "#003070",
     },
-    tabla:{
-        marginTop:30,
-        flexDirection:'row',
-        height:'4%',
-        width:'100%',
-        backgroundColor:"#003070",
-        alignItems:'center',
+    tabla: {
+        marginTop: 30,
+        flexDirection: 'row',
+        height: '4%',
+        width: '100%',
+        backgroundColor: "#003070",
+        alignItems: 'center',
     },
-    tablaTxt:{
-        color:'white',
+    tablaTxt: {
+        color: 'white',
         fontSize: 17 / fontScale,
-        fontWeight:'300'
+        fontWeight: '300'
     },
-    dia:{
-        width:'29%',
-        alignItems:'center',
+    dia: {
+        width: '29%',
+        alignItems: 'center',
     },
-    entrada:{
-        width:'22%',
-        alignItems:'center',
+    entrada: {
+        width: '22%',
+        alignItems: 'center',
     },
-    salida:{
-        width:'22%',
-        alignItems:'center',
+    salida: {
+        width: '22%',
+        alignItems: 'center',
     },
-    total:{
-        width:'27%',
-        alignItems:'center',
+    total: {
+        width: '27%',
+        alignItems: 'center',
     },
 });
