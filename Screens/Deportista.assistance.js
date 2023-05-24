@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import TouchableCmp from "../assetsUI/TouchableCmp";
 import { process, SAVE } from "../Service/Api";
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 ///////////////////////////////////////////////////
 const { width, height, fontScale } = Dimensions.get('window');
@@ -22,11 +23,31 @@ export const DeportistaAssistance = ({ navigation, route }) => {
     const [asistencias, loading] = useFetchData('asistencias', `deportista_id=${deportistaId}`, 0, 50);
     const [testData, setTestData] = useState([]);
     const [isDark, setIsDark] = useState(false);
+    const [datePicker, setDatePicker] = useState(false);
 
     const [dateParams, setDateParams] = useState({
-        fechaInicio: null,
-        fechaFin: null,
+        fechaInicio: new Date(),
+        fechaFin: new Date(),
     });
+
+    function showDatePicker() {
+        setDatePicker(true);
+    }
+
+    function onDateSelectedInicio(event, value) {
+        setDateParams({
+            ...dateParams,
+            fechaInicio:value,
+        });
+        setDatePicker(false);
+    };
+    function onDateSelectedFin(event, value) {
+        setDateParams({
+            ...dateParams,
+            fechaFin:value,
+        });
+        setDatePicker(false);
+    };
 
     const [tiempoEntrenado, setTiempoEntrenado] = useState(null);
 
@@ -60,7 +81,13 @@ export const DeportistaAssistance = ({ navigation, route }) => {
                     fecha: "2021-05-01T20:00:00.000Z",
                 }]);
             }
+            // setDateParams({
+            //     ...dateParams,
+            //     fechaInicio: fechaFin.getDate() - 7
+            // }
+            // );
         }
+        console.log(dateParams)
     }, [loading]);
 
 
@@ -103,10 +130,10 @@ export const DeportistaAssistance = ({ navigation, route }) => {
                 </Row>
                 <View style={styles.viewSemana}>
                     <View style={styles.btnSemana}>
-                        <TouchableCmp>
+                        <TouchableCmp onPress={()=>showDatePicker()}>
                             <View style={styles.btnSemana2}>
                                 <Feather name={'calendar'} size={20} color={"#003070"} />
-                                <Text style={styles.btnTxt}>24-03-2023</Text>
+                                <Text style={styles.btnTxt}>{dateParams.fechaInicio?"hola":"sin fecha"}</Text>
                             </View>
                         </TouchableCmp>
                     </View>
@@ -120,6 +147,16 @@ export const DeportistaAssistance = ({ navigation, route }) => {
                     </View>
                 </View>
             </View>
+            {datePicker && (
+                <DateTimePicker
+                    value={dateParams.fechaInicio}
+                    mode={'date'}
+                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                    is24Hour={true}
+                    onChange={onDateSelectedInicio}
+                    style={styles.datePicker}
+                />
+            )}
             <View style={styles.tabla}>
                 <View style={styles.dia}>
                     <Text style={styles.tablaTxt}>Día</Text>

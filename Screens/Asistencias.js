@@ -17,7 +17,7 @@ export const Asistencias = ({ navigation }) => {
   // ? Testing purposes
   useEffect(() => {
     if (!loading) {
-      if (!asistencias.length) {
+      if (!asistencias.data.length) {
         setTestData([{
           deportista: {
             nombres: "Juan Perez",
@@ -97,7 +97,7 @@ export const Asistencias = ({ navigation }) => {
       {/* <List dataSource={asistencias.length ? asistencias : testData} columns={columns} loading={loading} /> */}
 
       {/* USING CUSTOM RENDER */}
-      <List dataSource={asistencias.length ? asistencias.data : testData} renderItem={row => <AsistenciasCard props={row} />} loading={loading} />
+      <List dataSource={asistencias.data.length ? asistencias.data : testData} renderItem={row => <AsistenciasCard props={row} />} loading={loading} />
 
     </View>
   )
