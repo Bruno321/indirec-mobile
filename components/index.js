@@ -12,4 +12,5 @@ export * from './List';
 export * from './ListadoJugadores';
 export * from './Order';
 export * from './SearchInput';
-export * from './AsistenciaIndCard'
+export * from './AsistenciaIndCard';
+export * from './ButtonsPages';

@@ -1,15 +1,16 @@
-import { Dimensions, Text, View, SafeAreaView, StyleSheet, } from "react-native";
+import { Dimensions, Text, View, SafeAreaView, StyleSheet } from "react-native";
+import { useState } from "react";
 import { Header, List, DeportistasCard } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import Feather from 'react-native-vector-icons/Feather';
-import { SearchInput, Filters } from "../components";
-
+import { SearchInput, Filters, ButtonsPages } from "../components";
 
 const { fontScale, width } = Dimensions.get('window');
 
 export const Deportistas = ({ navigation }) => {
   const [deportistas, loading, change, update] = useFetchData('deportistas');
+  const [pagina, setPagina] = useState(1);
 
   return (
     <View style={styles.main}>
@@ -42,8 +43,8 @@ export const Deportistas = ({ navigation }) => {
 
       <View style={{ width: "100%", height: 100 }}></View>
 
-      <View style={styles.paginacion}>
-        <TouchableCmp style={styles.paginacionArrowSection} onPress={() => { change(`name=${name}&facultad=${facultad}$sort[name]=1`, 10, 10) }}>
+      {/* <View style={styles.paginacion}>
+        <TouchableCmp style={styles.paginacionArrowSection} onPress={() => { change('' , 10, 10) }}>
           <View style={styles.paginacionArrowButton}>
             <Feather name={'chevron-left'} size={35} color={'white'} />
           </View>
@@ -51,12 +52,14 @@ export const Deportistas = ({ navigation }) => {
 
         <View style={styles.paginacionSelectPage}></View>
 
-        <TouchableCmp style={styles.paginacionArrowSection} onPress={() => { console.log("Presionado PAGE RIGHT") }}>
+        <TouchableCmp style={styles.paginacionArrowSection} onPress={() => { change('' , 20, 10) }}>
           <View style={styles.paginacionArrowButton}>
             <Feather name={'chevron-right'} size={35} color={'white'} />
           </View>
         </TouchableCmp>
-      </View>
+      </View> */}
+      <ButtonsPages numberPage={pagina} setPagina={setPagina} total={deportistas}/>
+
     </View>
   )
 };
