@@ -91,7 +91,7 @@ export const Eventos = ({ navigation }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [time, setTime] = useState("AM");
 
-  const listaEquipos = equipos.map((obj) => ({
+  const listaEquipos = equipos.data.map((obj) => ({
     label: obj.nombre,
     value: obj.equipoId,
   }));
@@ -262,7 +262,7 @@ export const Eventos = ({ navigation }) => {
       </View>
       <View style={styles.cartas} showsVerticalScrollIndicator={false}>
         <List
-          dataSource={eventos}
+          dataSource={eventos.data}
           loading={loading}
           renderItem={(row) => (
             <EventosCard props={row} navigation={navigation} />
