@@ -8,16 +8,14 @@ const { fontScale } = Dimensions.get('window');
 export const DeportistasCard = ({props}) => {
     
     var dataProps = {props};
-    // console.log(dataProps)
     const navigation = useNavigation();
-    const profilePicture = dataProps.props.foto ? { uri: `${REACT_APP_API_URL}${BASEPATH}/${dataProps.props.foto}` } : {uri: '../images/ImagenEjemploDeportista.png'};
-    // console.log("AAAAAAAAAAAAAAAa>" + JSON.stringify(profilePicture));
+    const profilePicture = dataProps.props.foto ? {uri: dataProps.props.foto} : require('../images/ImagenEjemploDeportista.jpg');
     
 	return(
         <TouchableCmp onPress={()=> navigation.navigate('Deportista.details', { data: dataProps })}>
             <View style={styles.main}>
                 <View style={styles.imageView}>
-                    <Image source={{uri: profilePicture.uri}} style={styles.profilePic}/>
+                    <Image source={profilePicture} style={styles.profilePic}/>
                 </View>
                 <View style={styles.even1}>
                     <View style={styles.caja}>
@@ -113,7 +111,7 @@ const styles = StyleSheet.create({
     profilePic: {
         width: "100%",
         height: "100%",
-        // resizeMode: 'cover',
+        resizeMode: 'cover',
         overflow: 'hidden',
     },
     

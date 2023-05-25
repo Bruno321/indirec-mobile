@@ -17,8 +17,8 @@ const LargeText = ({ children, style = {}, numberOfLineas}) => {
 
 export const DeportistaDetails = ({ navigation, route }) => {
 	const [showModal, setShowModal] = useState(false);
-  const { data } = route.params,
-    profilePicture = data.props.foto ? { uri: `${REACT_APP_API_URL}${BASEPATH}/${data.props.foto}` } : require('../images/ImagenEjemploDeportista.jpg');
+  const { data } = route.params;
+  const profilePicture = data.props.foto ? {uri: data.props.foto} : require('../images/ImagenEjemploDeportista.jpg');
   return (
 
     <View style={{height: "100%"}}>
@@ -28,7 +28,7 @@ export const DeportistaDetails = ({ navigation, route }) => {
         <View style={styles.infoView}>
         <Row>
           <Col>
-            <Image source={{uri: profilePicture.uri}} style={styles.profilePicture} />
+            <Image source={profilePicture} style={styles.profilePicture} />
           </Col>
         </Row>
         <Row>
@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
     width: width * 0.6,
     height: width * 0.6,
     borderRadius: 18,
+    resizeMode:'contain'
   },
   infoView: {
     backgroundColor: '#FFF',
