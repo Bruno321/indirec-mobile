@@ -19,7 +19,6 @@ export const DeportistaDetails = ({ navigation, route }) => {
 	const [showModal, setShowModal] = useState(false);
   const { data } = route.params,
     profilePicture = data.props.foto ? { uri: `${REACT_APP_API_URL}${BASEPATH}/${data.props.foto}` } : require('../images/ImagenEjemploDeportista.jpg');
-    console.log(data);
   return (
 
     <View style={{height: "100%"}}>
