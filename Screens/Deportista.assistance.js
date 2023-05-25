@@ -6,6 +6,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import TouchableCmp from "../assetsUI/TouchableCmp";
 import { process, SAVE } from "../Service/Api";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment';
 
 ///////////////////////////////////////////////////
 const { width, height, fontScale } = Dimensions.get('window');
@@ -24,30 +25,39 @@ export const DeportistaAssistance = ({ navigation, route }) => {
     const [testData, setTestData] = useState([]);
     const [isDark, setIsDark] = useState(false);
     const [datePicker, setDatePicker] = useState(false);
+    const [calendario, setCalendario] = useState(1);
 
     const [dateParams, setDateParams] = useState({
-        fechaInicio: new Date(),
-        fechaFin: new Date(),
+        fechaFin: null,
+        fechaInicio: null,
     });
 
-    function showDatePicker() {
+    function onDateSelected(event, value) {
+        setDatePicker(false);
+        setDateParams({
+            ...dateParams,
+            [calendario === 1 ? "fechaInicio" : "fechaFin"]:value,
+        });
+    };
+
+    const cual = (boton) =>{
+        setCalendario(boton)
         setDatePicker(true);
     }
 
-    function onDateSelectedInicio(event, value) {
-        setDateParams({
-            ...dateParams,
-            fechaInicio:value,
-        });
-        setDatePicker(false);
-    };
-    function onDateSelectedFin(event, value) {
-        setDateParams({
-            ...dateParams,
-            fechaFin:value,
-        });
-        setDatePicker(false);
-    };
+    const borrar = (boton) =>{
+        if(boton == 1){
+            setDateParams({
+                ...dateParams,
+                fechaInicio:null,
+            });
+        }else{
+            setDateParams({
+                ...dateParams,
+                fechaFin:null,
+            });
+        }
+    }
 
     const [tiempoEntrenado, setTiempoEntrenado] = useState(null);
 
@@ -81,24 +91,12 @@ export const DeportistaAssistance = ({ navigation, route }) => {
                     fecha: "2021-05-01T20:00:00.000Z",
                 }]);
             }
-            // setDateParams({
-            //     ...dateParams,
-            //     fechaInicio: fechaFin.getDate() - 7
-            // }
-            // );
         }
-        console.log(dateParams)
     }, [loading]);
 
 
     // var datosFiltrados = asistencias.data.filter(objeto => objeto.deportista.id == deportistaId);
-
     asistencias.data.sort((a, b) => new Date(b.horaEntrada) - new Date(a.horaEntrada));
-
-    const toggleColor = () => {
-        setIsDark((prevIsDark) => !prevIsDark);
-        console.log("cambiando")
-    };
 
     return (
         <View style={{ flex: 1, height: '100%' }}>
@@ -108,7 +106,7 @@ export const DeportistaAssistance = ({ navigation, route }) => {
                 <LargeText style={styles.datoName} numberOfLineas={2}>{deportistaNombre}</LargeText>
                 <Row>
                     <Col style={styles.col1}>
-                        <Text style={styles.subtitle}>Dias entrenados a la semana: </Text>
+                        <Text style={styles.subtitle}>Sesiones de entrenamiento totales: </Text>
                     </Col>
                     <Col style={styles.col2}>
                         <Text style={styles.text}>{asistencias.data.length}</Text>
@@ -116,7 +114,7 @@ export const DeportistaAssistance = ({ navigation, route }) => {
                 </Row>
                 <Row>
                     <Col style={styles.col1}>
-                        <Text style={styles.subtitle}>Total entrenado esta semana: </Text>
+                        <Text style={styles.subtitle}>Tiempo total de entrenamiento: </Text>
                     </Col>
                     <Col style={styles.col2}>
                         {/* <Text style={styles.text}>{`${tiempoEntrenado || `No hay entrenamientos registrados para ${dateParams.fechaInicio && dateParams.fechaFin ? `el rango de fechas seleccionado` : "esta semana"}`}`}</Text> */}
@@ -126,22 +124,26 @@ export const DeportistaAssistance = ({ navigation, route }) => {
                 <Row style={{ paddingVertical: 20 / fontScale }}>
                     <Col style={{ width: "100%", paddingLeft: 25 }}>
                         <Text style={styles.textTitle}>Asistencias</Text>
+                        <Text style={styles.textTitle2}>Puede seleccionar un rango de fechas</Text>
                     </Col>
                 </Row>
                 <View style={styles.viewSemana}>
                     <View style={styles.btnSemana}>
-                        <TouchableCmp onPress={()=>showDatePicker()}>
+                        <TouchableCmp onPress={()=>cual(1)} onLongPress={()=>borrar(1)}>
                             <View style={styles.btnSemana2}>
-                                <Feather name={'calendar'} size={20} color={"#003070"} />
-                                <Text style={styles.btnTxt}>{dateParams.fechaInicio?"hola":"sin fecha"}</Text>
+                                <Feather name={'calendar'} size={20} color={dateParams.fechaInicio?"#003070":"#808080"} />
+                                <Text style={dateParams.fechaInicio?styles.btnTxt:styles.btnTxtN}>{dateParams.fechaInicio?moment(dateParams.fechaInicio).format('DD-MM-YYYY'):"Fecha inicio"}</Text>
                             </View>
                         </TouchableCmp>
                     </View>
+                    <View style={{justifyContent:'center'}}>
+                        <Text style={styles.btnTxtN}>al</Text>
+                    </View>
                     <View style={styles.btnSemana}>
-                        <TouchableCmp>
+                        <TouchableCmp onPress={()=>cual(2)} onLongPress={()=>borrar(2)}>
                             <View style={styles.btnSemana2}>
-                                <Feather name={'calendar'} size={20} color={"#003070"} />
-                                <Text style={styles.btnTxt}>24-03-2023</Text>
+                                <Feather name={'calendar'} size={20} color={dateParams.fechaInicio?"#003070":"#808080"} />
+                                <Text style={dateParams.fechaFin?styles.btnTxt:styles.btnTxtN}>{dateParams.fechaFin?moment(dateParams.fechaFin).format('DD-MM-YYYY'):"Fecha final"}</Text>
                             </View>
                         </TouchableCmp>
                     </View>
@@ -149,12 +151,13 @@ export const DeportistaAssistance = ({ navigation, route }) => {
             </View>
             {datePicker && (
                 <DateTimePicker
-                    value={dateParams.fechaInicio}
+                    value={calendario==1?(dateParams.fechaInicio?dateParams.fechaInicio:new Date()):dateParams.fechaFin?dateParams.fechaFin:new Date()}
                     mode={'date'}
                     display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                     is24Hour={true}
-                    onChange={onDateSelectedInicio}
+                    onChange={onDateSelected}
                     style={styles.datePicker}
+                    maximumDate={new Date()}
                 />
             )}
             <View style={styles.tabla}>
@@ -203,6 +206,10 @@ const styles = StyleSheet.create({
     textTitle: {
         fontSize: 25 / fontScale,
     },
+    textTitle2: {
+        fontSize: 15 / fontScale,
+        color:'#808080'
+    },
     datoName: {
         fontSize: 30 / fontScale,
         fontWeight: '600',
@@ -239,8 +246,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     btnTxt: {
-        fontSize: 18 / fontScale,
+        fontSize: 17 / fontScale,
         color: "#003070",
+    },
+    btnTxtN: {
+        fontSize: 17/ fontScale,
+        color: "#808080",
     },
     tabla: {
         marginTop: 30,

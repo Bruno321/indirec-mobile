@@ -29,13 +29,13 @@ export const AsistenciaIndCard = ({ props, estilo }) => {
     return (
         <View style={estilo?styles.tabla2:styles.tabla}>
             <View style={styles.dia}>
-                <Text style={styles.tablaTxt} numberOfLines={1}>{props.fecha}</Text>
+                <Text style={styles.tablaTxt} numberOfLines={1}>{moment(props.fecha).format("DD-MM-YYYY")}</Text>
             </View>
             <View style={styles.entrada}>
-                <Text style={styles.tablaTxt} numberOfLines={1}>{moment(props.horaEntrada).format("h:mm a")}</Text>
+                <Text style={styles.tablaTxt} numberOfLines={1}>{moment(props.horaEntrada).format("hh:mm")}</Text>
             </View>
             <View style={styles.salida}>
-                <Text style={styles.tablaTxt} numberOfLines={1}>{props.horaSalida?moment(props.horaSalida).format("h:mm a"):"Sin datos"}</Text>
+                <Text style={styles.tablaTxt} numberOfLines={1}>{props.horaSalida?moment(props.horaSalida).format("HH:mm"):"Sin datos"}</Text>
             </View>
             <View style={styles.total}>
                 <Text style={styles.tablaTxt} numberOfLines={1}>{props.horaSalida?convertirMinutosAHoras(tiempoTranscurridoEnMinutos):tiempoTranscurridoEnMinutos}</Text>

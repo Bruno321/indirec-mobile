@@ -5,7 +5,7 @@ import { TouchableOpacity, TouchableNativeFeedback } from "react-native";
 const TouchableCmp = (props) =>{
   const TouchableComponent = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity;
   return(
-      <TouchableComponent onPress={props.onPress} style={props.style} background={props.background}>
+      <TouchableComponent onPress={props.onPress} onLongPress={props.onLongPress} style={props.style} background={props.background}>
           {props.children}    
       </TouchableComponent>
   )
