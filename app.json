@@ -4,12 +4,12 @@
     "slug": "INDEREQ-COACH",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./images/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./images/load-screen.png",
+      "image": "./images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#003070 "
+      "backgroundColor": "#003070"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -22,7 +22,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./images/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       }
     },

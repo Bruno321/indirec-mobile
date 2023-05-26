@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Dimensions, Image, SafeAreaView, Text, View, StyleSheet } from "react-native";
 import { ActionButton, AsistenciasCard, FiltersView, Header, List, OrderView } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
@@ -6,29 +6,24 @@ import moment from "moment/moment";
 import 'moment/locale/es';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Filters, SearchInput } from "../components";
+import { Filters, SearchInput, ButtonsPages } from "../components";
+import { useFocusEffect } from '@react-navigation/core';
+import { useDidMountEffect } from "../Utils/DidMountEffect";
 
 const { fontScale, width } = Dimensions.get('window');
 
 export const Asistencias = ({ navigation }) => {
   const [testData, setTestData] = useState([]);
   const [asistencias, loading, change, update] = useFetchData('asistencias');
+  const [pagina, setPagina] = useState(0);
 
-  // ? Testing purposes
-  useEffect(() => {
-    if (!loading) {
-      if (!asistencias.data.length) {
-        setTestData([{
-          deportista: {
-            nombres: "Juan Perez",
-          },
-          horaEntrada: "2021-05-01T20:00:00.000Z",
-          horaSalida: "2021-05-01T20:00:00.000Z",
-          fecha: "2021-05-01T20:00:00.000Z",
-        }]);
-      }
-    }
-  }, [loading]);
+  useFocusEffect(useCallback(() => {
+    update();
+  }, [navigation]));
+
+  useDidMountEffect(() => {
+    change("", pagina * 10, 10);
+  }, [pagina]);
 
   const columns = [
     {
@@ -69,7 +64,7 @@ export const Asistencias = ({ navigation }) => {
     }
   ];
   return (
-    <View style={{ flex: 1, marginBottom: '65%' }}>
+    <View style={{ height: "100%", marginBottom: '65%' }}>
       <SafeAreaView style={{ backgroundColor: "#003070" }} />
       <Header navigation={navigation} title={"Asistencias"} />
 
@@ -97,7 +92,10 @@ export const Asistencias = ({ navigation }) => {
       {/* <List dataSource={asistencias.length ? asistencias : testData} columns={columns} loading={loading} /> */}
 
       {/* USING CUSTOM RENDER */}
+      <View style={{ flex: 1 }}>
       <List dataSource={asistencias.data.length ? asistencias.data : testData} renderItem={row => <AsistenciasCard props={row} />} loading={loading} />
+      </View>
+      <ButtonsPages numberPage={pagina} setPagina={setPagina} total={asistencias.total}/>
 
     </View>
   )
