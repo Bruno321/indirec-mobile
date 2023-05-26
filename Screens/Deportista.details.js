@@ -1,10 +1,13 @@
 import { Dimensions, Image, View, StyleSheet, Text, SafeAreaView, ScrollView, Alert, Modal} from 'react-native';
 import { ActionButton, Col, Header, Row} from '../components';
 import TouchableCmp from '../assetsUI/TouchableCmp';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { REACT_APP_API_URL } from '@env';
 import { BASEPATH } from '../Service/Api';
 import QRCode from 'react-native-qrcode-svg';
+import * as FileSystem from 'expo-file-system';
+import * as MediaLibrary from 'expo-media-library';
+import * as Sharing from 'expo-sharing';
 
 const { width, height, fontScale } = Dimensions.get('window');
 
@@ -18,9 +21,49 @@ const LargeText = ({ children, style = {}, numberOfLineas}) => {
 export const DeportistaDetails = ({ navigation, route }) => {
 	const [showModal, setShowModal] = useState(false);
   const { data } = route.params;
+  console.log(data.props)
   const profilePicture = data.props.foto ? {uri: data.props.foto} : require('../images/ImagenEjemploDeportista.jpg');
-  return (
+  const fCardex = data.props.fotoCardex;
+  const fId = data.props.fotoIdentificacionOficial;
+  const [permissionResponse, requestPermission] = MediaLibrary.usePermissions();
 
+  const handleDownload = async (foto) => {
+    const fileUrl = foto;
+    const { status } = await requestPermission();
+    if (status === 'granted') {
+      saveFileToGallery(fileUrl);
+    }else{
+      console.log(permissionResponse)
+      let permissionStatus;
+      permissionStatus = await MediaLibrary.requestPermissionsAsync();
+    }
+  };
+
+  const saveFileToGallery = async (fileUrl) => {
+      try {
+        if (permissionResponse.status !== 'granted') {
+          console.log('Permiso denegado para acceder a la galería.');
+          return;
+        }
+
+        const fileExtension = fileUrl.split('.').pop().toLowerCase();
+        const fileUri = FileSystem.cacheDirectory + `file.${fileExtension}`;
+        await FileSystem.downloadAsync(fileUrl, fileUri);
+
+        if (fileExtension === 'pdf') {
+          await Sharing.shareAsync(fileUri);
+          console.log('PDF guardado en la galería.');
+        } else {
+          await MediaLibrary.saveToLibraryAsync(fileUri);
+          console.log('Imagen guardada en la galería.');
+        }
+      } catch (error) {
+        console.log('Error al guardar el archivo:', error);
+      } 
+  }
+
+
+  return (
     <View style={{height: "100%"}}>
       <SafeAreaView style={{ backgroundColor: "#003070" }} />
       <Header navigation={navigation} title={"Datos del Deportista"} funcion={"goback"} />
@@ -88,7 +131,7 @@ export const DeportistaDetails = ({ navigation, route }) => {
                 color="#FFF"
                 icon="clock-o"
                 style={{width: "100%", alignSelf: 'center', height: 60, borderRadius: 18 }}
-                handler={() => {navigation.navigate("DeportistaAssistance", data.props.nombres + " " + data.props.apellidos)}}
+                handler={() => {navigation.navigate("DeportistaAssistance", {deportista:{nombres:data.props.nombres,apellidos:data.props.apellidos,id:data.props.id}})}}
               />
             </View>
           </Col>
@@ -112,6 +155,7 @@ export const DeportistaDetails = ({ navigation, route }) => {
             <View style={{borderRadius: 18, overflow: 'hidden', height: 60}}>
               <ActionButton
                 text="Descargar Kardex"
+                handler={()=>handleDownload(fCardex)}
                 backgroundColor="#FFF"
                 color="#003070"
                 icon="file-pdf-o"
@@ -125,6 +169,7 @@ export const DeportistaDetails = ({ navigation, route }) => {
             <View style={{borderRadius: 18, overflow: 'hidden', height: 60}}>
             <ActionButton
               text="Descargar Identificación Oficial"
+              handler={()=>handleDownload(fId)}
               backgroundColor="#FFF"
               color="#003070"
               icon="file-pdf-o"

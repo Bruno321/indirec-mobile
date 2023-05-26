@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
 
     },
     imageView: {
-        backgroundColor: '#EEE',
+        backgroundColor: 'white',
         alignSelf: 'center',
         // height: "100%",
         // height: "100%",
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     profilePic: {
         width: "100%",
         height: "100%",
-        resizeMode: 'cover',
+        resizeMode: 'contain',
         overflow: 'hidden',
     },
     
