@@ -1,4 +1,4 @@
-import { Dimensions, Image, View, StyleSheet, Text, SafeAreaView, ScrollView, Alert, Modal} from 'react-native';
+import { Dimensions, Image, View, StyleSheet, Text, SafeAreaView, ScrollView, Alert, Modal } from 'react-native';
 import { ActionButton, Col, Header, Row} from '../components';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import { useState, useEffect } from 'react';
@@ -8,6 +8,8 @@ import QRCode from 'react-native-qrcode-svg';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
+
+const GRANTED = "granted";
 
 const { width, height, fontScale } = Dimensions.get('window');
 
@@ -21,7 +23,6 @@ const LargeText = ({ children, style = {}, numberOfLineas}) => {
 export const DeportistaDetails = ({ navigation, route }) => {
 	const [showModal, setShowModal] = useState(false);
   const { data } = route.params;
-  console.log(data.props)
   const profilePicture = data.props.foto ? {uri: data.props.foto} : require('../images/ImagenEjemploDeportista.jpg');
   const fCardex = data.props.fotoCardex;
   const fId = data.props.fotoIdentificacionOficial;
@@ -30,18 +31,18 @@ export const DeportistaDetails = ({ navigation, route }) => {
   const handleDownload = async (foto) => {
     const fileUrl = foto;
     const { status } = await requestPermission();
-    if (status === 'granted') {
-      saveFileToGallery(fileUrl);
+    if (status === GRANTED) {
+      saveFileToGallery(fileUrl, status);
     }else{
       console.log(permissionResponse)
       let permissionStatus;
-      permissionStatus = await MediaLibrary.requestPermissionsAsync();
+      permissionStatus = await requestPermission();
     }
   };
 
-  const saveFileToGallery = async (fileUrl) => {
+  const saveFileToGallery = async (fileUrl, status) => {
       try {
-        if (permissionResponse.status !== 'granted') {
+        if (status !== GRANTED && permissionResponse.status !== GRANTED) {
           console.log('Permiso denegado para acceder a la galería.');
           return;
         }
@@ -53,9 +54,15 @@ export const DeportistaDetails = ({ navigation, route }) => {
         if (fileExtension === 'pdf') {
           await Sharing.shareAsync(fileUri);
           console.log('PDF guardado en la galería.');
+          Alert.alert('Descarga completa', 'Documento guardado en la galería', [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ]);
         } else {
           await MediaLibrary.saveToLibraryAsync(fileUri);
           console.log('Imagen guardada en la galería.');
+          Alert.alert('Descarga completa', 'Documento guardado en la galería', [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ]);
         }
       } catch (error) {
         console.log('Error al guardar el archivo:', error);
