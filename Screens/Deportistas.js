@@ -15,15 +15,17 @@ export const Deportistas = ({ navigation }) => {
   const [pagina, setPagina] = useState(0);
   const [ concatenado, setConcatenado] = useState('');
 
-  useFocusEffect(useCallback(() => {
-    if (pagina == 0) {
-      update();
-    } else {
-      change("", pagina * 10);
-    }
-  }, [navigation]));
-
+  // useFocusEffect(useCallback(() => {
+  //   if (pagina == 0) {
+  //     setPagina(0);
+  //     update();
+  //   } else {
+  //     change("", pagina * 10);
+  //   }
+  // }, [navigation]));
+  
   useDidMountEffect(() => {
+    console.log("PRESIONASTE UN BOTON DE CAMBIAR PAGINA");
     change("", pagina * 10);
   }, [pagina]);
 
@@ -54,11 +56,11 @@ export const Deportistas = ({ navigation }) => {
         </View>
       </View>
 
-      <View style={{ flex: 1 }}>
+      <ButtonsPages numberPage={pagina} setPagina={setPagina} total={deportistas.total}/>
+      <View style={{ flex: 1, borderTopWidth: 1, borderTopColor: "#BBB"}}>
         <List dataSource={deportistas.data} renderItem={row => <DeportistasCard props={row} />} loading={loading} />
       </View>
 
-      <ButtonsPages numberPage={pagina} setPagina={setPagina} total={deportistas.total}/>
 
     </View>
   )
@@ -67,6 +69,7 @@ export const Deportistas = ({ navigation }) => {
 const styles = StyleSheet.create({
   main: {
     height: '100%',
+    backgroundColor: "white",
   },
   agregarJugadorButton: {
     width: width * 0.45,

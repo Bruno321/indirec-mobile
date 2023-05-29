@@ -38,6 +38,14 @@ export const SearchInput = ({ change, reset, screen }) => {
         }
         break;
       case "asistencias":
+        if (search?.length >= 1) {
+          concat = `$or[0][nombres][$like]=%${search}%&$or[1][apellidos][$like]=%${search}%`
+            change(concat, 0, 10)
+        }
+        else {
+          concat = ``;
+          change(concat, 0, 10)
+        }
         break
       default:
         break;
@@ -93,6 +101,15 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     overflow: 'hidden',
     height: 50,
+    shadowColor: "#000",
+shadowOffset: {
+	width: 0,
+	height: 3,
+},
+shadowOpacity: 0.29,
+shadowRadius: 4.65,
+
+elevation: 7,
   },
   input: {
     flex: 1,

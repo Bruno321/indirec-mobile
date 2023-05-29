@@ -256,7 +256,7 @@ export const Eventos = ({ navigation }) => {
               size={24}
               color={"white"}
             />
-            <Text style={styles.buttonText}>Pasar lista</Text>
+            <Text style={styles.buttonText}>Generar Evento</Text>
           </View>
         </TouchableCmp>
       </View>

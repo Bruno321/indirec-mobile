@@ -92,10 +92,10 @@ export const Asistencias = ({ navigation }) => {
       {/* <List dataSource={asistencias.length ? asistencias : testData} columns={columns} loading={loading} /> */}
 
       {/* USING CUSTOM RENDER */}
+      <ButtonsPages numberPage={pagina} setPagina={setPagina} total={asistencias.total}/>
       <View style={{ flex: 1 }}>
       <List dataSource={asistencias.data.length ? asistencias.data : testData} renderItem={row => <AsistenciasCard props={row} />} loading={loading} />
       </View>
-      <ButtonsPages numberPage={pagina} setPagina={setPagina} total={asistencias.total}/>
 
     </View>
   )
