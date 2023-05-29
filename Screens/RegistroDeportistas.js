@@ -29,7 +29,7 @@ import { process, SAVE_WITH_FILE } from '../Service/Api';
 import QRCode from 'react-native-qrcode-svg';
 import { RotateInUpRight } from 'react-native-reanimated';
 
-const { width, height } = Dimensions.get('window');     
+const { width, height, fontScale} = Dimensions.get('window');     
 
 const logoINDEREQ = require('../images/logo.png');
 
@@ -354,7 +354,7 @@ export const RegistroDeportistas = () => {
 						<Text style={styles.campos}>¿Eres jugador seleccionado?</Text>
 						<View style={styles.switch}>
 							<View style={styles.switch2}> 
-								<Text style={{fontFamily:'Fredoka-Light'}}>No</Text>
+								<Text>No</Text>
 							</View>
 							<Switch 
 								trackColor={{ false: "#DBDBDB", true: "#CFDBD5" }}
@@ -366,7 +366,7 @@ export const RegistroDeportistas = () => {
 								value={!!values.jugadorSeleccionado}
 							/>
 							<View style={styles.switch2}> 
-								<Text style={{fontFamily:'Fredoka-Light'}}>Si</Text>
+								<Text>Si</Text>
 							</View>
 						</View>
 						{/* -------------------------------------------------------------------------------------------------------------- */}
@@ -605,18 +605,15 @@ const styles = StyleSheet.create({
 	},
 	titulo:{
 		fontSize: 40,
-		fontFamily:'Fredoka-Medium',
 	},
 	viewForm:{
 		width:width/1.25,
 		marginTop:height/28,
 	},
 	campos:{
-		fontFamily:'Fredoka-Light',
 		marginTop:15
 	},
 	campos2:{
-		fontFamily:'Fredoka-Light',
 		marginTop:30,
 	},
 	input:{
@@ -624,7 +621,7 @@ const styles = StyleSheet.create({
 		paddingLeft:5,
 		borderBottomWidth:1,
 		borderBottomColor:'black',
-		fontFamily:'Fredoka-Light',
+		// fontFamily: 'arial',
 	},
 	dropdown1DropdownStyle: {
 		backgroundColor: '#FFF',
@@ -632,12 +629,10 @@ const styles = StyleSheet.create({
 	},
 	touch:{
 		fontSize:14,
-		fontFamily:'Fredoka-Medium',
 		color:'#003070',
 	},
 	touchCon:{
 		fontSize:14,
-		fontFamily:'Fredoka-Medium',
 		color:'white',
 	},
 	viewTouch:{
@@ -703,7 +698,6 @@ const styles = StyleSheet.create({
 		justifyContent:'space-between'
 	},
 	registrar:{
-		fontFamily:'Fredoka-Regular',
 		fontSize:16,
 		color:'white',
 		textAlign:'center',
@@ -748,7 +742,6 @@ const styles = StyleSheet.create({
 		justifyContent:'center',
 	},
 	error:{
-		fontFamily:'Fredoka-Light',
 		color: '#BA1200',
 	},
 	notModal:{
@@ -776,15 +769,13 @@ const styles = StyleSheet.create({
 	},
 	modalTextT:{
 		color:'white',
-		fontSize:20,
-		fontFamily:'Fredoka-Medium',
+		fontSize: 20 / fontScale,
 		textAlign:'center',
 		marginTop:15
 	},
 	modalText:{
 		color:'#003070',
-		fontSize:17,
-		fontFamily:'Fredoka-Light',
+		fontSize:17 / fontScale,
 		textAlign:'center',
 	},
 	containerModalQR: {

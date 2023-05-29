@@ -12,7 +12,7 @@ export const Equipos = ({ navigation }) => {
 			<SafeAreaView style={{backgroundColor: "#003070"}}/>
 			<Header navigation={navigation} title={"Equipos"}/>
 			<View style={{ alignItems: 'center', height: 120, width: width }}>
-			<View style={{ flexDirection: 'column', height: "100%", justifyContent: 'space-evenly', width: "95%", backgroundColor: 'red',}}>
+			<View style={{ flexDirection: 'column', height: "100%", justifyContent: 'space-evenly', width: "95%"}}>
 				<SearchInput change={change} reset={update} screen={"equipos"} />
             	<Filters change={change} reset={update} />
 			</View>
@@ -31,7 +31,6 @@ export const Equipos = ({ navigation }) => {
 
 const styles = StyleSheet.create({
 	container:{
-		backgroundColor:'#FFF',
 		flex: 1,
 	},
 	cartas:{

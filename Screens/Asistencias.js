@@ -69,7 +69,7 @@ export const Asistencias = ({ navigation }) => {
       <Header navigation={navigation} title={"Asistencias"} />
 
       <View style={{ alignItems: 'center', height: 120, width: width }}>
-        <View style={{ flexDirection: 'column', height: "100%", justifyContent: 'space-evenly', width: "95%", backgroundColor: 'red', }}>
+        <View style={{ flexDirection: 'column', height: "100%", justifyContent: 'space-evenly', width: "95%"}}>
           <SearchInput change={change} reset={update} screen={"asistencias"} />
           <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
             <Filters change={change} reset={update} />
@@ -82,9 +82,9 @@ export const Asistencias = ({ navigation }) => {
           </View>
         </View>
       </View>
-      <View style={styles.viewDíaFiltrado}>
+      {/* <View style={styles.viewDíaFiltrado}>
         <Text style={styles.viewDíaFiltradoText}>☢WORK IN PROGRESS FECHA FILTRADA☢</Text>
-      </View>
+      </View> */}
 
       {/* You can choose between the following options to show the data: */}
 
@@ -104,7 +104,6 @@ export const Asistencias = ({ navigation }) => {
 const styles = StyleSheet.create({
   main: {
     height: '100%',
-    // position: 'relative',
   },
   paginacion: {
     position: 'absolute',

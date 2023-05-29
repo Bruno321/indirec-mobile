@@ -29,8 +29,8 @@ export const AsistenciasCard = ({ props }) => {
                             <Text style={styles.cajaText3} numberOfLines={1}>{moment(props.horaSalida).format("h:mm a")}</Text>
                         </View>
                         <View style={{flexDirection: 'row',}}>
-                            <Text style={styles.cajaText2} numberOfLines={1}>Hrs/Dia:</Text>
-                            <Text style={styles.cajaText3} numberOfLines={1}>☢</Text>
+                            <Text style={styles.cajaText2} numberOfLines={1}>Visita:</Text>
+                            <Text style={styles.cajaText3} numberOfLines={1}>{moment.utc(moment(props.horaSalida, 'HH:mm').diff(moment(props.horaEntrada, 'HH:mm'))).format('HH:mm')}</Text>
                         </View>
                     </View>
                 </View>
