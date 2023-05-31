@@ -4,7 +4,7 @@ import { ActionButton } from './ActionButton';
 
 const { width, height, fontScale } = Dimensions.get('window');
 
-export const SearchInput = ({ change, reset, screen }) => {
+export const SearchInput = ({ change, setPagina, screen, updateConcat}) => {
   const [search, setSearch] = useState('');
   //TODO: Add logic to search from API
   const handleSearch = () => {
@@ -15,36 +15,51 @@ export const SearchInput = ({ change, reset, screen }) => {
           if (isNaN(search)) {
             concat = `$or[0][nombres][$like]=%${search}%&$or[1][apellidos][$like]=%${search}%`
             // console.log(`Searching for nombres or apellidos: ${search}`);
-            change(concat, 0, 10)
+            updateConcat(concat);
+            setPagina(0);
+            // change(concat, 0, 10)
           } else {
             concat = `expediente[$like]=%${search}%`
             // console.log(`Searching for exp: ${search}`);
-            change(concat, 0, 10)
+            // change(concat, 0, 10)
+            updateConcat(concat);
+            setPagina(0);
+
           }
         } else {
           concat = ``;
-          change(concat, 0, 10)
+            updateConcat(concat);
+            setPagina(0);
+            // change(concat, 0, 10)
         }
         break;
       case "equipos":
         if (search?.length >= 1) {
           concat = `nombre[$like]=%${search}%`;
           // console.log(`Searching for nombres or apellidos: ${search}`);
-          change(concat, 0, 10);
+            updateConcat(concat);
+            setPagina(0);
+            // change(concat, 0, 10);
         }
         else {
           concat = ``;
-          change(concat, 0, 10)
+          // change(concat, 0, 10)
+          updateConcat(concat);
+          setPagina(0);
         }
         break;
       case "asistencias":
         if (search?.length >= 1) {
           concat = `$or[0][nombres][$like]=%${search}%&$or[1][apellidos][$like]=%${search}%`
-            change(concat, 0, 10)
+            // change(concat, 0, 10)
+            updateConcat(concat);
+            setPagina(0);
         }
         else {
           concat = ``;
-          change(concat, 0, 10)
+          // change(concat, 0, 10)
+          updateConcat(concat);
+          setPagina(0);
         }
         break
       default:
@@ -68,7 +83,7 @@ export const SearchInput = ({ change, reset, screen }) => {
               icon="close"
               color="#A3A2A2"
 
-              handler={() => setSearch('')}
+              handler={() => {setSearch(''); change('', 0); updateConcat(''); setPagina(0)}}
               widthPercentage={0.1}
               heightPercentage={0.04}
             />

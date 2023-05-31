@@ -13,7 +13,8 @@ export const ButtonsPages = ({ numberPage, setPagina, total }) => {
 
     useEffect(() => {
         setAvailableRight(numberPage < Math.ceil(total / 10) - 1);
-    }, [total])
+        setAvailableLeft(numberPage == 0 ? false : true);
+    }, [numberPage, total])
     
     const previousPage = () => {
         var newPage = numberPage - 1;

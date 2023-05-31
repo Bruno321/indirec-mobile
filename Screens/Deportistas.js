@@ -1,5 +1,5 @@
 import { Dimensions, Text, View, SafeAreaView, StyleSheet } from "react-native";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Header, List, DeportistasCard } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
 import TouchableCmp from '../assetsUI/TouchableCmp';
@@ -13,8 +13,7 @@ const { fontScale, width } = Dimensions.get('window');
 export const Deportistas = ({ navigation }) => {
   const [deportistas, loading, change, update] = useFetchData('deportistas');
   const [pagina, setPagina] = useState(0);
-  const [ concatenado, setConcatenado] = useState('');
-
+  const [concatenatedString, setConcatenatedString] = useState('');
   // useFocusEffect(useCallback(() => {
   //   if (pagina == 0) {
   //     setPagina(0);
@@ -24,12 +23,21 @@ export const Deportistas = ({ navigation }) => {
   //   }
   // }, [navigation]));
   
-  useDidMountEffect(() => {
-    console.log("PRESIONASTE UN BOTON DE CAMBIAR PAGINA");
-    change("", pagina * 10);
-  }, [pagina]);
+  // useDidMountEffect(() => {
+  //   change("", pagina * 10);
+  // }, [pagina]);
 
+  const [componentAString, setComponentAString] = useState('');
+  const [componentBString, setComponentBString] = useState('');
 
+  useEffect(() => {
+    const concatenatedString = componentAString + componentBString;
+    // Actualiza el estado con el string concatenado
+    setConcatenatedString(concatenatedString);
+    console.log("LA QUERY Q TOY HACIENDO> change(" + "'" + concatenatedString + "'" + "," + (pagina*10) + ")");
+    change(concatenatedString, pagina*10);
+
+  }, [componentAString, componentBString, pagina]);
 
   return (
     <View style={styles.main}>
@@ -39,7 +47,7 @@ export const Deportistas = ({ navigation }) => {
       <View style={{ alignItems: 'center', height: 120, width: width }}>
         <View style={{ flexDirection: 'column', height: "100%", justifyContent: 'space-evenly', width: "95%"}}>
           {/* BUSQUEDA */}
-          <SearchInput change={change} reset={update} screen={"deportistas"} setConcatenado={setConcatenado}/>
+          <SearchInput change={change} setPagina={setPagina} screen={"deportistas"} updateConcat={setComponentAString}/>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             {/* FILTROS */}
             <Filters change={change} reset={update} />
@@ -55,7 +63,7 @@ export const Deportistas = ({ navigation }) => {
           </View>
         </View>
       </View>
-
+      {/* <Text>{concatenatedString}</Text> */}
       <ButtonsPages numberPage={pagina} setPagina={setPagina} total={deportistas.total}/>
       <View style={{ flex: 1, borderTopWidth: 1, borderTopColor: "#BBB"}}>
         <List dataSource={deportistas.data} renderItem={row => <DeportistasCard props={row} />} loading={loading} />
