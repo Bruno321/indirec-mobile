@@ -10,11 +10,14 @@ export const DELETE = "DELETE";
 export const SAVE_WITH_FILE = "SAVE_WITH_FILE";
 
 const LOGINPATH = `/auth`;
+export const DEV = true;
+
+export const URL = DEV ? "http://192.168.81.100:3030" : "http://20.106.129.226:3030";
 
 export const token = async () => await AsyncStorage.getItem("token");
 
 const API = axios.create({
-  baseURL: "http://148.220.212.131:3030",
+  baseURL: "http://192.168.81.100:3030",
   headers: {
     "Access-Control-Allow-Origin": null,
     Accept: "*/*",
