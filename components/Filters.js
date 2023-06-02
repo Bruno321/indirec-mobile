@@ -172,7 +172,6 @@ export const Filters = ({ reset, updateConcat }) => {
       default:
         break;
     }
-    console.log("=== CONCATENADO === > " + concat);
     updateConcat(concat)
   };
 
