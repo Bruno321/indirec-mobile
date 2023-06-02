@@ -225,22 +225,6 @@ export const Eventos = ({ navigation }) => {
     <View style={styles.container}>
       <SafeAreaView style={{ backgroundColor: "#003070" }} />
       <Header navigation={navigation} title={"Eventos"} />
-      {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-				<FiltersView />
-				<OrderView />
-			</View>
-            <View style={{ flexDirection:'row', justifyContent: 'center' }}>
-                <ActionButton
-                    style={{ marginTop: 20, marginBottom: 20 }}
-                    icon={<Ionicons name="trophy-outline" size={18} color={"white"}/>}
-                    handler={() => setModalVisible(true)}
-                    color="#FFF"
-                    backgroundColor="#003070"
-                    text="Agregar Evento"
-                    widthPercentage={0.9}
-                    heightPercentage={0.04}
-                />
-            </View> */}
       <View
         style={{
           paddingVertical: 24,
@@ -249,7 +233,7 @@ export const Eventos = ({ navigation }) => {
         }}
       >
         <Filters />
-        <TouchableCmp onPress={() => setModalVisible(true)}>
+        <TouchableCmp onPress={() => navigation.navigate("RegistroEventos")}>
           <View style={styles.agregarJugadorButton}>
             <MaterialCommunityIcons
               name={"clipboard-list-outline"}
