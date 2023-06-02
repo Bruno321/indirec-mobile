@@ -41,12 +41,12 @@ const { width, height } = Dimensions.get("window");
 const horaRegex = /^(0?[1-9]|1[0-2]):[0-5][0-9]$/;
 
 const oInitialState = {
-	nombreEvento: "",
-	fechaEvento: null,
-	horaEvento: "",
-	equipoLocal: "",
+	nombre: "",
+	fecha: null,
+	hora: "",
+	equipo_local_id: "",
 	jugadoresLocales: [],
-	equipoVisitante: "",
+	equipo_visitante_id: "",
 	jugadores: [],
 	jugadoresVisitantes: [],
 	directorTecnicoLocal: "",
@@ -59,12 +59,12 @@ const oInitialState = {
 };
 
 const validationSchema = yup.object().shape({
-	nombreEvento: yup.string().required("El nombre es requerido"),
-	fechaEvento: yup.date().required("La fecha es requerida"),
-	horaEvento: yup.string()
+	nombre: yup.string().required("El nombre es requerido"),
+	fecha: yup.date().required("La fecha es requerida"),
+	hora: yup.string()
 		.required("La hora es requerida"),
-	equipoLocal: yup.string().required("El nombre es requerido"),
-	equipoVisitante: yup.string().required("El nombre es requerido"),
+	equipo_local_id: yup.string().required("El nombre es requerido"),
+	equipo_visitante_id: yup.string().required("El nombre es requerido"),
 	directorTecnicoLocal: yup.string().required("El nombre es requerido"),
 	directorTecnicoVisitante: yup.string().required("El nombre es requerido"),
 	puntosLocal: yup
@@ -92,7 +92,7 @@ export const RegistroEventos = ({ navigation }) => {
 
 	const listaEquipos = equipos.data.map((obj) => ({
 		label: obj.nombre,
-		value: obj.equipoId,
+		value: obj.id,
 	}));
 	const facultitiesItems = aFacultities.map((oFaculty) => ({
 		label: `Facultad de ${oFaculty}`,
@@ -106,8 +106,8 @@ export const RegistroEventos = ({ navigation }) => {
 	const [selected, setSelected] = useState([]);
 
 	//Se guarda en un estado el id del equipo que será tanto local como visitante para posteriormente hacer la llamada de lo jugadores que corresponden a cada equipo seleccionado.
-	const [equipoLocal, setEquipoLocal] = useState();
-	const [equipoVisitante, setEquipoVisitante] = useState();
+	const [equipo_local_id, setequipo_local_id] = useState();
+	const [equipo_visitante_id, setequipo_visitante_id] = useState();
 
 	//Estados para guardar en arreglos los deportistas que participaran en el evento.
 	const [listaJugadoresLocales, setListaJugadoresLocales] = useState([]);
@@ -115,58 +115,66 @@ export const RegistroEventos = ({ navigation }) => {
 
 	//UseEffect para el equipo local
 	useEffect(() => {
-		const fetchEquipoLocal = async () => {
-			if (equipoLocal) {
-				const response = await process(FIND, `equipos/${equipoLocal}`);
-				setListaJugadoresLocales([]);
-				setJugadoresLocales(response.data.data.jugadores);
+		const fetchequipo_local_id = async () => {
+			if (equipo_local_id) {
+				try{
+					const response = await process(FIND, `equipos/${equipo_local_id.value}`);
+					setListaJugadoresLocales([]);
+					setJugadoresLocales(response.data.deportistas);
+				}catch(e){
+					console.log(e)
+				}
 			}
 		};
-		fetchEquipoLocal();
-		console.log("BBBB: " + jugadoresLocales);
-		console.log("BBBB: " + equipoLocal);
-	}, [equipoLocal]);
+		fetchequipo_local_id();
+	}, [equipo_local_id]);
 
 	//UseEffect para el equipo visitante
 	useEffect(() => {
-		const fetchEquipoVisitante = async () => {
-			if (equipoVisitante) {
-				const response = await process(FIND, `${equipoVisitante}`);
-				setListaJugadoresVisitantes([]);
-				setJugadoresVisitantes(response.data.data.jugadores);
+		const fetchequipo_visitante_id = async () => {
+			if (equipo_visitante_id) {
+				try {
+					const response = await process(FIND, `equipos/${equipo_visitante_id.value}`);
+					setListaJugadoresVisitantes([]);
+					setJugadoresVisitantes(response.data.deportistas);
+				} catch (e) {
+					console.log(e)
+				}
 			}
 		};
-		fetchEquipoVisitante();
-		console.log("AAAAA+ " + equipoVisitante);
-	}, [equipoVisitante]);
+		fetchequipo_visitante_id();
+	}, [equipo_visitante_id]);
 
 	const listaLocales =
 		jugadoresLocales &&
 		jugadoresLocales.map((obj) => ({
 			label: obj.nombres + " " + obj.apellidos,
-			value: obj.deportistaId,
-		}));
-	const listaVisitantes =
+			value: obj.id,
+		}))
+		;
+		const listaVisitantes =
 		jugadoresVisitantes &&
 		jugadoresVisitantes.map((obj) => ({
 			label: obj.nombres + " " + obj.apellidos,
-			value: obj.deportistaId,
-		}));
+			value: obj.id,
+		}))
 
 	const onSubmit = async (values, reset) => {
 		let data = { ...values };
+		values.hora = moment(values.hora).format("h:mm a")
 		const idJugadoresLocales = jugadoresLocales.map(
-			(jugador) => jugador.deportistaId
+			(jugador) => jugador.id
 		);
 		const idJugadoresVisitantes = jugadoresVisitantes.map(
-			(jugador) => jugador.deportistaId
+			(jugador) => jugador.id
 		);
 		const concatJugadores = idJugadoresLocales.concat(idJugadoresVisitantes);
 		data.jugadores = concatJugadores;
 		console.log(data);
 		try {
 			const response = await process(SAVE, "eventos", values);
-			if (response?.data?.ok) {
+			console.log(JSON.stringify(response))
+			if (response?.status == 201) {
 				Alert.alert("Evento agregado exitosamente", response.data.message, [
 					{
 						text: "Okay",
@@ -208,7 +216,6 @@ export const RegistroEventos = ({ navigation }) => {
 						const reset = () => {
 							resetForm();
 						};
-						values.horaEvento += " " + time;
 						onSubmit(values, reset);
 					}}
 				>
@@ -227,51 +234,51 @@ export const RegistroEventos = ({ navigation }) => {
 									placeholder="Bernal Colín"
 									style={styles.input}
 									multiline={true}
-									onChangeText={handleChange("nombreEvento")}
-									value={values.nombreEvento}
+									onChangeText={handleChange("nombre")}
+									value={values.nombre}
 								/>
 								<Text style={styles.error}>
-									{touched.nombreEvento && errors.nombreEvento}
+									{touched.nombre && errors.nombre}
 								</Text>
 							</View>
 							<View style={styles.subtitulo2}>
 								<View>
 									<View style={styles.btnSemana}>
-										<TouchableCmp onPress={()=>setDatePicker(true)} onLongPress={()=>setFieldValue("fechaEvento",null)}>
+										<TouchableCmp onPress={()=>setDatePicker(true)} onLongPress={()=>setFieldValue("fecha",null)}>
 											<View style={styles.btnSemana2}>
-												<Feather name={'calendar'} size={20} color={values.fechaEvento?"#003070":"#808080"} />
-												<Text style={values.fechaEvento?styles.btnTxt:styles.btnTxtN}>{values.fechaEvento?moment(values.fechaEvento).format('DD-MM-YYYY'):"Fecha"}</Text>
+												<Feather name={'calendar'} size={20} color={values.fecha?"#003070":"#808080"} />
+												<Text style={values.fecha?styles.btnTxt:styles.btnTxtN}>{values.fecha?moment(values.fecha).format('DD-MM-YYYY'):"Fecha"}</Text>
 											</View>
 										</TouchableCmp>
 									</View>
 									{datePicker && (
 										<DateTimePicker
-											value={values.fechaEvento?values.fechaEvento:new Date()}
+											value={values.fecha?values.fecha:new Date()}
 											mode={'date'}
 											display={Platform.OS === 'ios' ? 'spinner' : 'default'}
 											is24Hour={true}
-											onChange={(event,value)=>{console.log(value),setDatePicker(false),setFieldValue("fechaEvento",value)}}
+											onChange={(event,value)=>{console.log(value),setDatePicker(false),setFieldValue("fecha",value)}}
 											style={styles.datePicker}
 										/>
 									)}
 								</View>
 								<View>
 									<View style={styles.btnSemana}>
-										<TouchableCmp onPress={()=>setTimePicker(true)} onLongPress={()=>setFieldValue("horaEvento",null)}>
+										<TouchableCmp onPress={()=>setTimePicker(true)} onLongPress={()=>setFieldValue("hora",null)}>
 											<View style={styles.btnSemana2}>
-												<Feather name={'calendar'} size={20} color={values.horaEvento?"#003070":"#808080"} />
-												<Text style={values.horaEvento?styles.btnTxt:styles.btnTxtN}>{values.horaEvento?moment(values.horaEvento).format("h:mm a"):"Hora"}</Text>
+												<Feather name={'calendar'} size={20} color={values.hora?"#003070":"#808080"} />
+												<Text style={values.hora?styles.btnTxt:styles.btnTxtN}>{values.hora?moment(values.hora).format("h:mm a"):"Hora"}</Text>
 											</View>
 										</TouchableCmp>
 									</View>
 									{timePicker && (
 										<DateTimePicker
-											value={values.horaEvento?values.horaEvento:new Date()}
+											value={values.hora?values.hora:new Date()}
 											mode="time"
 											display={Platform.OS === 'ios' ? 'spinner' : 'default'}
 											is24Hour={true}
 											style={styles.datePicker}
-											onChange={(event,value)=>{console.log(moment(value).format("hh:mm")),setTimePicker(false),setFieldValue("horaEvento",value)}}
+											onChange={(event,value)=>{console.log(moment(value).format("hh:mm")),setTimePicker(false),setFieldValue("hora",value)}}
 										/>
 									)}
 								</View>
@@ -292,14 +299,14 @@ export const RegistroEventos = ({ navigation }) => {
 									style={styles.dropdown1DropdownStyle}
 									containerStyle={styles.dropdown1DropdownStyle}
 									search={true}
-									onChange={({ value }) => {
-										setFieldValue("equipoLocal", value);
-										setEquipoLocal(value);
+									onChange={(value) => {
+										setFieldValue("equipo_local_id", value.value);
+										setequipo_local_id(value);
 									}}
-									value={values.equipoLocal}
+									value={values.equipo_local_id}
 								/>
 								<Text style={styles.error}>
-									{touched.equipoLocal && errors.equipoLocal}
+									{touched.equipo_local_id && errors.equipo_local_id}
 								</Text>
 							</View>
 							<View style={styles.subtitulo}>
@@ -308,6 +315,7 @@ export const RegistroEventos = ({ navigation }) => {
 									data={listaLocales}
 									labelField="label"
 									valueField="value"
+									keyExtractor={(item) => item.value}
 									placeholder="Selecciona un equipo"
 									value={values.jugadoresLocales}
 									style={styles.dropdown1DropdownStyle}
@@ -315,17 +323,16 @@ export const RegistroEventos = ({ navigation }) => {
 									search={true}
 									onChange={(value) => {
 										setFieldValue("jugadoresLocales", value);
-										console.log(values.jugadoresLocales);
 									}}
-									renderSelectedItem={(item, unSelect) => (
+									renderSelectedItem={(item, unSelect,) => (
 										<TouchableOpacity
-											onPress={() => unSelect && unSelect(item)}
+											onPress={() => unSelect && unSelect(item)} key={item.value}
 										>
-											<View style={styles.selectedStyle}>
-												<Text style={styles.textSelectedStyle}>
+											<View style={styles.selectedStyle} id={item.value}>
+												<Text style={styles.textSelectedStyle} id={item.value}>
 													{item.label}
 												</Text>
-												<AntDesign color="black" name="delete" size={17} />
+												<AntDesign color="black" name="delete" size={17} id={item.value}/>
 											</View>
 										</TouchableOpacity>
 									)}
@@ -345,14 +352,14 @@ export const RegistroEventos = ({ navigation }) => {
 									style={styles.dropdown1DropdownStyle}
 									containerStyle={styles.dropdown1DropdownStyle}
 									search={true}
-									onChange={({ value }) => {
-										setFieldValue("equipoVisitante", value);
-										setEquipoVisitante(value);
+									onChange={(value) => {
+										setFieldValue("equipo_visitante_id", value.value);
+										setequipo_visitante_id(value);
 									}}
-									value={values.equipoVisitante}
+									value={values.equipo_visitante_id}
 								/>
 								<Text style={styles.error}>
-									{touched.equipoVisitante && errors.equipoVisitante}
+									{touched.equipo_visitante_id && errors.equipo_visitante_id}
 								</Text>
 							</View>
 							<View style={styles.subtitulo}>
@@ -368,7 +375,6 @@ export const RegistroEventos = ({ navigation }) => {
 									searchPlaceholder="Buscar..."
 									onChange={(value) => {
 										setFieldValue("jugadoresVisitantes", value);
-										console.log(values.jugadoresVisitantes);
 									}}
 									renderSelectedItem={(item, unSelect) => (
 										<TouchableOpacity
