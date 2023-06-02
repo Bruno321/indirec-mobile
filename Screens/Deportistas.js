@@ -26,7 +26,6 @@ export const Deportistas = ({ navigation }) => {
 
   useDidMountEffect(() => {
     const concatenatedString = componentAString + componentBString;
-    // console.log("LA QUERY Q TOY HACIENDO> change(" + "'" + concatenatedString + "'" + "," + (pagina*10) + ")");
     change(concatenatedString, pagina * 10);
   }, [componentAString, componentBString, pagina]);
 
@@ -38,10 +37,10 @@ export const Deportistas = ({ navigation }) => {
       <View style={{ alignItems: 'center', height: 120, width: width }}>
         <View style={{ flexDirection: 'column', height: "100%", justifyContent: 'space-evenly', width: "95%" }}>
           {/* BUSQUEDA */}
-          <SearchInput change={change} setPagina={setPagina} screen={"deportistas"} update={update} updateConcat={setComponentAString} />
+          <SearchInput change={change} setPagina={setPagina} screen={"deportistas"} updateConcat={setComponentAString} />
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             {/* FILTROS */}
-            <Filters change={change} reset={update} updateConcat={setComponentBString} />
+            <Filters reset={update} updateConcat={setComponentBString} />
             {/* AGREGAR JUGADOR */}
             <View style={{ justifyContent: 'space-around', flexDirection: 'row' }}>
               <TouchableCmp onPress={() => { navigation.navigate("RegistroDeportistas") }}>
@@ -54,7 +53,6 @@ export const Deportistas = ({ navigation }) => {
           </View>
         </View>
       </View>
-      {/* <Text>{concatenatedString}</Text> */}
       <ButtonsPages numberPage={pagina} setPagina={setPagina} total={deportistas.total} />
       <View style={{ flex: 1, borderTopWidth: 1, borderTopColor: "#BBB" }}>
         <List dataSource={deportistas.data} renderItem={row => <DeportistasCard props={row} />} loading={loading} />

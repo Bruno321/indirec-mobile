@@ -1,21 +1,20 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Dimensions, Modal, TouchableWithoutFeedback, FlatList, SafeAreaView } from "react-native";
-import Feather from 'react-native-vector-icons/Feather';
+import { StyleSheet, View, Text, Dimensions, Modal, TouchableWithoutFeedback, FlatList } from "react-native";
 import { aFacultities, aSports } from '../Utils/Constants';
-import TouchableCmp from '../assetsUI/TouchableCmp';
 import { ActionButton } from './ActionButton';
+import Feather from 'react-native-vector-icons/Feather';
+import TouchableCmp from '../assetsUI/TouchableCmp';
 
 const { fontScale, width, height } = Dimensions.get('window');
 
-export const Filters = ({change, reset}) => {
+export const Filters = ({ reset, updateConcat }) => {
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [search, setSearch] = useState({});
-  const [eleccion,setEleccion] = useState("no");
+  const [eleccion, setEleccion] = useState("no");
   const [depActual, setDepActual] = useState("Todos");
   const [facActual, setfacActual] = useState("Todas");
   const [ordenActual, setOrdenActual] = useState("Predeterminado");
-  const [esActual, setEsActual] = useState("Todos");
+  const [selActual, setSelActual] = useState("Todos");
   const [sexoActual, setSexoActual] = useState("Todos");
 
   const sportItems = [
@@ -34,44 +33,148 @@ export const Filters = ({change, reset}) => {
     }))
   ];
 
-  const handleOrdenar = () =>{
-    if(ordenActual=="Predeterminado"){
+  const handleOrdenar = () => {
+    if (ordenActual == "Predeterminado") {
       setOrdenActual("Apellido [A-Z]")
     }
-    if(ordenActual=="Apellido [A-Z]"){
+    if (ordenActual == "Apellido [A-Z]") {
       setOrdenActual("Apellido [Z-A]")
     }
-    if(ordenActual=="Apellido [Z-A]"){
+    if (ordenActual == "Apellido [Z-A]") {
       setOrdenActual("Predeterminado")
     }
   }
 
-  const handleEstatus = () =>{
-    if(esActual=="Todos"){
-      setEsActual("Seleccionado")
+  const handleSeleccionado = () => {
+    if (selActual == "Todos") {
+      setSelActual("Seleccionado")
     }
-    if(esActual=="Seleccionado"){
-      setEsActual("No seleccionado")
+    if (selActual == "Seleccionado") {
+      setSelActual("No seleccionado")
     }
-    if(esActual=="No seleccionado"){
-      setEsActual("Todos")
+    if (selActual == "No seleccionado") {
+      setSelActual("Todos")
     }
   }
 
-  const handleSexo = () =>{
-    if(sexoActual=="Todos"){
+  const handleSexo = () => {
+    if (sexoActual == "Todos") {
       setSexoActual("Masculino")
     }
-    if(sexoActual=="Masculino"){
+    if (sexoActual == "Masculino") {
       setSexoActual("Femenino")
     }
-    if(sexoActual=="Femenino"){
-      setSexoActual("Otro")
-    }
-    if(sexoActual=="Otro"){
+    if (sexoActual == "Femenino") {
       setSexoActual("Todos")
     }
   }
+
+  const verifyQuery = () => {
+    var concat = "";
+    /* ORDEN */
+    switch (ordenActual) {
+      case "Apellido [A-Z]":
+        concat = concat + "$sort[nombres]=1"
+        break;
+      case "Apellido [Z-A]":
+        concat = concat + "$sort[nombres]=-1"
+        break;
+      default:
+        break;
+    }
+    /* DEPORTE */
+    switch (depActual) {
+      case "Fútbol":
+        concat = concat + "&deporte=Futbol"
+        break;
+      case "Baloncesto":
+        concat = concat + "&deporte=Basquetball"
+        break;
+      case "Voleibol":
+        concat = concat + "&deporte=Volleyball"
+        break;
+      case "Atletismo":
+        concat = concat + "&deporte=Atletismo"
+        break;
+      default:
+        break;
+    }
+    /* FACULTAD */
+
+    const findTerm = (term) => {
+      if (facActual.includes(term)) {
+        return facActual;
+      }
+    };
+
+    switch (facActual) {
+      case findTerm("Bellas"):
+        concat = concat + "&facultad[$like]=%Bellas%";
+        break;
+      case findTerm("Naturales"):
+        concat = concat + "&facultad[$like]=%Naturales%";
+        break;
+      case findTerm("Políticas"):
+        concat = concat + "&facultad[$like]=%Políticas%";
+        break;
+      case findTerm("Derecho"):
+        concat = concat + "&facultad[$like]=%Derecho%";
+        break;
+      case findTerm("Enfermería"):
+        concat = concat + "&facultad[$like]=%Enfermería%";
+        break;
+      case findTerm("Filosofía"):
+        concat = concat + "&facultad[$like]=%Filosofía%";
+        break;
+      case findTerm("Informática"):
+        concat = concat + "&facultad[$like]=%Informática%";
+        break;
+      case findTerm("Ingeniería"):
+        concat = concat + "&facultad[$like]=%Ingeniería%";
+        break;
+      case findTerm("Lenguas"):
+        concat = concat + "&facultad[$like]=%Lenguas%";
+        break;
+      case findTerm("Medicina"):
+        concat = concat + "&facultad[$like]=%Medicina%";
+        break;
+      case findTerm("Psicología"):
+        concat = concat + "&facultad[$like]=%Psicología%";
+        break;
+      case findTerm("Contaduría"):
+        concat = concat + "&facultad[$like]=%Contaduría%";
+        break;
+      case findTerm("Química"):
+        concat = concat + "&facultad[$like]=%Química%";
+        break;
+      default:
+        break;
+    }
+    /* SELECCIONADO */
+    switch (selActual) {
+      case "No seleccionado":
+        concat = concat + "&jugadorSeleccionado=0"
+        break;
+      case "Seleccionado":
+        concat = concat + "&jugadorSeleccionado=1"
+        break;
+      default:
+        break;
+    }
+    /* SEXO */
+    switch (sexoActual) {
+      case "Masculino":
+        concat = concat + "&sexo=0"
+        break;
+      case "Femenino":
+        concat = concat + "&sexo=1"
+        break;
+      default:
+        break;
+    }
+    console.log("=== CONCATENADO === > " + concat);
+    updateConcat(concat)
+  };
 
   return (
     <>
@@ -81,20 +184,22 @@ export const Filters = ({change, reset}) => {
         visible={modalVisible}
         onRequestClose={() => {
           setModalVisible(!modalVisible);
+          verifyQuery();
         }}
       >
-          <TouchableWithoutFeedback onPress={()=>{setModalVisible(!modalVisible),setEleccion("no")}}>
-            <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} />
-          </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={() => { setModalVisible(!modalVisible), setEleccion("no"), verifyQuery() }}>
+          <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} />
+        </TouchableWithoutFeedback>
 
 
 
-          {/* DEFAULT   */ }
-          {(eleccion=="no"||eleccion=="ordenar"||eleccion=="estatus"||eleccion=="sexo")&&
+        {/* ====== DEFAULT ====== */}
+        {(eleccion == "no") &&
           <View style={styles.container}>
+            {/* ====== HEADER ====== */}
             <View style={styles.filterHeader}>
               {/* BOTON VOLVER */}
-              <View style={{width: "25%",}}>
+              <View style={{ width: "25%", }}>
                 <View style={styles.header1ViewOut}>
                   <TouchableCmp onPress={() => { setModalVisible(!modalVisible) }}>
                     <View style={styles.headerColumn1}>
@@ -104,14 +209,14 @@ export const Filters = ({change, reset}) => {
                 </View>
               </View>
 
-              {/* title 'filtros' */}
+              {/* TITLE 'Filtros' */}
               <View style={styles.headerColumn2}>
                 <Text style={[styles.filterText, { textAlign: 'center', fontWeight: '600' }]}>Filtros</Text>
               </View>
 
               {/* BOTON RESTABLECER */}
               <View style={styles.header3ViewOut}>
-                <TouchableCmp onPress={()=>{setOrdenActual("Predeterminado"),setDepActual("Todos"),setfacActual("Todas"),setEsActual("Todos"),setSexoActual("Todos")}}>
+                <TouchableCmp onPress={() => { setOrdenActual("Predeterminado"), setDepActual("Todos"), setfacActual("Todas"), setSelActual("Todos"), setSexoActual("Todos") }}>
                   <View style={{ height: "100%", width: "100%", justifyContent: 'center' }}>
                     <Text style={[styles.filterText, { textAlign: 'center', fontSize: 14 / fontScale, color: '#838383' }]}>Restablecer</Text>
                   </View>
@@ -119,8 +224,11 @@ export const Filters = ({change, reset}) => {
               </View>
             </View>
 
+
+            {/* ====== FILTROS ====== */}
+
             {/* FILTRO ORDENAR POR */}
-            <TouchableCmp onPress={()=>handleOrdenar()}>
+            <TouchableCmp onPress={() => handleOrdenar()}>
               <View style={styles.containerItem}>
                 <View style={{ flexDirection: 'row', }}>
                   <View style={styles.filterItem}>
@@ -136,7 +244,7 @@ export const Filters = ({change, reset}) => {
 
 
             {/* FILTRO DEPORTE */}
-            <TouchableCmp onPress={()=>setEleccion("deporte")}>
+            <TouchableCmp onPress={() => setEleccion("deporte")}>
               <View style={styles.containerItem}>
                 <View style={{ flexDirection: 'row', }}>
                   <View style={styles.filterItem}>
@@ -151,7 +259,7 @@ export const Filters = ({change, reset}) => {
             </TouchableCmp>
 
             {/* FILTRO FACULTAD */}
-            <TouchableCmp onPress={()=>setEleccion("facultad")}>
+            <TouchableCmp onPress={() => setEleccion("facultad")}>
               <View style={styles.containerItem}>
                 <View style={{ flexDirection: 'row', }}>
                   <View style={styles.filterItem}>
@@ -166,13 +274,13 @@ export const Filters = ({change, reset}) => {
             </TouchableCmp>
 
 
-            {/* FILTRO ESTATUS */}
-            <TouchableCmp onPress={()=>handleEstatus()}>
+            {/* FILTRO SELECCIONADO */}
+            <TouchableCmp onPress={() => handleSeleccionado()}>
               <View style={styles.containerItem}>
                 <View style={{ flexDirection: 'row', }}>
                   <View style={styles.filterItem}>
-                    <Text style={styles.filterText}>Estatus</Text>
-                    <Text style={styles.filterTextSelect}>{esActual}</Text>
+                    <Text style={styles.filterText}>Seleccionado</Text>
+                    <Text style={styles.filterTextSelect}>{selActual}</Text>
                   </View>
                   <View style={{ width: '10%' }}>
                     <Feather name={'chevron-right'} size={35} color={'grey'} />
@@ -183,7 +291,7 @@ export const Filters = ({change, reset}) => {
 
 
             {/* FILTRO SEXO */}
-            <TouchableCmp onPress={()=>handleSexo()}>
+            <TouchableCmp onPress={() => handleSexo()}>
               <View style={styles.containerItem}>
                 <View style={{ flexDirection: 'row', }}>
                   <View style={styles.filterItem}>
@@ -201,7 +309,7 @@ export const Filters = ({change, reset}) => {
             <View style={{ width: "100%", height: height * 0.12, bottom: 0, position: 'absolute', justifyContent: 'center', }}>
               <TouchableCmp
                 onPress={() => {
-                  setSearch({});
+                  verifyQuery();
                   setModalVisible(!modalVisible)
                 }}>
                 <View style={styles.btnShowAthletes}>
@@ -211,16 +319,16 @@ export const Filters = ({change, reset}) => {
             </View>
 
           </View>
-          }
+        }
 
 
 
-          {/* DEPORTE   */ }
-          {eleccion=="deporte"&&
+        {/* DEPORTE   */}
+        {eleccion == "deporte" &&
           <View style={styles.container}>
             <View style={styles.filterHeader}>
               {/* BOTON VOLVER */}
-              <View style={{width: "25%",}}>
+              <View style={{ width: "25%", }}>
                 <View style={styles.header1ViewOut}>
                   <TouchableCmp onPress={() => { setEleccion("no") }}>
                     <View style={styles.headerColumn1}>
@@ -237,58 +345,42 @@ export const Filters = ({change, reset}) => {
 
               {/* BOTON RESTABLECER */}
               <View style={styles.header3ViewOut}>
-                <TouchableCmp onPress={()=>setDepActual("Todos")}>
+                <TouchableCmp onPress={() => setDepActual("Todos")}>
                   <View style={{ height: "100%", width: "100%", justifyContent: 'center' }}>
                     <Text style={[styles.filterText, { textAlign: 'center', fontSize: 14 / fontScale, color: '#838383' }]}>Restablecer</Text>
                   </View>
                 </TouchableCmp>
               </View>
             </View>
-            <SafeAreaView style={styles.flatContainer}>
-              <FlatList 
-                data = {sportItems}
-                renderItem={({item}) =>
-                  <TouchableCmp onPress={()=>setDepActual(item.label)}>
+            <View style={styles.flatContainer}>
+              <FlatList
+                data={sportItems}
+                renderItem={({ item }) =>
+                  <TouchableCmp onPress={() => setDepActual(item.label)}>
                     <View style={styles.containerItem}>
                       <View style={{ flexDirection: 'row', }}>
                         <View style={styles.filterItem}>
                           <Text style={styles.filterText}>{item.label}</Text>
                         </View>
-                        <View style={depActual==item.value?{ width: '9%', height:30, backgroundColor:'#003070', borderRadius:45, borderWidth:1, borderColor:'grey' }:{width: '9%', height:30, backgroundColor:'#EEEEEF', borderRadius:45, borderWidth:1, borderColor:'grey'}}>
+                        <View style={depActual == item.value ? { width: '9%', height: 30, backgroundColor: '#003070', borderRadius: 45, borderWidth: 1, borderColor: 'grey' } : { width: '9%', height: 30, backgroundColor: '#EEEEEF', borderRadius: 45, borderWidth: 1, borderColor: 'grey' }}>
                         </View>
                       </View>
                     </View>
                   </TouchableCmp>
                 }
-                keyExtractor={item=>item.label}
+                keyExtractor={item => item.label}
               />
-            </SafeAreaView>
-            
-
-            {/* Boton VER DEPORTISTAS */}
-            <View style={{ width: "100%", height: height * 0.12, bottom: 0, position: 'absolute', justifyContent: 'center', }}>
-              <TouchableCmp
-                onPress={() => {
-                  setSearch({});
-                  setModalVisible(!modalVisible)
-                }}>
-                <View style={styles.btnShowAthletes}>
-                  <Text style={styles.buttonText}>Ver deportistas</Text>
-                </View>
-              </TouchableCmp>
             </View>
           </View>
-          }
+        }
 
 
-
-
-          {/* FACULTAD   */ }
-          {eleccion=="facultad"&&
+        {/* FACULTAD   */}
+        {eleccion == "facultad" &&
           <View style={styles.container}>
             <View style={styles.filterHeader}>
               {/* BOTON VOLVER */}
-              <View style={{width: "25%",}}>
+              <View style={{ width: "25%", }}>
                 <View style={styles.header1ViewOut}>
                   <TouchableCmp onPress={() => { setEleccion("no") }}>
                     <View style={styles.headerColumn1}>
@@ -305,55 +397,41 @@ export const Filters = ({change, reset}) => {
 
               {/* BOTON RESTABLECER */}
               <View style={styles.header3ViewOut}>
-                <TouchableCmp onPress={()=>setfacActual("Todas")}>
+                <TouchableCmp onPress={() => setfacActual("Todas")}>
                   <View style={{ height: "100%", width: "100%", justifyContent: 'center' }}>
                     <Text style={[styles.filterText, { textAlign: 'center', fontSize: 14 / fontScale, color: '#838383' }]}>Restablecer</Text>
                   </View>
                 </TouchableCmp>
               </View>
             </View>
-            <SafeAreaView style={styles.flatContainer}>
-              <FlatList 
-                data = {facultitiesItems}
-                renderItem={({item}) =>
-                  <TouchableCmp onPress={()=>setfacActual(item.label)}>
+            <View style={styles.flatContainer}>
+              <FlatList
+                data={facultitiesItems}
+                renderItem={({ item }) =>
+                  <TouchableCmp onPress={() => setfacActual(item.label)}>
                     <View style={styles.containerItem}>
                       <View style={{ flexDirection: 'row', }}>
                         <View style={styles.filterItem}>
                           <Text style={styles.filterText}>{item.label}</Text>
                         </View>
-                        <View style={facActual==item.value?{ width: '9%', height:30, backgroundColor:'#003070', borderRadius:45, borderWidth:1, borderColor:'grey' }:{width: '9%', height:30, backgroundColor:'#EEEEEF', borderRadius:45, borderWidth:1, borderColor:'grey'}}>
+                        <View style={facActual == item.value ? { width: '9%', height: 30, backgroundColor: '#003070', borderRadius: 45, borderWidth: 1, borderColor: 'grey' } : { width: '9%', height: 30, backgroundColor: '#EEEEEF', borderRadius: 45, borderWidth: 1, borderColor: 'grey' }}>
                         </View>
                       </View>
                     </View>
                   </TouchableCmp>
                 }
-                keyExtractor={item=>item.label}
+                keyExtractor={item => item.label}
               />
-            </SafeAreaView>
-            
-
-            {/* Boton VER DEPORTISTAS */}
-            <View style={{ width: "100%", height: height * 0.12, bottom: 0, position: 'absolute', justifyContent: 'center', }}>
-              <TouchableCmp
-                onPress={() => {
-                  setSearch({});
-                  setModalVisible(!modalVisible)
-                }}>
-                <View style={styles.btnShowAthletes}>
-                  <Text style={styles.buttonText}>Ver deportistas</Text>
-                </View>
-              </TouchableCmp>
             </View>
           </View>
-          }
+        }
       </Modal>
+      <View style={[styles.btnFilter, (ordenActual !== "Predeterminado" || depActual !== "Todos" || facActual !== "Todas" || selActual !== "Todos" || sexoActual !== "Todos") ? { backgroundColor: "#057642" } : { backgroundColor: "#003070" }]}>
 
-      <View style={styles.btnFilter}>
         <ActionButton
           icon="sliders"
           color="#FFF"
-          backgroundColor="#003070"
+          backgroundColor={(ordenActual !== "Predeterminado" || depActual !== "Todos" || facActual !== "Todas" || selActual !== "Todos" || sexoActual !== "Todos") ? "#057642" : "#003070"}
           text="Filtros"
           handler={() => setModalVisible(!modalVisible)}
           widthPercentage={0.4}
@@ -376,7 +454,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     overflow: 'hidden',
-    paddingHorizontal:'3.5%'
+    paddingHorizontal: '3.5%'
   },
   filterHeader: {
     width: '100%',
@@ -430,7 +508,7 @@ const styles = StyleSheet.create({
   },
   filterItem: {
     width: '90%',
-    justifyContent:'center'
+    justifyContent: 'center'
 
   },
   filterTextSelect: {
@@ -456,14 +534,12 @@ const styles = StyleSheet.create({
     width: width * 0.45,
     height: 40,
     alignSelf: 'center',
-    backgroundColor: "#003070",
     flexDirection: 'row',
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  flatContainer:{
-    marginBottom:130,
-    // paddingHorizontal: '3%',
+  flatContainer: {
+    flex: 1,
   }
 })

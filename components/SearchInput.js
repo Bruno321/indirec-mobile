@@ -4,11 +4,12 @@ import { ActionButton } from './ActionButton';
 
 const { width, height, fontScale } = Dimensions.get('window');
 
-export const SearchInput = ({ change, setPagina, screen, update, updateConcat}) => {
+export const SearchInput = ({ change, setPagina, screen, updateConcat}) => {
   const [search, setSearch] = useState('');
   //TODO: Add logic to search from API
+  var concat = ``;
   const handleSearch = () => {
-    var concat = ``;
+    concat = ``;
     switch (screen) {
       case "deportistas":
         if (search?.length >= 1) {
@@ -17,21 +18,18 @@ export const SearchInput = ({ change, setPagina, screen, update, updateConcat}) 
             // console.log(`Searching for nombres or apellidos: ${search}`);
             updateConcat(concat);
             setPagina(0);
-            // change(concat, 0, 10)
           } else {
             concat = `expediente[$like]=%${search}%`
             // console.log(`Searching for exp: ${search}`);
-            // change(concat, 0, 10)
             updateConcat(concat);
             setPagina(0);
-
           }
         } else {
           concat = ``;
-          update();
+            updateConcat(concat);
+            setPagina(0);
             // updateConcat(concat);
             // setPagina(0);
-            // change(concat, 0, 10)
         }
         break;
       case "equipos":
@@ -40,11 +38,9 @@ export const SearchInput = ({ change, setPagina, screen, update, updateConcat}) 
           // console.log(`Searching for nombres or apellidos: ${search}`);
             updateConcat(concat);
             setPagina(0);
-            // change(concat, 0, 10);
         }
         else {
           concat = ``;
-          // change(concat, 0, 10)
           updateConcat(concat);
           setPagina(0);
         }
@@ -52,13 +48,11 @@ export const SearchInput = ({ change, setPagina, screen, update, updateConcat}) 
       case "asistencias":
         if (search?.length >= 1) {
           concat = `$or[0][nombres][$like]=%${search}%&$or[1][apellidos][$like]=%${search}%`
-            // change(concat, 0, 10)
             updateConcat(concat);
             setPagina(0);
         }
         else {
           concat = ``;
-          // change(concat, 0, 10)
           updateConcat(concat);
           setPagina(0);
         }
@@ -84,7 +78,7 @@ export const SearchInput = ({ change, setPagina, screen, update, updateConcat}) 
               icon="close"
               color="#A3A2A2"
 
-              handler={() => {setSearch(''); change('', 0); updateConcat(''); setPagina(0)}}
+              handler={() => {setSearch(''); updateConcat(''); setPagina(0)}}
               widthPercentage={0.1}
               heightPercentage={0.04}
             />
