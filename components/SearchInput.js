@@ -4,7 +4,7 @@ import { ActionButton } from './ActionButton';
 
 const { width, height, fontScale } = Dimensions.get('window');
 
-export const SearchInput = ({ change, setPagina, screen, updateConcat}) => {
+export const SearchInput = ({ change, setPagina, screen, update, updateConcat}) => {
   const [search, setSearch] = useState('');
   //TODO: Add logic to search from API
   const handleSearch = () => {
@@ -28,8 +28,9 @@ export const SearchInput = ({ change, setPagina, screen, updateConcat}) => {
           }
         } else {
           concat = ``;
-            updateConcat(concat);
-            setPagina(0);
+          update();
+            // updateConcat(concat);
+            // setPagina(0);
             // change(concat, 0, 10)
         }
         break;
