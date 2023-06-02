@@ -21,7 +21,8 @@ import {
   EventosDetails,
   DeportistaAssistance,
   ListadoJugadores,
-  EquiposDetails
+  EquiposDetails,
+  RegistroEventos
 } from './Screens/index';
 
 SplashScreen.preventAutoHideAsync();
@@ -129,6 +130,12 @@ export default function App() {
             options={{
               drawerIcon: () => <Image source={require('./assets/icons/list.png')}/>,
               title: 'Eventos'
+            }}
+          />
+          <Drawer.Screen name="RegistroEventos" component ={RegistroEventos} 
+            options={{
+              drawerIcon: () => <Image source={require('./assets/icons/register.png')}/>,
+              title: 'Registrar eventos'
             }}
           />
       </Drawer.Navigator>

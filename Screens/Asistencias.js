@@ -73,7 +73,7 @@ export const Asistencias = ({ navigation }) => {
           <SearchInput change={change} reset={update} screen={"asistencias"} />
           <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
             <Filters change={change} reset={update} />
-            <TouchableCmp onPress={() => { navigation.navigate("Home") }}>
+            <TouchableCmp onPress={() => { navigation.navigate("PaseDeLista") }}>
               <View style={styles.agregarJugadorButton}>
                 <MaterialCommunityIcons name={'clipboard-list-outline'} size={24} color={'white'} />
                 <Text style={styles.buttonText}>Pasar lista</Text>

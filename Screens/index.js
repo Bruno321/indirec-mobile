@@ -11,3 +11,4 @@ export * from './Eventos.details';
 export * from './Deportista.assistance';
 export * from './ListadoJugadores';
 export * from './Equipos.details';
+export * from './RegistroEventos'
