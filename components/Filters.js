@@ -7,7 +7,7 @@ import TouchableCmp from '../assetsUI/TouchableCmp';
 
 const { fontScale, width, height } = Dimensions.get('window');
 
-export const Filters = ({ reset, updateConcat }) => {
+export const Filters = ({ screen, updateConcat }) => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [eleccion, setEleccion] = useState("no");
@@ -58,20 +58,28 @@ export const Filters = ({ reset, updateConcat }) => {
   }
 
   const handleSexo = () => {
-    if (sexoActual == "Todos") {
+    if (sexoActual == "Todos" && screen == "Deportistas") {
       setSexoActual("Masculino")
+    } else if(sexoActual == "Todos" && screen == "Equipos") {
+      setSexoActual("Varonil")
     }
-    if (sexoActual == "Masculino") {
+
+
+    if (sexoActual == "Masculino" && screen == "Deportistas") {
       setSexoActual("Femenino")
+    } else if(sexoActual == "Varonil" && screen == "Equipos") {
+      setSexoActual("Femenil")
     }
-    if (sexoActual == "Femenino") {
+    if (sexoActual == "Femenino" && screen == "Deportistas") {
+      setSexoActual("Todos")
+    } else if(sexoActual == "Femenil" && screen == "Equipos") {
       setSexoActual("Todos")
     }
   }
 
   const verifyQuery = () => {
     var concat = "";
-    
+
     /* DEPORTE */
     switch (depActual) {
       case "Fútbol":
@@ -152,26 +160,46 @@ export const Filters = ({ reset, updateConcat }) => {
         break;
     }
     /* SEXO */
-    switch (sexoActual) {
-      case "Masculino":
-        concat = concat + "&sexo=0"
-        break;
-      case "Femenino":
-        concat = concat + "&sexo=1"
-        break;
-      default:
-        break;
-    }
+      switch (sexoActual) {
+        case "Masculino":
+          concat = concat + "&sexo=0"
+          break;
+        case "Femenino":
+          concat = concat + "&sexo=1"
+          break;
+        case "Varonil":
+          concat = concat + "&categoria=0"
+          break;
+        case "Femenil":
+          concat = concat + "&categoria=1"
+          break;
+        default:
+          break;
+      }
     /* ORDEN */
-    switch (ordenActual) {
-      case "Apellido [A-Z]":
-        concat = concat + "&$sort[nombres]=1"
-        break;
-      case "Apellido [Z-A]":
-        concat = concat + "&$sort[nombres]=-1"
-        break;
-      default:
-        break;
+    if (screen == "Deportistas") {
+      switch (ordenActual) {
+        case "Apellido [A-Z]":
+          concat = concat + "&$sort[nombres]=1"
+          break;
+        case "Apellido [Z-A]":
+          concat = concat + "&$sort[nombres]=-1"
+          break;
+        default:
+          break;
+      }
+    } else if (screen == "Equipos") {
+      switch (ordenActual) {
+        case "Apellido [A-Z]":
+          concat = concat + "&$sort[nombre]=1"
+          break;
+        case "Apellido [Z-A]":
+          concat = concat + "&$sort[nombre]=-1"
+          break;
+        default:
+          break;
+      }
+
     }
     updateConcat(concat)
   };
@@ -275,19 +303,22 @@ export const Filters = ({ reset, updateConcat }) => {
 
 
             {/* FILTRO SELECCIONADO */}
-            <TouchableCmp onPress={() => handleSeleccionado()}>
-              <View style={styles.containerItem}>
-                <View style={{ flexDirection: 'row', }}>
-                  <View style={styles.filterItem}>
-                    <Text style={styles.filterText}>Seleccionado</Text>
-                    <Text style={styles.filterTextSelect}>{selActual}</Text>
-                  </View>
-                  <View style={{ width: '10%' }}>
-                    <Feather name={'chevron-right'} size={35} color={'grey'} />
+            {screen == "Deportistas" ?
+              <TouchableCmp onPress={() => handleSeleccionado()}>
+                <View style={styles.containerItem}>
+                  <View style={{ flexDirection: 'row', }}>
+                    <View style={styles.filterItem}>
+                      <Text style={styles.filterText}>Seleccionado</Text>
+                      <Text style={styles.filterTextSelect}>{selActual}</Text>
+                    </View>
+                    <View style={{ width: '10%' }}>
+                      <Feather name={'chevron-right'} size={35} color={'grey'} />
+                    </View>
                   </View>
                 </View>
-              </View>
-            </TouchableCmp>
+              </TouchableCmp> : null}
+
+
 
 
             {/* FILTRO SEXO */}
@@ -295,7 +326,7 @@ export const Filters = ({ reset, updateConcat }) => {
               <View style={styles.containerItem}>
                 <View style={{ flexDirection: 'row', }}>
                   <View style={styles.filterItem}>
-                    <Text style={styles.filterText}>Sexo</Text>
+                    <Text style={styles.filterText}>Categoría</Text>
                     <Text style={styles.filterTextSelect}>{sexoActual}</Text>
                   </View>
                   <View style={{ width: '10%' }}>

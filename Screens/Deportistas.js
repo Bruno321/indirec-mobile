@@ -40,7 +40,7 @@ export const Deportistas = ({ navigation }) => {
           <SearchInput change={change} setPagina={setPagina} screen={"deportistas"} updateConcat={setComponentAString} />
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             {/* FILTROS */}
-            <Filters reset={update} updateConcat={setComponentBString} />
+            <Filters screen={"Deportistas"} updateConcat={setComponentBString} />
             {/* AGREGAR JUGADOR */}
             <View style={{ justifyContent: 'space-around', flexDirection: 'row' }}>
               <TouchableCmp onPress={() => { navigation.navigate("RegistroDeportistas") }}>
