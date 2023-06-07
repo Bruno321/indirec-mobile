@@ -71,17 +71,7 @@ export const Filters = ({ reset, updateConcat }) => {
 
   const verifyQuery = () => {
     var concat = "";
-    /* ORDEN */
-    switch (ordenActual) {
-      case "Apellido [A-Z]":
-        concat = concat + "$sort[nombres]=1"
-        break;
-      case "Apellido [Z-A]":
-        concat = concat + "$sort[nombres]=-1"
-        break;
-      default:
-        break;
-    }
+    
     /* DEPORTE */
     switch (depActual) {
       case "Fútbol":
@@ -168,6 +158,17 @@ export const Filters = ({ reset, updateConcat }) => {
         break;
       case "Femenino":
         concat = concat + "&sexo=1"
+        break;
+      default:
+        break;
+    }
+    /* ORDEN */
+    switch (ordenActual) {
+      case "Apellido [A-Z]":
+        concat = concat + "&$sort[nombres]=1"
+        break;
+      case "Apellido [Z-A]":
+        concat = concat + "&$sort[nombres]=-1"
         break;
       default:
         break;
