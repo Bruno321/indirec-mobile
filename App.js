@@ -30,27 +30,27 @@ SplashScreen.preventAutoHideAsync();
 export default function App() {
   // Para saber cuando las fuentes hayan cargado y ocultar la pantalla de carga
   const [appIsReady, setAppIsReady] = useState(false);
-  const [isAuth,setIsAuth] = useState(false)
+  const [isAuth, setIsAuth] = useState(false)
   const Drawer = createDrawerNavigator();
   const Stack = createStackNavigator();
 
   const loginContext = {
     iniciarSesion: async (token) => {
       setIsAuth(true)
-      await AsyncStorage.setItem('token',token)
+      await AsyncStorage.setItem('token', token)
     },
     cerrarSesion: async () => {
       setIsAuth(false)
       await AsyncStorage.removeItem('token')
     }
-  } 
+  }
 
   // Prepara las fuentes que se usarán en la app y cambia la variable para saber que puede ocultar la pantalla de carga
   useEffect(() => {
-    async function prepare () {
+    async function prepare() {
       try {
         let retrieveToken = await AsyncStorage.getItem('token')
-        if(retrieveToken){
+        if (retrieveToken) {
           setIsAuth(true)
         } else {
           setIsAuth(false)
@@ -82,62 +82,62 @@ export default function App() {
   if (!appIsReady) return null;
 
   const SideDrawer = () => {
-    return(
+    return (
       <Drawer.Navigator
-        drawerContent={props => <CustomDrawer {...props}/>}
-        screenOptions={{ 
+        drawerContent={props => <CustomDrawer {...props} />}
+        screenOptions={{
           headerShown: false,
-          drawerLabelStyle: {marginLeft: -15, color: '#fff'}
+          drawerLabelStyle: { marginLeft: -15, color: '#fff' }
         }}
       >
-          <Drawer.Screen name="Deportistas" component={Deportistas} 
-            options={{
-              drawerIcon: () => <Image source={require('./assets/icons/sports.png')}/>,
-              title: 'Deportistas'
-            }}
-          />
-          <Drawer.Screen name="RegistroEquipos" component={RegistroEquipos} 
-            options={{
-              drawerIcon: () => <Image source={require('./assets/icons/sports.png')}/>,
-              title: 'Registrar Equipos'
-            }}
-          />
-          <Drawer.Screen name="Asistencias" component={Asistencias} 
-            options={{
-              drawerIcon: () => <Image source={require('./assets/icons/clock.png')}/>,
-              title: 'Asistencias'
-            }}
-          />
-          <Drawer.Screen name="RegistroDeportistas" component ={RegistroDeportistas} 
-            options={{
-              drawerIcon: () => <Image source={require('./assets/icons/register.png')}/>,
-              title: 'Registrar deportista'
-            }}
-          />
-          <Drawer.Screen name="PaseDeLista" component={PaseDeLista} 
-            options={{
-              drawerIcon: () => <Image source={require('./assets/icons/list.png')}/>,
-              title: 'Pase de lista'
-            }}
-          />
-          <Drawer.Screen name="Equipos" component={Equipos} 
-            options={{
-              drawerIcon: () => <Image source={require('./assets/icons/list.png')}/>,
-              title: 'Equipos'
-            }}
-          />
-          <Drawer.Screen name="Eventos" component={Eventos} 
-            options={{
-              drawerIcon: () => <Image source={require('./assets/icons/list.png')}/>,
-              title: 'Eventos'
-            }}
-          />
-          <Drawer.Screen name="RegistroEventos" component ={RegistroEventos} 
-            options={{
-              drawerIcon: () => <Image source={require('./assets/icons/register.png')}/>,
-              title: 'Registrar eventos'
-            }}
-          />
+        <Drawer.Screen name="Deportistas" component={Deportistas}
+          options={{
+            drawerIcon: () => <Image source={require('./assets/icons/sports.png')} />,
+            title: 'Deportistas'
+          }}
+        />
+        <Drawer.Screen name="Equipos" component={Equipos}
+          options={{
+            drawerIcon: () => <Image source={require('./assets/icons/sports.png')} />,
+            title: 'Equipos'
+          }}
+        />
+        <Drawer.Screen name="Eventos" component={Eventos}
+          options={{
+            drawerIcon: () => <Image source={require('./assets/icons/sports.png')} />,
+            title: 'Eventos'
+          }}
+        />
+        <Drawer.Screen name="PaseDeLista" component={PaseDeLista}
+          options={{
+            drawerIcon: () => <Image source={require('./assets/icons/list.png')} />,
+            title: 'Pase de lista'
+          }}
+        />
+        <Drawer.Screen name="Asistencias" component={Asistencias}
+          options={{
+            drawerIcon: () => <Image source={require('./assets/icons/clock.png')} />,
+            title: 'Asistencias'
+          }}
+        />
+        <Drawer.Screen name="RegistroEquipos" component={RegistroEquipos}
+          options={{
+            drawerIcon: () => <Image source={require('./assets/icons/register.png')} />,
+            title: 'Registrar Equipos'
+          }}
+        />
+        <Drawer.Screen name="RegistroDeportistas" component={RegistroDeportistas}
+          options={{
+            drawerIcon: () => <Image source={require('./assets/icons/register.png')} />,
+            title: 'Registrar Deportista'
+          }}
+        />
+        <Drawer.Screen name="RegistroEventos" component={RegistroEventos}
+          options={{
+            drawerIcon: () => <Image source={require('./assets/icons/register.png')} />,
+            title: 'Registrar Evento'
+          }}
+        />
       </Drawer.Navigator>
     );
   };
@@ -147,20 +147,20 @@ export default function App() {
     <LoginContext.Provider value={loginContext}>
       {/* Cuando carga NavigationContainer, llama la función onLayoutRootView*/}
       <NavigationContainer onReady={onLayoutRootView}>
-        <Stack.Navigator screenOptions={{ headerShown: false, ... TransitionPresets.SlideFromRightIOS}}>
+        <Stack.Navigator screenOptions={{ headerShown: false, ...TransitionPresets.SlideFromRightIOS }}>
 
-        { isAuth ? 
-          <>
-            <Stack.Screen name="drawer" component={SideDrawer}/> 
-            <Stack.Screen name="Deportista.details" component={DeportistaDetails}/> 
-            <Stack.Screen name="Eventos.details" component={EventosDetails}/> 
-            <Stack.Screen name="Equipos.details" component={EquiposDetails}/> 
-            <Stack.Screen name="DeportistaAssistance" component={DeportistaAssistance}/> 
-            <Stack.Screen name="ListadoJugadores" component={ListadoJugadores}/> 
-          </>
-        : 
-          <Stack.Screen name="Login" component={Login}/>
-        }
+          {isAuth ?
+            <>
+              <Stack.Screen name="drawer" component={SideDrawer} />
+              <Stack.Screen name="Deportista.details" component={DeportistaDetails} />
+              <Stack.Screen name="Eventos.details" component={EventosDetails} />
+              <Stack.Screen name="Equipos.details" component={EquiposDetails} />
+              <Stack.Screen name="DeportistaAssistance" component={DeportistaAssistance} />
+              <Stack.Screen name="ListadoJugadores" component={ListadoJugadores} />
+            </>
+            :
+            <Stack.Screen name="Login" component={Login} />
+          }
         </Stack.Navigator>
       </NavigationContainer>
     </LoginContext.Provider>

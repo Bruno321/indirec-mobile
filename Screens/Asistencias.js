@@ -7,8 +7,8 @@ import 'moment/locale/es';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Filters, SearchInput, ButtonsPages } from "../components";
-import { useFocusEffect } from '@react-navigation/core';
 import { useDidMountEffect } from "../Utils/DidMountEffect";
+import { useIsFocused } from "@react-navigation/native";
 
 const { fontScale, width } = Dimensions.get('window');
 
@@ -16,14 +16,22 @@ export const Asistencias = ({ navigation }) => {
   const [testData, setTestData] = useState([]);
   const [asistencias, loading, change, update] = useFetchData('asistencias');
   const [pagina, setPagina] = useState(0);
+  const [componentAString, setComponentAString] = useState('');
+  const [componentBString, setComponentBString] = useState('');
+  const isFocused = useIsFocused();
 
-  useFocusEffect(useCallback(() => {
-    update();
-  }, [navigation]));
+  useEffect(() => {
+    if (isFocused == true) {
+      const concatenatedString = componentAString + componentBString;
+      change(concatenatedString, pagina * 10);
+    }
+  }, [isFocused]);
 
   useDidMountEffect(() => {
-    change("", pagina * 10, 10);
-  }, [pagina]);
+    const concatenatedString = componentAString + componentBString;
+    change(concatenatedString, pagina * 10);
+  }, [componentAString, componentBString, pagina]);
+
 
   const columns = [
     {
@@ -70,9 +78,9 @@ export const Asistencias = ({ navigation }) => {
 
       <View style={{ alignItems: 'center', height: 120, width: width }}>
         <View style={{ flexDirection: 'column', height: "100%", justifyContent: 'space-evenly', width: "95%"}}>
-          <SearchInput change={change} reset={update} screen={"asistencias"} />
+          <SearchInput change={change} setPagina={setPagina} screen={"asistencias"} updateConcat={setComponentAString} />
           <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Filters change={change} reset={update} />
+            <Filters screen={"Deportistas"} updateConcat={setComponentBString} />
             <TouchableCmp onPress={() => { navigation.navigate("PaseDeLista") }}>
               <View style={styles.agregarJugadorButton}>
                 <MaterialCommunityIcons name={'clipboard-list-outline'} size={24} color={'white'} />
@@ -82,17 +90,8 @@ export const Asistencias = ({ navigation }) => {
           </View>
         </View>
       </View>
-      {/* <View style={styles.viewDíaFiltrado}>
-        <Text style={styles.viewDíaFiltradoText}>☢WORK IN PROGRESS FECHA FILTRADA☢</Text>
-      </View> */}
-
-      {/* You can choose between the following options to show the data: */}
-
-      {/* USING COLUMNS ARRAY */}
-      {/* <List dataSource={asistencias.length ? asistencias : testData} columns={columns} loading={loading} /> */}
-
-      {/* USING CUSTOM RENDER */}
       <ButtonsPages numberPage={pagina} setPagina={setPagina} total={asistencias.total}/>
+
       <View style={{ flex: 1 }}>
       <List dataSource={asistencias.data.length ? asistencias.data : testData} renderItem={row => <AsistenciasCard props={row} />} loading={loading} />
       </View>
