@@ -4,7 +4,7 @@ import { ActionButton } from './ActionButton';
 
 const { width, height, fontScale } = Dimensions.get('window');
 
-export const SearchInput = ({ change, setPagina, screen, updateConcat}) => {
+export const SearchInput = ({ setPagina, screen, updateConcat}) => {
   const [search, setSearch] = useState('');
   //TODO: Add logic to search from API
   var concat = ``;

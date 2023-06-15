@@ -12,7 +12,7 @@ export const useFetchData = (path, queries = '', skip = 0, limit=0) => {
     const response = await process(FIND, path, {}, params);
 
     if (response?.status === 200) {
-      // console.log("FETCH HOOK -->", path);
+      console.log("FETCH HOOK -->", path);
       setData(response.data);
     } else {
       Alert.alert(

@@ -8,129 +8,108 @@ import Feather from 'react-native-vector-icons/Feather';
 const { width, fontScale } = Dimensions.get('window');
 
 export const ListadoJugadores = (props) => {
-    // console.log(props.route.params.var);
-    var dataSource = props.route.params.var.deportistas;
-    var aSelected = props.route.params.var.aSelected;
-    var setSelected = props.route.params.var.setSelected;
-    const [aJugadores, setJugadores] = useState(dataSource || []);
-    useEffect(() => {
-        if (dataSource?.length) {
-            setJugadores(dataSource);
-        }
-    }, [dataSource]);
+    console.log("PROPS > " + JSON.stringify(props));
+    // var dataSource = props.route.params.var.deportistas;
+    // var aSelected = props.route.params.var.aSelected;
+    // var setSelected = props.route.params.var.setSelected;
+    // const [aJugadores, setJugadores] = useState(dataSource || []);
+    // useEffect(() => {
+    //     if (dataSource?.length) {
+    //         setJugadores(dataSource);
+    //     }
+    // }, [dataSource]);
 
-    const isSelected = sId => aSelected.findIndex(j => j.deportistaId === sId) !== -1;
-    const updateSelected = sId => {
-        const nIndex = aSelected.findIndex(j => j.deportistaId === sId);
-        const aTmp = [...aSelected];
-        if (nIndex !== -1) {
-            aTmp.splice(nIndex, 1);
-            setSelected(aTmp);
-        } else {
-            aTmp.push(aJugadores.find(j => j.deportistaId === sId));
-            setSelected(aTmp);
-        }
-    };
+    // const isSelected = sId => aSelected.findIndex(j => j.deportistaId === sId) !== -1;
+    // const updateSelected = sId => {
+    //     const nIndex = aSelected.findIndex(j => j.deportistaId === sId);
+    //     const aTmp = [...aSelected];
+    //     if (nIndex !== -1) {
+    //         aTmp.splice(nIndex, 1);
+    //         setSelected(aTmp);
+    //     } else {
+    //         aTmp.push(aJugadores.find(j => j.deportistaId === sId));
+    //         setSelected(aTmp);
+    //     }
+    // };
 
-    const LoadSelected = (props) => {
-        return props.map(x =>
-            <View key={x.deportistaId + "SelView1"} style={styles.ViewJugador}>
-                <View key={x.deportistaId + "SelView2"} style={styles.celda3a}>
-                    <Text
-                        key={x.deportistaId + "SelText1"}
-                        style={styles.celda3y4Texta}
-                        numberOfLines={1}
-                    >
-                        {x.numJugador}
-                    </Text>
-                </View>
+    // const showJugadores = jugadores => {
+    //     console.log("TYPEOF" + JSON.stringify(jugadores));
 
-                <View key={x.deportistaId + "SelView3"} style={styles.celda4a}>
-                    <Text
-                        key={x.deportistaId + "SelText2"}
-                        style={styles.celda3y4Texta}
-                        numberOfLines={2}
-                    >
-                        {x.nombres}
-                    </Text>
-                </View>
-            </View>
-        );
-    }
+        
+    //     return (jugadores.data.map(x => (
+    //         // console.log("x > " + JSON.stringify(x)) &&
+            
+    //         <View
+    //             key={x.id + "view1"}
+    //             style={styles.ViewJugador}
+    //         >
+    //             <View
+    //                 key={x.id + "view2"}
+    //                 style={!isSelected(x.id) ? styles.celda3a : styles.celda3b}
+    //             >
+    //                 <Text
+    //                     key={x.id + "text1"}
+    //                     style={!isSelected(x.id) ? styles.celda3y4Texta : styles.celda3y4Textb}
+    //                     numberOfLines={1}
+    //                 >
+    //                     {x.numJugador}
+    //                 </Text>
+    //             </View>
+    //             <View
+    //                 key={x.id + "view3"}
+    //                 style={!isSelected(x.id) ? styles.celda4a : styles.celda4b}
+    //             >
+    //                 <Text
+    //                     key={x.id + "text2"}
+    //                     style={!isSelected(x.id) ? styles.celda3y4Texta : styles.celda3y4Textb}
+    //                     numberOfLines={2}
+    //                 >
+    //                     {x.nombres}
+    //                 </Text>
+    //             </View>
+    //             <TouchableCmp
+    //                 key={x.id + "touchable1"}
+    //                 onPress={() => updateSelected(x.id, true)}
+    //             >
+    //                 <View
+    //                     key={x.id + "view4"}
+    //                     style={!isSelected(x.id) ? styles.celda5a : styles.celda5b}
+    //                 >
+    //                     <FontAwesome
+    //                         key={x.id + "icon1"}
+    //                         name='plus-square-o'
+    //                         size={25}
+    //                         color={!isSelected(x.id) ? '#003070' : "#888"}
+    //                     />
+    //                     <Text
+    //                         key={x.id + "text3"}
+    //                         style={!isSelected(x.id) ? styles.celda3y4Texta : styles.celda3y4Textb}
+    //                         numberOfLines={1}
+    //                     >
+    //                         Añadir
+    //                     </Text>
+    //                 </View>
+    //             </TouchableCmp>
 
-    const showJugadores = jugadores => {
-        return (jugadores.map(x => (
-            <View
-                key={x.deportistaId + "view1"}
-                style={styles.ViewJugador}
-            >
-                <View
-                    key={x.deportistaId + "view2"}
-                    style={!isSelected(x.deportistaId) ? styles.celda3a : styles.celda3b}
-                >
-                    <Text
-                        key={x.deportistaId + "text1"}
-                        style={!isSelected(x.deportistaId) ? styles.celda3y4Texta : styles.celda3y4Textb}
-                        numberOfLines={1}
-                    >
-                        {x.numJugador}
-                    </Text>
-                </View>
-                <View
-                    key={x.deportistaId + "view3"}
-                    style={!isSelected(x.deportistaId) ? styles.celda4a : styles.celda4b}
-                >
-                    <Text
-                        key={x.deportistaId + "text2"}
-                        style={!isSelected(x.deportistaId) ? styles.celda3y4Texta : styles.celda3y4Textb}
-                        numberOfLines={2}
-                    >
-                        {x.nombres}
-                    </Text>
-                </View>
-                <TouchableCmp
-                    key={x.deportistaId + "touchable1"}
-                    onPress={() => updateSelected(x.deportistaId, true)}
-                >
-                    <View
-                        key={x.deportistaId + "view4"}
-                        style={!isSelected(x.deportistaId) ? styles.celda5a : styles.celda5b}
-                    >
-                        <FontAwesome
-                            key={x.deportistaId + "icon1"}
-                            name='plus-square-o'
-                            size={25}
-                            color={!isSelected(x.deportistaId) ? '#003070' : "#888"}
-                        />
-                        <Text
-                            key={x.deportistaId + "text3"}
-                            style={!isSelected(x.deportistaId) ? styles.celda3y4Texta : styles.celda3y4Textb}
-                            numberOfLines={1}
-                        >
-                            Añadir
-                        </Text>
-                    </View>
-                </TouchableCmp>
-
-                <TouchableCmp
-                    key={x.deportistaId + "touchable2"}
-                    onPress={() => updateSelected(x.deportistaId, false)}
-                >
-                    <View key={x.deportistaId + "view5"}
-                        style={!isSelected(x.deportistaId) ? styles.celda6a : styles.celda6b}
-                    >
-                        <FontAwesome
-                            key={x.deportistaId + "icon2"}
-                            name='trash-o'
-                            size={25}
-                            color={!isSelected(x.deportistaId) ? '#BBB' : "#C0392B"}
-                        />
-                    </View>
-                </TouchableCmp>
-            </View>
-        )
-        ))
-    };
+    //             <TouchableCmp
+    //                 key={x.id + "touchable2"}
+    //                 onPress={() => updateSelected(x.id, false)}
+    //             >
+    //                 <View key={x.id + "view5"}
+    //                     style={!isSelected(x.id) ? styles.celda6a : styles.celda6b}
+    //                 >
+    //                     <FontAwesome
+    //                         key={x.id + "icon2"}
+    //                         name='trash-o'
+    //                         size={25}
+    //                         color={!isSelected(x.id) ? '#BBB' : "#C0392B"}
+    //                     />
+    //                 </View>
+    //             </TouchableCmp>
+    //         </View>
+    //     )
+    //     ))
+    // };
 
     return (
         <>
@@ -163,8 +142,8 @@ export const ListadoJugadores = (props) => {
                         </View>
                     </View>
                     <ScrollView>
-                        
-                        {showJugadores(aJugadores)}
+
+                        {/* {showJugadores(aJugadores)} */}
                     </ScrollView>
                 </View>
             </View>

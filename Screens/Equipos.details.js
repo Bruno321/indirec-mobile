@@ -88,7 +88,7 @@ export const EquiposDetails = ({ navigation, route }) => {
             <ScrollView contentContainerStyle={styles.centeredView} bounces={false} overScrollMode="never">
                 <View style={styles.equipoPresentation}>
                     <Text style={styles.equipoName}>{data.nombre}</Text>
-                    <Image source={require('../images/ImagenEjemploEquipo.png')} style={styles.equipoImage} />
+                    {/* <Image source={require('../images/ImagenEjemploEquipo.png')} style={styles.equipoImage} /> */}
                     <Text style={styles.equipoFacultad}>{data.facultad}</Text>
                     <Text style={styles.equipoCampus}>{data.campus}</Text>
                 </View>

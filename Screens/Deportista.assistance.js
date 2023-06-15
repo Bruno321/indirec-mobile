@@ -86,9 +86,9 @@ export const DeportistaAssistance = ({ navigation, route }) => {
                     deportista: {
                         nombres: "Juan Perez",
                     },
-                    horaEntrada: "2021-05-01T20:00:00.000Z",
-                    horaSalida: "2021-05-01T20:00:00.000Z",
-                    fecha: "2021-05-01T20:00:00.000Z",
+                    // horaEntrada: "2021-05-01T20:00:00.000Z",
+                    // horaSalida: "2021-05-01T20:00:00.000Z",
+                    // fecha: "2021-05-01T20:00:00.000Z",
                 }]);
             }
         }
@@ -175,7 +175,7 @@ export const DeportistaAssistance = ({ navigation, route }) => {
                 </View>
             </View>
             <View>
-                <List dataSource={asistencias.data.length ? asistencias.data : testData} renderItem={row => <AsistenciaIndCard props={row} estilo={isDark} />} loading={loading} />
+                <List dataSource={asistencias.data.length && asistencias.data} renderItem={row => <AsistenciaIndCard props={row} estilo={isDark} />} loading={loading} />
             </View>
         </View>
     );

@@ -12,7 +12,7 @@ export const EquiposCard = ({ props }) => {
             <View style={styles.card}>
                 <View style={styles.primera}>
                     <MarqueeText
-                        style={{ fontSize: 25 / fontScale }}
+                        style={{ fontSize: 20 / fontScale , fontWeight: "500"}}
                         speed={0.1}
                         marqueeOnStart={true}
                         loop={true}
@@ -47,11 +47,12 @@ const styles = StyleSheet.create({
         width: width * 0.6
     },
     textBlack:{
-        fontSize: 16 / fontScale,
+        fontSize: 14 / fontScale,
+        marginVertical: -2,
     },
     textGray:{
         color: "#999",
-        // fontWeight: '300',
-        fontSize: 16 / fontScale,
+        fontSize: 14 / fontScale,
+        marginVertical: -2,
     }
 })

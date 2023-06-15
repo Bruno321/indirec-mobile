@@ -15,6 +15,7 @@ const { fontScale, width } = Dimensions.get('window');
 export const Asistencias = ({ navigation }) => {
   const [testData, setTestData] = useState([]);
   const [asistencias, loading, change, update] = useFetchData('asistencias');
+  // const [deportistas, loading, change, update] = useFetchData('deportistas');
   const [pagina, setPagina] = useState(0);
   const [componentAString, setComponentAString] = useState('');
   const [componentBString, setComponentBString] = useState('');
@@ -32,55 +33,16 @@ export const Asistencias = ({ navigation }) => {
     change(concatenatedString, pagina * 10);
   }, [componentAString, componentBString, pagina]);
 
-
-  const columns = [
-    {
-      title: 'Nombre',
-      dataIndex: 'nombres',
-    },
-    {
-      title: 'Entrada',
-      dataIndex: 'horaEntrada',
-      render: hora => moment(hora).format("h:mm a")
-    },
-    {
-      title: 'Salida',
-      dataIndex: 'horaSalida',
-      render: hora => moment(hora).format("h:mm a")
-    },
-    {
-      title: 'Fecha',
-      dataIndex: 'fecha',
-      render: fecha => moment(fecha).locale('es').format("dddd, MMMM D, YYYY")
-    },
-    {
-      dataIndex: 'id',
-      title: 'Acciones',
-      render: (sId, row, styles) => (
-        <View style={styles}>
-          <ActionButton
-            icon="info"
-            handler={() => console.log('Editar', sId)}
-            color="#FFF"
-            backgroundColor="#003070"
-            text="Información"
-            widthPercentage={0.3}
-            heightPercentage={0.035}
-          />
-        </View>
-      ),
-    }
-  ];
   return (
     <View style={{ height: "100%", marginBottom: '65%' }}>
       <SafeAreaView style={{ backgroundColor: "#003070" }} />
       <Header navigation={navigation} title={"Asistencias"} />
 
       <View style={{ alignItems: 'center', height: 120, width: width }}>
-        <View style={{ flexDirection: 'column', height: "100%", justifyContent: 'space-evenly', width: "95%"}}>
+        <View style={{ flexDirection: 'column', height: "100%", justifyContent: 'space-evenly', width: "95%" }}>
           <SearchInput change={change} setPagina={setPagina} screen={"asistencias"} updateConcat={setComponentAString} />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Filters screen={"Deportistas"} updateConcat={setComponentBString} />
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Filters screen={"deportistas"} updateConcat={setComponentBString} />
             <TouchableCmp onPress={() => { navigation.navigate("PaseDeLista") }}>
               <View style={styles.agregarJugadorButton}>
                 <MaterialCommunityIcons name={'clipboard-list-outline'} size={24} color={'white'} />
@@ -90,10 +52,12 @@ export const Asistencias = ({ navigation }) => {
           </View>
         </View>
       </View>
-      <ButtonsPages numberPage={pagina} setPagina={setPagina} total={asistencias.total}/>
+
+      {/* <Text>{JSON.stringify(asistencias.data[0].deportista_id)}</Text> */}
+      <ButtonsPages numberPage={pagina} setPagina={setPagina} total={asistencias.total} />
 
       <View style={{ flex: 1 }}>
-      <List dataSource={asistencias.data.length ? asistencias.data : testData} renderItem={row => <AsistenciasCard props={row} />} loading={loading} />
+        <List dataSource={asistencias.data.length ? asistencias.data : testData} renderItem={row => <AsistenciasCard props={row} />} loading={loading} />
       </View>
 
     </View>
