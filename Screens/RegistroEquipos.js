@@ -63,6 +63,11 @@ export const RegistroEquipos = () => {
 	const navigation = useNavigation();
 	const [loading, setLoading] = useState(false);
 	const [aSelected, setSelected] = useState([]);
+
+	// HOOKS PARA EL MANEJO DE BUSQUEDA DE DEPORTISTAS
+	const [categoriaValidation, setCategoriaValidation] = useState();
+	const [facultadValidation, setFacultadValidation] = useState();
+
 	const [modalVisibility, setModalVisibility] = useState(false);
 	const [pagina, setPagina] = useState(0);
 	const [componentBString, setComponentBString] = useState('');
@@ -116,20 +121,19 @@ export const RegistroEquipos = () => {
 	};
 
 	const renderLista = (values) => {
-		console.log("VALUES > " + JSON.stringify(values));
-	// 	console.log("Handle Lista 1");
-	// 	if (cat !== 2 && fac) {
-	// 		{
-	// 			console.log("Handle Lista 2");
-	// 			// setComponentBString(
-	// 			// 	'facultad[$like]=%' + fac + '%&sexo=' + cat
-	// 			// )
-	// 		}
-	// 	} else {
-	// 		console.log("Handle Lista 3");
+		// 	console.log("Handle Lista 1");
+		// 	if (cat !== 2 && fac) {
+		// 		{
+		// 			console.log("Handle Lista 2");
+		// 			// setComponentBString(
+		// 			// 	'facultad[$like]=%' + fac + '%&sexo=' + cat
+		// 			// )
+		// 		}
+		// 	} else {
+		// 		console.log("Handle Lista 3");
 
-	// 		return <Text>Elige una categoria y una facultad para poder elegir deportistas</Text>;
-	// 	}
+		// 		return <Text>Elige una categoria y una facultad para poder elegir deportistas</Text>;
+		// 	}
 	}
 
 	// ESCUCHAR CAMBIOS EN LA SELECCION DE FACULTAD Y SEXO (COMPONENT B STRING [ASIGNADO EN LINEA 120])
@@ -137,6 +141,12 @@ export const RegistroEquipos = () => {
 		console.log("CONCATENO Y HAGO CHANGE() // COMPONENT B STRING > " + componentBString);
 		change(componentBString, pagina * 10);
 	}, [componentBString, pagina]);
+
+	useEffect(() => {
+		console.log("HUBO CAMBIOS");
+		// METER LA LOGICA DEL FETCH DE LOS DEPORTISTAS PARA LA LISTA DE BUSQUEDA XD Y LUEGO PONTE A VER COMO HACER PARA SELECCIONAR DEPORTISTAS ALV AA
+
+	}, [categoriaValidation, facultadValidation])
 
 	return (
 		<ScrollView style={styles.general} showsVerticalScrollIndicator={false}>
@@ -188,7 +198,11 @@ export const RegistroEquipos = () => {
 									textStyle={styles.radioButtonTextStyle}
 									boxStyle={styles.radioButtonBoxStyle}
 									activeColor={!values.categoria ? "#003070" : "#808"}
-									selectedBtn={({ value }) => setFieldValue('categoria', value)}
+									selectedBtn={({ value }) => (
+										setFieldValue('categoria', value),
+										setCategoriaValidation(value)
+									)
+									}
 								/>
 								<Text style={styles.error}>{touched.categoria && errors.categoria}</Text>
 
@@ -202,9 +216,11 @@ export const RegistroEquipos = () => {
 									style={styles.dropdown1DropdownStyle}
 									placeholderStyle={styles.dropdown1PlaceholderStyle}
 									containerStyle={styles.dropdown1DropdownStyle}
-									onChange={({ value }) => {
-										setFieldValue('facultad', value);
-									}}
+									onChange={({ value }) => (
+										setFieldValue('facultad', value),
+										setFacultadValidation(value)
+									)
+									}
 									value={values.facultad}
 									search={true}
 								/>
@@ -277,38 +293,44 @@ export const RegistroEquipos = () => {
 								{/* LISTA DE JUGADORES */}
 								<Text style={styles.campos}>Lista de jugadores:</Text>
 
+
+
+
 								{/* VERIFICAR INFO PARA QUERY A DEPORTISTAS */}
-								{/* {handleLista(values.categoria, values.facultad)} */}
-								{/* {values.categoria !== 2 && values.facultad ? setComponentBString('facultad[$like]=%' + values.facultad + '%&sexo=' + values.categoria) : <Text>Elige Facultad y Categoria antes!</Text>} */}
-								{values.categoria !== 2 && values.facultad ? renderLista(values) : <Text>Elige Facultad y Categoria antes!</Text>}
-								<SearchInput
-									setPagina={setPagina}
-									screen={"deportistas"}
-									updateConcat={setComponentBString}
-								/>
-								<ButtonsPages
-									numberPage={pagina}
-									setPagina={setPagina}
-									total={deportistas.total}
-								/>
-								<View>
-									<View style={styles.headerLista}>
-										<View style={styles.celda1HeaderLista}>
-											<Text style={styles.celda1y2Text}>#</Text>
+								{values.categoria !== 2 && values.facultad ? <>
+									<SearchInput
+										setPagina={setPagina}
+										screen={"deportistas"}
+										updateConcat={setComponentBString}
+									/>
+									<ButtonsPages
+										numberPage={pagina}
+										setPagina={setPagina}
+										total={deportistas.total}
+									/>
+									<View>
+										<View style={styles.headerLista}>
+											<View style={styles.celda1HeaderLista}>
+												<Text style={styles.celda1y2Text}>#</Text>
+											</View>
+											<View style={styles.celda2HeaderLista}>
+												<Text style={styles.celda1y2Text}>Nombre Completo</Text>
+											</View>
+											<View style={styles.celda3HeaderLista}>
+												<TouchableCmp onPress={() => setSelected([])}>
+													<View style={styles.celda3HeaderLista2}>
+														<Text style={styles.celda1y2Text}>Limpiar</Text>
+													</View>
+												</TouchableCmp>
+											</View>
 										</View>
-										<View style={styles.celda2HeaderLista}>
-											<Text style={styles.celda1y2Text}>Nombre Completo</Text>
-										</View>
-										<View style={styles.celda3HeaderLista}>
-											<TouchableCmp onPress={() => setSelected([])}>
-												<View style={styles.celda3HeaderLista2}>
-													<Text style={styles.celda1y2Text}>Limpiar</Text>
-												</View>
-											</TouchableCmp>
-										</View>
+										{/* RENDERIZAR TODOS LOS DEPORTISTAS (PROBLEMA CON EL FORMIK) */}
 									</View>
-									{/* RENDERIZAR TODOS LOS DEPORTISTAS (PROBLEMA CON EL FORMIK) */}
-								</View>
+								</>
+									:
+									<Text>Elige Facultad y Categoria antes!</Text>
+								}
+
 								{/* BOTON VER RESUMEN */}
 								<View style={styles.viewButton}>
 									<TouchableCmp onPress={() => (setModalVisibility(!modalVisibility))}>
