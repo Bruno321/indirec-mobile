@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, ActivityIndicator, Dimensions, StyleSheet, SafeAreaView, ScrollView, Text, TextInput, View, Modal, TouchableWithoutFeedback } from 'react-native';
+import { Alert, ActivityIndicator, Dimensions, StyleSheet, SafeAreaView, ScrollView, Text, TextInput, View, Modal, TouchableWithoutFeedback, FlatList } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { Formik } from 'formik';
 import * as yup from "yup";
 
-import { Header, SearchInput, ButtonsPages } from '../components';
+import { Header, SearchInput, ButtonsPages, List } from '../components';
 import { aCampus, aSports, aFacultities } from '../Utils/Constants';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useFetchData } from '../Hooks/Fetch.hook';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 import RadioButtonRN from 'radio-buttons-react-native';
 import { SAVE, process } from '../Service/Api';
+import { useDidMountEffect } from "../Utils/DidMountEffect";
+import { useIsFocused } from "@react-navigation/native";
 
 const { width, height, fontScale } = Dimensions.get('window');
 
@@ -67,9 +69,11 @@ export const RegistroEquipos = () => {
 	// HOOKS PARA EL MANEJO DE BUSQUEDA DE DEPORTISTAS
 	const [categoriaValidation, setCategoriaValidation] = useState();
 	const [facultadValidation, setFacultadValidation] = useState();
+	const isFocused = useIsFocused();
 
 	const [modalVisibility, setModalVisibility] = useState(false);
 	const [pagina, setPagina] = useState(0);
+	const [componentAString, setComponentAString] = useState('');
 	const [componentBString, setComponentBString] = useState('');
 	const campusItems = aCampus.map((campus) => ({
 		label: campus,
@@ -120,32 +124,22 @@ export const RegistroEquipos = () => {
 		setLoading(false);
 	};
 
-	const renderLista = (values) => {
-		// 	console.log("Handle Lista 1");
-		// 	if (cat !== 2 && fac) {
-		// 		{
-		// 			console.log("Handle Lista 2");
-		// 			// setComponentBString(
-		// 			// 	'facultad[$like]=%' + fac + '%&sexo=' + cat
-		// 			// )
-		// 		}
-		// 	} else {
-		// 		console.log("Handle Lista 3");
-
-		// 		return <Text>Elige una categoria y una facultad para poder elegir deportistas</Text>;
-		// 	}
-	}
-
-	// ESCUCHAR CAMBIOS EN LA SELECCION DE FACULTAD Y SEXO (COMPONENT B STRING [ASIGNADO EN LINEA 120])
 	useEffect(() => {
-		console.log("CONCATENO Y HAGO CHANGE() // COMPONENT B STRING > " + componentBString);
-		change(componentBString, pagina * 10);
-	}, [componentBString, pagina]);
+		if (isFocused == true) {
+			const concatenatedString = componentAString + componentBString;
+			change(concatenatedString, pagina * 10);
+		}
+	}, [isFocused]);
+
+	useDidMountEffect(() => {
+		const concatenatedString = componentAString + componentBString;
+		change(concatenatedString, pagina * 10);
+	}, [componentAString, componentBString, pagina]);
 
 	useEffect(() => {
-		console.log("HUBO CAMBIOS");
-		// METER LA LOGICA DEL FETCH DE LOS DEPORTISTAS PARA LA LISTA DE BUSQUEDA XD Y LUEGO PONTE A VER COMO HACER PARA SELECCIONAR DEPORTISTAS ALV AA
-
+		if (categoriaValidation != undefined && facultadValidation != undefined) {
+			setComponentAString(`facultad[$like]=%${facultadValidation}%&sexo=${categoriaValidation}`)
+		}
 	}, [categoriaValidation, facultadValidation])
 
 	return (
@@ -325,6 +319,9 @@ export const RegistroEquipos = () => {
 											</View>
 										</View>
 										{/* RENDERIZAR TODOS LOS DEPORTISTAS (PROBLEMA CON EL FORMIK) */}
+										{/* NO SE PUEDE PONER UNA FLATLIST DENTRO DE UN SCROLLVIEW, Y SI HAGO LA FLATLIST FUERA DEL SCROLLVIEW (por tanto fuera del formik) 
+										YA NO TENGO ACCESO A LOS DATOS SELECCIONADOS (?) */}
+
 									</View>
 								</>
 									:
