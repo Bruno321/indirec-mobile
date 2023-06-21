@@ -61,7 +61,7 @@ const validationSchema = yup.object().shape({
 });
 
 export const RegistroEquipos = () => {
-	const [deportistas, loadingList, change, update] = useFetchData('deportistas');
+	const [deportistas, loadingList, change, update] = useFetchData('deportistas', "status=-1");
 	const navigation = useNavigation();
 	const [loading, setLoading] = useState(false);
 	const [aSelected, setSelected] = useState([]);
@@ -91,6 +91,10 @@ export const RegistroEquipos = () => {
 		{ label: "Masculino", value: 0 },
 		{ label: "Femenino", value: 1 },
 	];
+
+	useEffect(() => {
+		console.log("-->",deportistas);
+	}, [deportistas]);
 
 	const onSubmit = async (values, resetForm) => {
 		setLoading(true);
@@ -125,14 +129,20 @@ export const RegistroEquipos = () => {
 	};
 
 	useEffect(() => {
-		if (isFocused == true) {
+		if (isFocused) {
 			const concatenatedString = componentAString + componentBString;
+			console.log("*isFocused*");
+			console.log("---->", concatenatedString);
+			if (concatenatedString === "") {
+				return;
+			}
 			change(concatenatedString, pagina * 10);
 		}
 	}, [isFocused]);
 
 	useDidMountEffect(() => {
 		const concatenatedString = componentAString + componentBString;
+		console.log("*didmount*")
 		change(concatenatedString, pagina * 10);
 	}, [componentAString, componentBString, pagina]);
 
@@ -286,8 +296,6 @@ export const RegistroEquipos = () => {
 
 								{/* LISTA DE JUGADORES */}
 								<Text style={styles.campos}>Lista de jugadores:</Text>
-
-
 
 
 								{/* VERIFICAR INFO PARA QUERY A DEPORTISTAS */}
