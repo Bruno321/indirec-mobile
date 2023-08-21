@@ -231,7 +231,7 @@ export const RegistroEventos = ({ navigation }) => {
 							<View style={styles.subtitulo}>
 								<Text style={styles.campos}>Nombre del evento</Text>
 								<TextInput
-									placeholder="Bernal Colín"
+									placeholder=""
 									style={styles.input}
 									multiline={true}
 									onChangeText={handleChange("nombre")}
@@ -397,7 +397,7 @@ export const RegistroEventos = ({ navigation }) => {
 							<View style={styles.subtitulo}>
 								<Text style={styles.campos}>Director técnico local</Text>
 								<TextInput
-									placeholder="Jorge Alejandro"
+									placeholder=""
 									style={styles.input}
 									multiline={true}
 									onChangeText={handleChange("directorTecnicoLocal")}
@@ -413,7 +413,7 @@ export const RegistroEventos = ({ navigation }) => {
 									Director técnico visitante
 								</Text>
 								<TextInput
-									placeholder="Jorge Bernal"
+									placeholder=""
 									style={styles.input}
 									multiline={true}
 									onChangeText={handleChange("directorTecnicoVisitante")}
@@ -482,7 +482,7 @@ export const RegistroEventos = ({ navigation }) => {
 							<View style={styles.subtitulo}>
 								<Text style={styles.campos}>Incidentes</Text>
 								<TextInput
-									placeholder="Ingrese aquí..."
+									placeholder=""
 									style={styles.input}
 									multiline={true}
 									onChangeText={handleChange("incidentes")}
@@ -571,8 +571,7 @@ const styles = StyleSheet.create({
 	  marginTop: 25,
 	  flexDirection: "row",
 	  width: width * 0.8,
-	  justifyContent: "space-around",
-	  backgroundColor:'red'
+	  justifyContent: "space-between",
 	},
 	txt: {
 	  fontFamily: "Fredoka-Light",
