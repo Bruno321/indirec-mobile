@@ -62,6 +62,7 @@ const validationSchema = yup.object().shape({
 
 export const RegistroEquipos = () => {
 	const [deportistas, loadingList, change, update] = useFetchData('deportistas', "status=-1");
+	const [nuevosDeportistas,setNuevosDeportistas] = useState([])
 	const navigation = useNavigation();
 	const [loading, setLoading] = useState(false);
 	const [aSelected, setSelected] = useState([]);
@@ -92,10 +93,20 @@ export const RegistroEquipos = () => {
 		{ label: "Femenino", value: 1 },
 	];
 
-	useEffect(() => {
-		console.log("-->",deportistas);
-	}, [deportistas]);
-
+	useEffect(()=>{
+		if(!loading){
+			let mutatedDeportistas = []
+			deportistas.data.forEach(deportista => {
+				let newDeportista = {
+					id:deportista.id,
+					nombreCompleto: deportista.nombres + deportista.apellidos,
+					isSelected: false
+				}
+				mutatedDeportistas.push(newDeportista)
+			});
+			setNuevosDeportistas(mutatedDeportistas)
+		}
+	},[loadingList])
 	const onSubmit = async (values, resetForm) => {
 		setLoading(true);
 
@@ -131,8 +142,8 @@ export const RegistroEquipos = () => {
 	useEffect(() => {
 		if (isFocused) {
 			const concatenatedString = componentAString + componentBString;
-			console.log("*isFocused*");
-			console.log("---->", concatenatedString);
+			// console.log("*isFocused*");
+			// console.log("---->", concatenatedString);
 			if (concatenatedString === "") {
 				return;
 			}
@@ -142,8 +153,9 @@ export const RegistroEquipos = () => {
 
 	useDidMountEffect(() => {
 		const concatenatedString = componentAString + componentBString;
-		console.log("*didmount*")
+		// console.log("*didmount*")
 		change(concatenatedString, pagina * 10);
+		
 	}, [componentAString, componentBString, pagina]);
 
 	useEffect(() => {
@@ -329,7 +341,10 @@ export const RegistroEquipos = () => {
 										{/* RENDERIZAR TODOS LOS DEPORTISTAS (PROBLEMA CON EL FORMIK) */}
 										{/* NO SE PUEDE PONER UNA FLATLIST DENTRO DE UN SCROLLVIEW, Y SI HAGO LA FLATLIST FUERA DEL SCROLLVIEW (por tanto fuera del formik) 
 										YA NO TENGO ACCESO A LOS DATOS SELECCIONADOS (?) */}
-
+										{console.log('---------------',nuevosDeportistas) }
+										{nuevosDeportistas.map((deportista,index)=>(
+											<Text key={index}>{deportista.nombreCompleto}</Text>
+										))}
 									</View>
 								</>
 									:
