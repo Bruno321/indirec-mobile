@@ -15,6 +15,7 @@ import RadioButtonRN from 'radio-buttons-react-native';
 import { SAVE, process } from '../Service/Api';
 import { useDidMountEffect } from "../Utils/DidMountEffect";
 import { useIsFocused } from "@react-navigation/native";
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const { width, height, fontScale } = Dimensions.get('window');
 
@@ -62,7 +63,7 @@ const validationSchema = yup.object().shape({
 
 export const RegistroEquipos = () => {
 	const [deportistas, loadingList, change, update] = useFetchData('deportistas', "status=-1");
-	const [nuevosDeportistas,setNuevosDeportistas] = useState([])
+	const [nuevosDeportistas, setNuevosDeportistas] = useState([])
 	const navigation = useNavigation();
 	const [loading, setLoading] = useState(false);
 	const [aSelected, setSelected] = useState([]);
@@ -93,20 +94,21 @@ export const RegistroEquipos = () => {
 		{ label: "Femenino", value: 1 },
 	];
 
-	useEffect(()=>{
-		if(!loading){
+	useEffect(() => {
+		if (!loading) {
 			let mutatedDeportistas = []
 			deportistas.data.forEach(deportista => {
 				let newDeportista = {
-					id:deportista.id,
-					nombreCompleto: deportista.nombres + deportista.apellidos,
+					id: deportista.id,
+					num: deportista.numJugador,
+					nombreCompleto: deportista.nombres + " " + deportista.apellidos,
 					isSelected: false
 				}
 				mutatedDeportistas.push(newDeportista)
 			});
 			setNuevosDeportistas(mutatedDeportistas)
 		}
-	},[loadingList])
+	}, [loadingList])
 	const onSubmit = async (values, resetForm) => {
 		setLoading(true);
 
@@ -155,7 +157,7 @@ export const RegistroEquipos = () => {
 		const concatenatedString = componentAString + componentBString;
 		// console.log("*didmount*")
 		change(concatenatedString, pagina * 10);
-		
+
 	}, [componentAString, componentBString, pagina]);
 
 	useEffect(() => {
@@ -164,21 +166,30 @@ export const RegistroEquipos = () => {
 		}
 	}, [categoriaValidation, facultadValidation])
 
+	const handlePlayerButtonPress = (playerId) => {
+		setNuevosDeportistas(prevData =>
+			prevData.map(player =>
+				player.id === playerId
+					? { ...player, isSelected: !player.isSelected }
+					: player
+			)
+		);
+	};
 	return (
 		<ScrollView style={styles.general} showsVerticalScrollIndicator={false}>
 			<SafeAreaView style={{ backgroundColor: "#003070" }} />
 			<Header navigation={navigation} title={"Registrar equipo"} />
 			<View style={styles.center}>
-				<View style={styles.viewForm}>
-					<Formik
-						initialValues={oInitialState}
-						validationSchema={validationSchema}
-						onSubmit={(values, { resetForm }) => {
-							onSubmit(values, resetForm);
-						}}
-					>
-						{({ setFieldValue, handleChange, handleSubmit, values, errors, touched }) => (
-							<>
+				<Formik
+					initialValues={oInitialState}
+					validationSchema={validationSchema}
+					onSubmit={(values, { resetForm }) => {
+						onSubmit(values, resetForm);
+					}}
+				>
+					{({ setFieldValue, handleChange, handleSubmit, values, errors, touched }) => (
+						<>
+							<View style={styles.viewForm}>
 								<Text style={styles.campos}>Nombre del equipo:</Text>
 								{/* INPUT NOMBRE EQUIPO */}
 								<TextInput
@@ -308,174 +319,185 @@ export const RegistroEquipos = () => {
 
 								{/* LISTA DE JUGADORES */}
 								<Text style={styles.campos}>Lista de jugadores:</Text>
+							</View>
 
 
-								{/* VERIFICAR INFO PARA QUERY A DEPORTISTAS */}
-								{values.categoria !== 2 && values.facultad ? <>
-									<SearchInput
-										setPagina={setPagina}
-										screen={"deportistas"}
-										updateConcat={setComponentBString}
-									/>
-									<ButtonsPages
-										numberPage={pagina}
-										setPagina={setPagina}
-										total={deportistas.total}
-									/>
-									<View>
-										<View style={styles.headerLista}>
-											<View style={styles.celda1HeaderLista}>
-												<Text style={styles.celda1y2Text}>#</Text>
-											</View>
-											<View style={styles.celda2HeaderLista}>
-												<Text style={styles.celda1y2Text}>Nombre Completo</Text>
-											</View>
-											<View style={styles.celda3HeaderLista}>
-												<TouchableCmp onPress={() => setSelected([])}>
-													<View style={styles.celda3HeaderLista2}>
-														<Text style={styles.celda1y2Text}>Limpiar</Text>
-													</View>
-												</TouchableCmp>
-											</View>
+							{/* VERIFICAR INFO PARA QUERY A DEPORTISTAS */}
+							{values.categoria !== 2 && values.facultad ? <>
+								<SearchInput
+									setPagina={setPagina}
+									screen={"deportistas"}
+									updateConcat={setComponentBString}
+								/>
+								<ButtonsPages
+									numberPage={pagina}
+									setPagina={setPagina}
+									total={deportistas.total}
+								/>
+								<View>
+									<View style={styles.headerLista}>
+										<View style={styles.celda1HeaderLista}>
+											<Text style={styles.celda1y2Text}>#</Text>
 										</View>
-										{/* RENDERIZAR TODOS LOS DEPORTISTAS (PROBLEMA CON EL FORMIK) */}
-										{/* NO SE PUEDE PONER UNA FLATLIST DENTRO DE UN SCROLLVIEW, Y SI HAGO LA FLATLIST FUERA DEL SCROLLVIEW (por tanto fuera del formik) 
-										YA NO TENGO ACCESO A LOS DATOS SELECCIONADOS (?) */}
-										{console.log('---------------',nuevosDeportistas) }
-										{nuevosDeportistas.map((deportista,index)=>(
-											<Text key={index}>{deportista.nombreCompleto}</Text>
-										))}
-									</View>
-								</>
-									:
-									<Text>Elige Facultad y Categoria antes!</Text>
-								}
-
-								{/* BOTON VER RESUMEN */}
-								<View style={styles.viewButton}>
-									<TouchableCmp onPress={() => (setModalVisibility(!modalVisibility))}>
-										<View style={styles.viewRegistrar}>
-											{loading ? <ActivityIndicator color="white" /> : <Text style={styles.registrar}>Ver Resumen</Text>}
+										<View style={styles.celda2HeaderLista}>
+											<Text style={styles.celda1y2Text}>Nombre Completo</Text>
 										</View>
-									</TouchableCmp>
-								</View>
-
-								{/* MODAL RESUMEN */}
-								<Modal
-									visible={modalVisibility}
-									transparent={true}
-									animationType="fade"
-									onRequestClose={() => {
-										setModalVisibility(!modalVisibility)
-									}}
-								>
-									<TouchableWithoutFeedback onPress={() => { setModalVisibility(!modalVisibility) }}>
-										<View style={{ backgroundColor: 'rgba(0, 0, 0, 0.25)', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} />
-									</TouchableWithoutFeedback>
-
-									<View style={styles.modalViewCenter}>
-										<Text>RESUMEN</Text>
-										<View style={styles.listadoModal}>
-											<Text style={styles.listadoModalb}>NOMBREDELEQUIPO</Text>
-											<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-												<Text style={styles.listadoModalc}>$DEPORTE$</Text>
-												<Text style={styles.listadoModalc}>$CATEGORIA$</Text>
-											</View>
-											<Text style={styles.listadoModald} numberOfLines={2}>$FACULTAD$</Text>
-											<Text style={styles.listadoModald} numberOfLines={2}>$CAMPUS$</Text>
-											<Text style={styles.listadoModala}>Lista de Jugadores</Text>
-											{/* LISTA DE JUGADORES SELECCIONADOS */}
-											{aSelected.map(x => (
-												<View
-													key={x.id + "view1"}
-													style={styles.ViewJugador}
-												>
-													<View
-														key={x.id + "view2"}
-														style={!isSelected(x.id) ? styles.celda3a : styles.celda3b}
-													>
-														<Text
-															key={x.id + "text1"}
-															style={!isSelected(x.id) ? styles.celda3y4Texta : styles.celda3y4Textb}
-															numberOfLines={1}
-														>
-															{x.numJugador}
-														</Text>
-													</View>
-													<View
-														key={x.id + "view3"}
-														style={!isSelected(x.id) ? styles.celda4a : styles.celda4b}
-													>
-														<Text
-															key={x.id + "text2"}
-															style={!isSelected(x.id) ? styles.celda3y4Texta : styles.celda3y4Textb}
-															numberOfLines={2}
-														>
-															{x.nombres}
-														</Text>
-													</View>
-													<TouchableCmp
-														key={x.id + "touchable1"}
-														onPress={() => updateSelected(x.id, true)}
-													>
-														<View
-															key={x.id + "view4"}
-															style={!isSelected(x.id) ? styles.celda5a : styles.celda5b}
-														>
-															<FontAwesome
-																key={x.id + "icon1"}
-																name='plus-square-o'
-																size={25}
-																color={!isSelected(x.id) ? '#003070' : "#888"}
-															/>
-															<Text
-																key={x.id + "text3"}
-																style={!isSelected(x.id) ? styles.celda3y4Texta : styles.celda3y4Textb}
-																numberOfLines={1}
-															>
-																Añadir
-															</Text>
-														</View>
-													</TouchableCmp>
-
-													<TouchableCmp
-														key={x.id + "touchable2"}
-														onPress={() => updateSelected(x.id, false)}
-													>
-														<View key={x.id + "view5"}
-															style={!isSelected(x.id) ? styles.celda6a : styles.celda6b}
-														>
-															<FontAwesome
-																key={x.id + "icon2"}
-																name='trash-o'
-																size={25}
-																color={!isSelected(x.id) ? '#BBB' : "#C0392B"}
-															/>
-														</View>
-													</TouchableCmp>
-												</View>
-											)
-											)
-											}
-										</View>
-										{/* BOTON REGISTRAR EQUIPO */}
-										<View style={styles.viewButton}>
-											<TouchableCmp onPress={handleSubmit}>
-												{/* <TouchableCmp onPress={() => (setModalVisibility(!modalVisibility))}> */}
-												<View style={styles.viewRegistrar}>
-													{loading ? <ActivityIndicator color="white" /> : <Text style={styles.registrar}>Ver Resumen</Text>}
+										<View style={styles.celda3HeaderLista}>
+											<TouchableCmp onPress={() => {
+												setNuevosDeportistas(prevData =>
+													prevData.map(player => ({ ...player, isSelected: false }))
+												);
+											}}>
+												<View style={styles.celda3HeaderLista2}>
+													<Text style={styles.celda1y2Text}>Limpiar</Text>
 												</View>
 											</TouchableCmp>
 										</View>
 									</View>
-								</Modal>
+									{/* RENDERIZAR TODOS LOS DEPORTISTAS */}
+									{nuevosDeportistas.map((deportista, index) => (
+										<View key={index + "view1"} style={styles.ViewJugador}>
+											<View
+												key={index + "view2"}
+												style={!deportista.isSelected ? styles.celda3a : styles.celda3b}
+											>
+												<Text
+													key={index + "text1"}
+													style={!deportista.isSelected ? styles.celda3y4Texta : styles.celda3y4Textb}
+													numberOfLines={1}
+												>
+													{deportista.num}
+												</Text>
+											</View>
+											<View
+												key={index + "view3"}
+												style={!deportista.isSelected ? styles.celda4a : styles.celda4b}
+											>
+												<Text
+													key={index + "text2"}
+													style={!deportista.isSelected ? styles.celda3y4Texta : styles.celda3y4Textb}
+													numberOfLines={2}
+												>
+													{deportista.nombreCompleto}
+												</Text>
+											</View>
+											<TouchableCmp
+												key={index + "touchable1"}
+												// onPress={() => updateSelected(x.id, true)}
+												onPress={() => { handlePlayerButtonPress(deportista.id) }}
+											>
+												<View
+													key={index + "view4"}
+													style={!deportista.isSelected ? styles.celda5a : styles.celda5b}
+												>
+													<FontAwesome
+														key={index + "icon1"}
+														name={!deportista.isSelected ? "plus-square-o" : "trash-o"}
+														size={25}
+														color={!deportista.isSelected ? "#003070" : "#B00"}
+													/>
+													<Text
+														key={index + "text3"}
+														style={!deportista.isSelected ? styles.celda3y4Texta : styles.celda3y4Textb}
+														numberOfLines={1}
+													>
+														{!deportista.isSelected ? "Añadir" : "Eliminar"}
+													</Text>
+												</View>
+											</TouchableCmp>
+										</View>
+									))}
+								</View>
 							</>
-						)}
-					</Formik>
+								:
+								<Text style={styles.campos}>Elige Facultad y Categoria antes!</Text>
+							}
 
-				</View>
+							{/* BOTON VER RESUMEN */}
+							<View style={styles.viewButton}>
+								<TouchableCmp onPress={() => (setModalVisibility(!modalVisibility))}>
+									<View style={styles.viewRegistrar}>
+										{loading ? <ActivityIndicator color="white" /> : <Text style={styles.registrar}>Ver Resumen</Text>}
+									</View>
+								</TouchableCmp>
+							</View>
+
+							{/* MODAL RESUMEN */}
+							<Modal
+								visible={modalVisibility}
+								transparent={true}
+								animationType="fade"
+								onRequestClose={() => {
+									setModalVisibility(!modalVisibility)
+								}}
+							>
+								<TouchableWithoutFeedback onPress={() => { setModalVisibility(!modalVisibility) }}>
+									<View style={{ backgroundColor: 'rgba(0, 0, 0, 0.25)', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} />
+								</TouchableWithoutFeedback>
+
+								<View style={styles.modalViewCenter}>
+									<Text>RESUMEN</Text>
+									<View style={styles.listadoModal}>
+										<Text style={styles.listadoModalb}>NOMBREDELEQUIPO</Text>
+										<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+											<Text style={styles.listadoModalc}>$DEPORTE$</Text>
+											<Text style={styles.listadoModalc}>$CATEGORIA$</Text>
+										</View>
+										<Text style={styles.listadoModald} numberOfLines={2}>$FACULTAD$</Text>
+										<Text style={styles.listadoModald} numberOfLines={2}>$CAMPUS$</Text>
+										<Text style={styles.listadoModala}>Lista de Jugadores</Text>
+										{/* LISTA DE JUGADORES SELECCIONADOS */}
+										{nuevosDeportistas.filter(deportista => deportista.isSelected).map((deportista, index) => (
+											<View
+												key={index + "view1"}
+												style={styles.ViewJugador}
+											>
+												<View
+													key={index + "view2"}
+													style={!deportista.isSelected ? styles.celda3a : styles.celda3b}
+												>
+													<Text
+														key={index + "text1"}
+														style={!deportista.isSelected ? styles.celda3y4Texta : styles.celda3y4Textb}
+														numberOfLines={1}
+													>
+														{deportista.num}
+													</Text>
+												</View>
+												<View
+													key={index + "view3"}
+													style={!deportista.isSelected ? styles.celda4a : styles.celda4b}
+												>
+													<Text
+														key={index + "text2"}
+														style={!deportista.isSelected ? styles.celda3y4Texta : styles.celda3y4Textb}
+														numberOfLines={2}
+													>
+														{deportista.nombreCompleto}
+													</Text>
+												</View>
+											</View>
+										)
+										)
+										}
+									</View>
+									{/* BOTON REGISTRAR EQUIPO */}
+									<View style={styles.viewButton}>
+										<TouchableCmp onPress={handleSubmit}>
+											{/* <TouchableCmp onPress={() => (setModalVisibility(!modalVisibility))}> */}
+											<View style={styles.viewRegistrar}>
+												{loading ? <ActivityIndicator color="white" /> : <Text style={styles.registrar}>Registrar Equipo</Text>}
+											</View>
+										</TouchableCmp>
+									</View>
+								</View>
+							</Modal>
+						</>
+					)}
+				</Formik>
+
 			</View>
-		</ScrollView>
+		</ScrollView >
 	)
 }
 
@@ -600,15 +622,63 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		height: 40,
 	},
+	celda3b: {
+		backgroundColor: '#EEE',
+		width: "20%",
+		alignItems: 'center',
+		justifyContent: 'center',
+		height: 40,
+	},
 	celda3y4Texta: {
 		color: 'black',
 		fontFamily: 'Fredoka-Light',
 		fontSize: 12,
 	},
+	celda3y4Textb: {
+		color: '#888',
+		fontFamily: 'Fredoka-Light',
+		fontSize: 12 / fontScale,
+	},
 	celda4a: {
 		backgroundColor: '#FFF',
 		width: "50%",
 		justifyContent: 'center',
+	},
+	celda4b: {
+		backgroundColor: '#EEE',
+		width: "50%",
+		justifyContent: 'center',
+	},
+	celda5a: {
+		// backgroundColor: '#F00',
+		width: width * 0.2,
+		height: "100%",
+		justifyContent: 'space-evenly',
+		alignItems: 'center',
+		// alignSelf: 'center',
+		flexDirection: 'row',
+	},
+	celda5b: {
+		backgroundColor: '#EEE',
+		width: width * 0.2,
+		height: "100%",
+		justifyContent: 'space-evenly',
+		alignItems: 'center',
+		flexDirection: 'row',
+	},
+	celda6a: {
+		backgroundColor: '#FFF',
+		width: width * 0.1,
+		height: "100%",
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	celda6b: {
+		backgroundColor: '#EEE',
+		width: width * 0.1,
+		height: "100%",
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
 	viewHeaderLista: {
 		marginTop: 10,

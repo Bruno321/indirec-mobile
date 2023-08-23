@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     containerButtonsPages: {
         backgroundColor: '#003070',
         flexDirection: 'row',
-        width: width,
+        width: '100%',
         paddingHorizontal: width*.2,
         justifyContent: 'space-between',
         alignItems: 'center',
