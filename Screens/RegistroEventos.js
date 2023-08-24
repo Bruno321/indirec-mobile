@@ -90,12 +90,16 @@ export const RegistroEventos = ({ navigation }) => {
 	const [form, setForm] = useState(oInitialState);
 	const [time, setTime] = useState("AM");
 
+	const esMismoEquipo = (equipoL, equipoV) => {
+		return equipoL != equipoV;
+	};
+
 	const listaEquipos = equipos.data.map((obj) => ({
 		label: obj.nombre,
 		value: obj.id,
 	}));
 	const facultitiesItems = aFacultities.map((oFaculty) => ({
-		label: `Facultad de ${oFaculty}`,
+		label: `${oFaculty}`,
 		value: oFaculty,
 	}));
 
@@ -160,36 +164,42 @@ export const RegistroEventos = ({ navigation }) => {
 		}))
 
 	const onSubmit = async (values, reset) => {
-		let data = { ...values };
-		values.hora = moment(values.hora).format("h:mm a")
-		const idJugadoresLocales = jugadoresLocales.map(
-			(jugador) => jugador.id
-		);
-		const idJugadoresVisitantes = jugadoresVisitantes.map(
-			(jugador) => jugador.id
-		);
-		const concatJugadores = idJugadoresLocales.concat(idJugadoresVisitantes);
-		data.jugadores = concatJugadores;
-		console.log(data);
-		try {
-			const response = await process(SAVE, "eventos", values);
-			console.log(JSON.stringify(response))
-			if (response?.status == 201) {
-				Alert.alert("Evento agregado exitosamente", response.data.message, [
-					{
-						text: "Okay",
-						onPress: () => console.log('OK Pressed')
-					},
-				]);
-				reset();
-			} else {
-				Alert.alert("Oops...", "Algo salio mal, intenta mas tarde", [
-					{ text: "Okay" },
-				]);
+		if(esMismoEquipo(equipo_local_id,equipo_visitante_id)){	
+			let data = { ...values };
+			values.hora = moment(values.hora).format("h:mm a")
+			const idJugadoresLocales = jugadoresLocales.map(
+				(jugador) => jugador.id
+			);
+			const idJugadoresVisitantes = jugadoresVisitantes.map(
+				(jugador) => jugador.id
+			);
+			const concatJugadores = idJugadoresLocales.concat(idJugadoresVisitantes);
+			data.jugadores = concatJugadores;
+			console.log(data);
+			try {
+				const response = await process(SAVE, "eventos", values);
+				console.log(JSON.stringify(response))
+				if (response?.status == 201) {
+					Alert.alert("Evento agregado exitosamente", response.data.message, [
+						{
+							text: "Okay",
+							onPress: () => console.log('OK Pressed')
+						},
+					]);
+					reset();
+				} else {
+					Alert.alert("Oops...", "Algo salio mal, intenta mas tarde", [
+						{ text: "Okay" },
+					]);
+				}
+			} catch (e) {
+				console.log(e);
+				Alert.alert("Hubo un error", "Intente de nuevo", [{ text: "Okay" }]);
 			}
-		} catch (e) {
-			console.log(e);
-			Alert.alert("Hubo un error", "Intente de nuevo", [{ text: "Okay" }]);
+		}else{
+			Alert.alert("Oops...", "Los equipos deben ser diferentes", [
+				{ text: "Okay" },
+			]);
 		}
 	};
 
