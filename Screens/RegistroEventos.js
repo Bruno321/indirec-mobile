@@ -90,10 +90,6 @@ export const RegistroEventos = ({ navigation }) => {
 	const [form, setForm] = useState(oInitialState);
 	const [time, setTime] = useState("AM");
 
-	const esMismoEquipo = (equipoL, equipoV) => {
-		return equipoL != equipoV;
-	};
-
 	const listaEquipos = equipos.data.map((obj) => ({
 		label: obj.nombre,
 		value: obj.id,
@@ -164,7 +160,7 @@ export const RegistroEventos = ({ navigation }) => {
 		}))
 
 	const onSubmit = async (values, reset) => {
-		if(esMismoEquipo(equipo_local_id,equipo_visitante_id)){	
+		if(equipo_local_id.value !== equipo_visitante_id.value){	
 			let data = { ...values };
 			values.hora = moment(values.hora).format("h:mm a")
 			const idJugadoresLocales = jugadoresLocales.map(

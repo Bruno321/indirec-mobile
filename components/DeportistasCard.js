@@ -8,6 +8,7 @@ const { fontScale } = Dimensions.get('window');
 export const DeportistasCard = ({props}) => {
     
     var dataProps = {props};
+    console.log("dataprops " + JSON.stringify(dataProps))
     const navigation = useNavigation();
     const profilePicture = dataProps.props.foto ? {uri: dataProps.props.foto} : require('../images/ImagenEjemploDeportista.jpg');
     

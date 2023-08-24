@@ -9,6 +9,9 @@ export const AsistenciasCard = ({ props }) => {
     var dataProps = props;
     // const profilePicture = {uri: '../images/ImagenEjemploDeportista.png'};
     const navigation = useNavigation();
+    console.log(dataProps)
+    // const profilePicture = dataProps.props.foto ? {uri: dataProps.props.foto} : require('../images/ImagenEjemploDeportista.jpg');
+
     return (
         <TouchableCmp onPress={() => navigation.navigate("DeportistaAssistance", dataProps)}>
             <View style={styles.main}>
