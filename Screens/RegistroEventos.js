@@ -51,11 +51,7 @@ const oInitialState = {
 	jugadoresVisitantes: [],
 	directorTecnicoLocal: "",
 	directorTecnicoVisitante: "",
-	puntosLocal: "",
-	puntosVisitante: "",
 	canchaJugada: "",
-	jornada: "",
-	incidentes: "",
 };
 
 const validationSchema = yup.object().shape({
@@ -67,20 +63,7 @@ const validationSchema = yup.object().shape({
 	equipo_visitante_id: yup.string().required("El nombre es requerido"),
 	directorTecnicoLocal: yup.string().required("El nombre es requerido"),
 	directorTecnicoVisitante: yup.string().required("El nombre es requerido"),
-	puntosLocal: yup
-		.number()
-		.integer("Debe ser un número entero")
-		.required("Los puntos son requeridos"),
-	puntosVisitante: yup
-		.number()
-		.integer("Debe ser un número entero")
-		.required("Los puntos son requeridos"),
 	canchaJugada: yup.string().required("La cancha es requerida"),
-	jornada: yup
-		.number()
-		.integer("Debe ser un número entero")
-		.required("La jornada es requerida"),
-	incidentes: yup.string(),
 });
 
 export const RegistroEventos = ({ navigation }) => {
@@ -326,9 +309,7 @@ export const RegistroEventos = ({ navigation }) => {
 									value={values.jugadoresLocales}
 									style={styles.dropdown1DropdownStyle}
 									containerStyle={styles.dropdown1DropdownStyle}
-									activeColor="#003070"
-									selectedTextStyle={{color:'white'}}
-									selectedStyle={{color:'white'}}
+									activeColor="rgba(0,48,112,0.25)"
 									search={true}
 									onChange={(value) => {
 										setFieldValue("jugadoresLocales", value);
@@ -434,30 +415,6 @@ export const RegistroEventos = ({ navigation }) => {
 								</Text>
 							</View>
 							<View style={styles.subtitulo}>
-								<Text style={styles.campos}>Puntos equipo local</Text>
-								<TextInput
-									style={styles.input}
-									keyboardType="numeric"
-									onChangeText={handleChange("puntosLocal")}
-									value={values.puntosLocal}
-								/>
-								<Text style={styles.error}>
-									{touched.puntosLocal && errors.puntosLocal}
-								</Text>
-							</View>
-							<View style={styles.subtitulo}>
-								<Text style={styles.campos}>Puntos equipo visitante</Text>
-								<TextInput
-									style={styles.input}
-									keyboardType="numeric"
-									onChangeText={handleChange("puntosVisitante")}
-									value={values.puntosVisitante}
-								/>
-								<Text style={styles.error}>
-									{touched.puntosVisitante && errors.puntosVisitante}
-								</Text>
-							</View>
-							<View style={styles.subtitulo}>
 								<Text style={styles.campos}>Cancha</Text>
 								<Dropdown
 									data={facultitiesItems}
@@ -474,31 +431,6 @@ export const RegistroEventos = ({ navigation }) => {
 								/>
 								<Text style={styles.error}>
 									{touched.canchaJugada && errors.canchaJugada}
-								</Text>
-							</View>
-							<View style={styles.subtitulo}>
-								<Text style={styles.campos}>Jornada</Text>
-								<TextInput
-									style={styles.input}
-									keyboardType="numeric"
-									onChangeText={handleChange("jornada")}
-									value={values.jornada}
-								/>
-								<Text style={styles.error}>
-									{touched.jornada && errors.jornada}
-								</Text>
-							</View>
-							<View style={styles.subtitulo}>
-								<Text style={styles.campos}>Incidentes</Text>
-								<TextInput
-									placeholder=""
-									style={styles.input}
-									multiline={true}
-									onChangeText={handleChange("incidentes")}
-									value={values.incidentes}
-								/>
-								<Text style={styles.error}>
-									{touched.incidentes && errors.incidentes}
 								</Text>
 							</View>
 							<View style={styles.boton}>
