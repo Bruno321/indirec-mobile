@@ -8,6 +8,7 @@ import {
   TouchableNativeFeedback,
   Platform,
   FlatList,
+  TextInput,
   TouchableWithoutFeedback,
   SafeAreaView,
 } from "react-native";
@@ -18,7 +19,6 @@ import React, { useState } from "react";
 import { Col, Header, List } from "../components";
 import TouchableCmp from "../assetsUI/TouchableCmp";
 import { useFetchData } from "../Hooks/Fetch.hook";
-import { TextInput } from "react-native-paper";
 
 const { fontScale } = Dimensions.get("window");
 
@@ -60,7 +60,7 @@ export const EventosDetails = (props) => {
       />
       <ScrollView
         style={styles.modal}
-        contentContainerStyle={{ paddingBottom: "100%" }}
+        contentContainerStyle={{ paddingBottom: "30%" }}
       >
         {/* Contenedor de equipo vs equipo */}
         <View style={styles.containerCard}>
@@ -140,9 +140,14 @@ export const EventosDetails = (props) => {
                 Equipo {datos.EquipoLocal.nombre}
               </Text>
               <View style={styles.inputPuntos}>
-                <Text style={{ fontSize: 22 / fontScale }}>
-                  {/* {datos.puntosLocal} */} 2
-                </Text>
+                <TextInput
+                  placeholder='0'
+                  placeholderTextColor="#c5c5c5" 
+                  style={{ fontSize: 22 / fontScale }}
+                  keyboardType='number-pad'
+                  // onChangeText={handleChange('expediente')}
+                  // value={values.expediente}
+                />
               </View>
             </View>
 
@@ -151,15 +156,41 @@ export const EventosDetails = (props) => {
                 Equipo {datos.EquipoVisitante.nombre}
               </Text>
               <View style={styles.inputPuntos}>
-                <Text style={{ fontSize: 22 / fontScale }}>
-                  {/* {datos.puntosLocal} */} 3
-                </Text>
+                <TextInput
+                  placeholder='0'
+                  placeholderTextColor="#c5c5c5" 
+                  style={{ fontSize: 22 / fontScale }}
+                  keyboardType='number-pad'
+                  // onChangeText={handleChange('expediente')}
+                  // value={values.expediente}
+                />
               </View>
             </View>
           </View>
 
           <Text style={styles.txtTitulo}>Observaciones</Text>
-          <Text style={styles.txtSubtitulo}>{datos.incidentes}</Text>
+          {/* <Text style={styles.txtSubtitulo}>{datos.incidentes}</Text> */}
+          <View style={{borderColor:"#c5c5c5", borderWidth: 1}}>
+            <TextInput
+              editable
+              multiline
+              numberOfLines={10}
+              maxLength={40}
+              placeholder="Ingrese aquí"
+              placeholderTextColor="#c5c5c5" 
+              // onChangeText={text => onChangeText(text)}
+              // value={value}
+              style={{padding: 10, textAlignVertical:"top", fontSize: 15 / fontScale}}
+            />
+          </View>
+        </View>
+        <View style={styles.boton}>
+          {/* <TouchableCmp onPress={()=>onSubmit(values)}> */}
+          <TouchableCmp style={{borderRadius:15, overflow:"hidden"}}>
+            <View style={styles.btn}>
+              <Text style={styles.txtBtn}>Finalizar Evento</Text>
+            </View>
+          </TouchableCmp>
         </View>
       </ScrollView>
     </View>
@@ -266,4 +297,24 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     marginTop: 12,
   },
+  boton: {
+	  marginTop: 40,
+	  alignItems: "flex-end",
+	  overflow: "hidden",
+    marginRight:22,
+    borderRadius: 15,
+	},
+  btn: {
+    paddingVertical: 10,
+	  width: Dimensions.get("window").width * 0.4,
+    overflow: "hidden",
+	  borderRadius: 15,
+	  backgroundColor: "#003070",
+	},
+  txtBtn: {
+	  fontFamily: "Fredoka-Regular",
+	  fontSize: 17 / fontScale,
+	  color: "white",
+	  textAlign: "center",
+	},
 });
