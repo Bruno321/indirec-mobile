@@ -604,9 +604,10 @@ const styles = StyleSheet.create({
 	  textAlign: "center",
 	},
 	boton: {
-	  marginTop: 20,
+	  marginTop: 30,
 	  alignItems: "flex-end",
 	  overflow: "hidden",
+	  marginBottom: 40,
 	},
 	error: {
 	  fontFamily: "Fredoka-Light",
