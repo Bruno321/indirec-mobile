@@ -9,14 +9,15 @@ export const AsistenciasCard = ({ props }) => {
     var dataProps = props;
     // const profilePicture = {uri: '../images/ImagenEjemploDeportista.png'};
     const navigation = useNavigation();
-    console.log(dataProps)
+    // console.log("DATAPROP>>>>" + JSON.stringify(dataProps.deportista.foto))
     // const profilePicture = dataProps.props.foto ? {uri: dataProps.props.foto} : require('../images/ImagenEjemploDeportista.jpg');
-
+    const profilePicture = dataProps.deportista.foto != null ? {uri: dataProps.deportista.foto} : require('../images/ImagenEjemploDeportista.jpg');
+    console.log("PROFILE PICTURE> " + JSON.stringify(profilePicture));
     return (
         <TouchableCmp onPress={() => navigation.navigate("DeportistaAssistance", dataProps)}>
             <View style={styles.main}>
                 <View style={styles.imageView}>
-                    <Image source={require('../images/ImagenEjemploDeportista.png')} style={styles.profilePic} />
+                    <Image source={profilePicture} style={{backgroundColor:'red', width: "100%", height: "100%",}} />
                 </View>
                 <View style={styles.even1}>
                     <View>
