@@ -84,8 +84,10 @@ export const DeportistaAssistance = ({ navigation, route }) => {
     useEffect(()=>{
         if(dateParams.fechaInicio !== null && dateParams.fechaFin !== null){
             change(`fecha[$gte]=${dateParams.fechaInicio}&fecha[$lte]=${dateParams.fechaFin}`)
+        } else {
+            change();
         }
-    },[dateParams.fechaFin && dateParams.fechaInicio])
+    },[dateParams.fechaFin, dateParams.fechaInicio])
 
     useEffect(() => {
         if (!loading) {

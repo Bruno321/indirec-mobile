@@ -95,11 +95,6 @@ export const EventosDetails = (props) => {
           </View>
         </View>
 
-        {/* Contenedor de Jornada */}
-        <View style={styles.containerJornada}>
-          <Text style={styles.tituloJornada}>Jornada: {datos.jornada}</Text>
-        </View>
-
         {/* Contenedor de Información del evento */}
         <View style={styles.containerInfoEvento}>
           <View style={styles.fechaEvento}>
@@ -234,18 +229,6 @@ const styles = StyleSheet.create({
     fontSize: 16 / fontScale,
     borderRadius: 12,
     overflow: "hidden",
-  },
-  containerJornada: {
-    width: "100%",
-    backgroundColor: "#003070",
-  },
-  tituloJornada: {
-    color: "white",
-    fontSize: 18 / fontScale,
-    textAlign: "center",
-    fontWeight: "bold",
-    paddingTop: 6,
-    paddingBottom: 6,
   },
   containerInfoEvento: {
     width: "100%",
