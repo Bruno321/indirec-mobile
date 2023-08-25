@@ -17,18 +17,19 @@ export const  PaseDeLista = ()  => {
   const [dataResponse, setDataResponse] = useState({});
   const [registroCheck, setRegistroCheck] = useState(true);
   const navigation = useNavigation();
-  const profilePicture = dataResponse.deportista.foto ? {uri: dataResponse.deportista.foto} : require('../images/ImagenEjemploDeportista.jpg');
+  const [profile, setProfile] = useState(require('../images/ImagenEjemploDeportista.jpg'))
   
   // DOCUMENTACION - Función que regresa un bloque de código dependiendo si la lectura del QR fue correcta o incorrecta -> Regresa los componentes para mostrar un modal correcto/incorrecto
-
+  
   const SuccessModal = () => {
+    // const profilePicture = dataResponse !== undefined ? {uri: dataResponse.deportista.foto} : require('../images/ImagenEjemploDeportista.jpg');
     return (
       <View style={styles.ModalAlerta}>
         <Text style={styles.Modal1Text1}>Escaneo exitoso</Text>
         <Text style={styles.Modal1Text2}>{dataResponse.horaSalida ? 'Adios' : 'Hola'}!</Text>
         <Text style={styles.Modal1Text3}>{dataResponse?.deportista?.nombres} {dataResponse?.deportista?.apellidos}</Text>
         
-        <Image style={styles.Modal1Image} source={profilePicture}></Image>
+        <Image style={styles.Modal1Image} source={profile}></Image>
         <Text style={styles.Modal1Text4}>Hora: {moment(dataScaneo.fecha).format('h:mm a')}</Text>
         <Text style={styles.Modal1Text4}>{dataResponse?.message}</Text>
         <View style={styles.ModalTouchable}>
@@ -96,6 +97,7 @@ export const  PaseDeLista = ()  => {
         if (response.data) {
           setDataResponse(response.data);
           setRegistroCheck(true);
+          setProfile({uri: response.data.deportista.foto})
         }
 
         //Aqui se mandaria el post
