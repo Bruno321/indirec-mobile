@@ -1,10 +1,10 @@
 import { View, Text, ScrollView, StyleSheet, Dimensions, Button, SafeAreaView } from "react-native";
 import { Header, Row, Col, List, AsistenciaIndCard } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import TouchableCmp from "../assetsUI/TouchableCmp";
-import { process, SAVE } from "../Service/Api";
+import { process, SAVE, FIND } from "../Service/Api";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 
@@ -21,7 +21,7 @@ const LargeText = ({ children, style = {}, numberOfLineas }) => {
 export const DeportistaAssistance = ({ navigation, route }) => {
     var deportistaId = route.params.deportista.id;
     var deportistaNombre = route.params.deportista.nombres + " " + route.params.deportista.apellidos;
-    const [asistencias, loading] = useFetchData('asistencias', `deportista_id=${deportistaId}`, 0, 50);
+    const [asistencias, loading, change, update] = useFetchData('asistencias', `deportista_id=${deportistaId}`, 0, 50);
     const [testData, setTestData] = useState([]);
     const [isDark, setIsDark] = useState(false);
     const [datePicker, setDatePicker] = useState(false);
@@ -57,27 +57,35 @@ export const DeportistaAssistance = ({ navigation, route }) => {
                 fechaFin:null,
             });
         }
+        console.log("Fecha inicio " + dateParams.fechaInicio)
+        console.log("Fecha fin " + dateParams.fechaFin)
     }
 
     const [tiempoEntrenado, setTiempoEntrenado] = useState(null);
 
-    const getTiempoEntrenado = useCallback(async () => {
+    const getTiempoEntrenado = useCallback(async () =>{
         let oSend = { deportistaId: deportistaId };
-
+        
         if (dateParams.fechaInicio && dateParams.fechaFin) {
             oSend.fechaInicio = dateParams.fechaInicio;
             oSend.fechaFin = dateParams.fechaFin;
         }
-
+        
         const response = await process(SAVE, 'tiempo-entrenamiento', oSend);
         if (response?.status === 201) {
             setTiempoEntrenado(response.data.total_trained);
         }
     }, [deportistaId, dateParams]);
-
+    
     useEffect(() => {
         getTiempoEntrenado();
     }, [getTiempoEntrenado]);
+    
+    useEffect(()=>{
+        if(dateParams.fechaInicio !== null && dateParams.fechaFin !== null){
+            change(`fecha[$gte]=${dateParams.fechaInicio}&fecha[$lte]=${dateParams.fechaFin}`)
+        }
+    },[dateParams.fechaFin && dateParams.fechaInicio])
 
     useEffect(() => {
         if (!loading) {
