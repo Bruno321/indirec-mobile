@@ -326,6 +326,9 @@ export const RegistroEventos = ({ navigation }) => {
 									value={values.jugadoresLocales}
 									style={styles.dropdown1DropdownStyle}
 									containerStyle={styles.dropdown1DropdownStyle}
+									activeColor="#003070"
+									selectedTextStyle={{color:'white'}}
+									selectedStyle={{color:'white'}}
 									search={true}
 									onChange={(value) => {
 										setFieldValue("jugadoresLocales", value);
