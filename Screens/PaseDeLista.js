@@ -17,11 +17,12 @@ export const  PaseDeLista = ()  => {
   const [dataResponse, setDataResponse] = useState({});
   const [registroCheck, setRegistroCheck] = useState(true);
   const navigation = useNavigation();
-  const profilePicture = dataResponse.deportista.foto ? {uri: dataResponse.deportista.foto} : require('../images/ImagenEjemploDeportista.jpg');
   
   // DOCUMENTACION - Función que regresa un bloque de código dependiendo si la lectura del QR fue correcta o incorrecta -> Regresa los componentes para mostrar un modal correcto/incorrecto
 
   const SuccessModal = () => {
+  const profilePicture = dataResponse.deportista.foto ? {uri: dataResponse.deportista.foto} : require('../images/ImagenEjemploDeportista.jpg');
+
     return (
       <View style={styles.ModalAlerta}>
         <Text style={styles.Modal1Text1}>Escaneo exitoso</Text>

@@ -1,9 +1,11 @@
 import { Dimensions, StyleSheet, View, SafeAreaView, Text, ScrollView, Image, Alert } from 'react-native';
-import { Header, Col, Row, ActionButton } from '../components';
+import { Header, Col, List, Row, ActionButton } from '../components';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
 import { URL, process, SAVE } from '../Service/Api';
+import { DeportistasCard } from '../components';
+import { Deportistas } from './Deportistas';
 
 const GRANTED = "granted";
 
@@ -19,17 +21,17 @@ const LargeText = ({ children, style = {}, numberOfLineas }) => {
 export const EquiposDetails = ({ navigation, route }) => {
     const [permissionResponse, requestPermission] = MediaLibrary.usePermissions();
     const { data } = route.params;
-    console.log("dataid " + data.id)
-    console.log(data);
+    // console.log("dataid " + data.id)
+    console.log("LA DATA > " + data);
 
     const handleDownload = async () => {
         console.log("id: " + data.id)
         const response = await process(SAVE, 'equipo-pdf', {
             id: data.id,
-        }).catch(e=>{
+        }).catch(e => {
             console.log("catch " + e)
         })
-        console.log("response "+ JSON.stringify(response.data.pdf))
+        console.log("response " + JSON.stringify(response.data.pdf))
         if (response.status === 201) {
             var link = `${URL}/pdf/${response.data.pdf}`;
             const { status } = await requestPermission();
@@ -41,7 +43,7 @@ export const EquiposDetails = ({ navigation, route }) => {
                 permissionStatus = await requestPermission();
             }
         } else {
-          console.log(response);
+            console.log(response);
         }
     };
 
@@ -85,7 +87,6 @@ export const EquiposDetails = ({ navigation, route }) => {
         <View style={styles.main}>
             <SafeAreaView style={{ backgroundColor: "#003070" }} />
             <Header navigation={navigation} title={"Datos del Equipo"} funcion={"goback"} />
-            <ScrollView contentContainerStyle={styles.centeredView} bounces={false} overScrollMode="never">
                 <View style={styles.equipoPresentation}>
                     <Text style={styles.equipoName}>{data.nombre}</Text>
                     {/* <Image source={require('../images/ImagenEjemploEquipo.png')} style={styles.equipoImage} /> */}
@@ -110,6 +111,10 @@ export const EquiposDetails = ({ navigation, route }) => {
                         <LargeText style={styles.dato}>{data.nombreAsistente + " " + data.apellidoAsistente}</LargeText>
                     </Row>
                 </View>
+                <List dataSource={data.deportistas} renderItem={row => <DeportistasCard props={row}/>}/>
+                {/* {data.deportistas.map(deportista => { console.log("INFO DEL DEPORTISTA -> " + JSON.stringify(deportista))})} */}
+                {/* {data.deportistas.map(deportista => { <DeportistasCard props={deportista}/>})} */}
+                {/* <Text> {JSON.stringify(data.deportistas)} </Text> */}
                 <ActionButton
                     text="Descargar PDF"
                     handler={() => handleDownload()}
@@ -118,7 +123,7 @@ export const EquiposDetails = ({ navigation, route }) => {
                     icon="file-pdf-o"
                     style={{ width: "80%", marginTop: '10%', alignSelf: 'center', height: 60, marginBottom: 5, borderWidth: 2, borderColor: "#003070", borderRadius: 18 }}
                 />
-            </ScrollView>
+
         </View>
     );
 };

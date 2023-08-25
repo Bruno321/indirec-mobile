@@ -27,6 +27,7 @@ export const Deportistas = ({ navigation }) => {
   useDidMountEffect(() => {
     const concatenatedString = componentAString + componentBString;
     change(concatenatedString, pagina * 10);
+    console.log("DEPORTISTAS . DATA > " + JSON.stringify(deportistas.data));
   }, [componentAString, componentBString, pagina]);
 
   return (

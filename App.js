@@ -90,6 +90,12 @@ export default function App() {
           drawerLabelStyle: { marginLeft: -15, color: '#fff' }
         }}
       >
+        <Drawer.Screen name="Equipos" component={Equipos}
+          options={{
+            drawerIcon: () => <Image source={require('./assets/icons/sports.png')} />,
+            title: 'Equipos'
+          }}
+        />
         <Drawer.Screen name="RegistroEquipos" component={RegistroEquipos}
           options={{
             drawerIcon: () => <Image source={require('./assets/icons/register.png')} />,
@@ -100,12 +106,6 @@ export default function App() {
           options={{
             drawerIcon: () => <Image source={require('./assets/icons/sports.png')} />,
             title: 'Deportistas'
-          }}
-        />
-        <Drawer.Screen name="Equipos" component={Equipos}
-          options={{
-            drawerIcon: () => <Image source={require('./assets/icons/sports.png')} />,
-            title: 'Equipos'
           }}
         />
         <Drawer.Screen name="Eventos" component={Eventos}
