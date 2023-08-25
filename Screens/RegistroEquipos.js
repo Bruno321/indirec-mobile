@@ -324,7 +324,7 @@ export const RegistroEquipos = () => {
 
 							{/* VERIFICAR INFO PARA QUERY A DEPORTISTAS */}
 							{values.categoria !== 2 && values.facultad ? <>
-								<SearchInput
+								{/* <SearchInput
 									setPagina={setPagina}
 									screen={"deportistas"}
 									updateConcat={setComponentBString}
@@ -333,7 +333,7 @@ export const RegistroEquipos = () => {
 									numberPage={pagina}
 									setPagina={setPagina}
 									total={deportistas.total}
-								/>
+								/> */}
 								<View>
 									<View style={styles.headerLista}>
 										<View style={styles.celda1HeaderLista}>
@@ -421,6 +421,13 @@ export const RegistroEquipos = () => {
 									</View>
 								</TouchableCmp>
 							</View>
+							{/* <View style={styles.viewButton}>
+								<TouchableCmp onPress={() => (console.log(validationSchema))}>
+									<View style={styles.viewRegistrar}>
+										{loading ? <ActivityIndicator color="white" /> : <Text style={styles.registrar}>BOTON AUXILIAR</Text>}
+									</View>
+								</TouchableCmp>
+							</View> */}
 
 							{/* MODAL RESUMEN */}
 							<Modal
@@ -437,15 +444,13 @@ export const RegistroEquipos = () => {
 
 								<View style={styles.modalViewCenter}>
 									<Text>RESUMEN</Text>
-									<View style={styles.listadoModal}>
-										<Text style={styles.listadoModalb}>NOMBREDELEQUIPO</Text>
-										<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-											<Text style={styles.listadoModalc}>$DEPORTE$</Text>
-											<Text style={styles.listadoModalc}>$CATEGORIA$</Text>
-										</View>
-										<Text style={styles.listadoModald} numberOfLines={2}>$FACULTAD$</Text>
-										<Text style={styles.listadoModald} numberOfLines={2}>$CAMPUS$</Text>
-										<Text style={styles.listadoModala}>Lista de Jugadores</Text>
+									<View style={styles.listadoModalView}>
+										<Text style={styles.listadoModal} numberOfLines={2}>Nombre del equipo: {values.nombre}</Text>
+										<Text style={styles.listadoModal} numberOfLines={2}>Deporte: {values.deporte}</Text>
+										<Text style={styles.listadoModal} numberOfLines={2}>Categoría: {values.categoria == 0 ? "Varoníl" : "Femeníl"}</Text>
+										<Text style={styles.listadoModal} numberOfLines={2}>Facultad: {values.facultad}</Text>
+										<Text style={styles.listadoModal} numberOfLines={2}>Campus: {values.campus}</Text>
+										<Text style={styles.listadoModal} numberOfLines={2}>{Object.keys(nuevosDeportistas.filter(deportista => deportista.isSelected)).length > 0 ? "Lista de Jugadores" : "Primero selecciona jugadores para el equipo"}</Text>
 										{/* LISTA DE JUGADORES SELECCIONADOS */}
 										{nuevosDeportistas.filter(deportista => deportista.isSelected).map((deportista, index) => (
 											<View
@@ -466,7 +471,7 @@ export const RegistroEquipos = () => {
 												</View>
 												<View
 													key={index + "view3"}
-													style={!deportista.isSelected ? styles.celda4a : styles.celda4b}
+													style={styles.celda4bb}
 												>
 													<Text
 														key={index + "text2"}
@@ -649,9 +654,14 @@ const styles = StyleSheet.create({
 		width: "50%",
 		justifyContent: 'center',
 	},
+	celda4bb: {
+		backgroundColor: '#FFF',
+		width: "80%",
+		justifyContent: 'center',
+	},
 	celda5a: {
 		// backgroundColor: '#F00',
-		width: width * 0.2,
+		width: width * 0.3,
 		height: "100%",
 		justifyContent: 'space-evenly',
 		alignItems: 'center',
@@ -660,7 +670,7 @@ const styles = StyleSheet.create({
 	},
 	celda5b: {
 		backgroundColor: '#EEE',
-		width: width * 0.2,
+		width: width * 0.3,
 		height: "100%",
 		justifyContent: 'space-evenly',
 		alignItems: 'center',
@@ -728,5 +738,8 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		alignSelf: 'center',
 		elevation: 5,
+	},
+	listadoModalView: {
+		width: "80%",
 	}
 });
