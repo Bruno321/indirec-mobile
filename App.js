@@ -90,22 +90,10 @@ export default function App() {
           drawerLabelStyle: { marginLeft: -15, color: '#fff' }
         }}
       >
-        <Drawer.Screen name="Equipos" component={Equipos}
+        <Drawer.Screen name="PaseDeLista" component={PaseDeLista}
           options={{
-            drawerIcon: () => <Image source={require('./assets/icons/sports.png')} />,
-            title: 'Equipos'
-          }}
-        />
-        <Drawer.Screen name="RegistroEquipos" component={RegistroEquipos}
-          options={{
-            drawerIcon: () => <Image source={require('./assets/icons/register.png')} />,
-            title: 'Registrar Equipos'
-          }}
-        />
-        <Drawer.Screen name="Deportistas" component={Deportistas}
-          options={{
-            drawerIcon: () => <Image source={require('./assets/icons/sports.png')} />,
-            title: 'Deportistas'
+            drawerIcon: () => <Image source={require('./assets/icons/list.png')} />,
+            title: 'Pase de lista'
           }}
         />
         <Drawer.Screen name="Eventos" component={Eventos}
@@ -114,16 +102,28 @@ export default function App() {
             title: 'Eventos'
           }}
         />
-        <Drawer.Screen name="PaseDeLista" component={PaseDeLista}
+        <Drawer.Screen name="Equipos" component={Equipos}
           options={{
-            drawerIcon: () => <Image source={require('./assets/icons/list.png')} />,
-            title: 'Pase de lista'
+            drawerIcon: () => <Image source={require('./assets/icons/sports.png')} />,
+            title: 'Equipos'
+          }}
+        />
+        <Drawer.Screen name="Deportistas" component={Deportistas}
+          options={{
+            drawerIcon: () => <Image source={require('./assets/icons/sports.png')} />,
+            title: 'Deportistas'
           }}
         />
         <Drawer.Screen name="Asistencias" component={Asistencias}
           options={{
             drawerIcon: () => <Image source={require('./assets/icons/clock.png')} />,
             title: 'Asistencias'
+          }}
+        />
+        <Drawer.Screen name="RegistroEquipos" component={RegistroEquipos}
+          options={{
+            drawerIcon: () => <Image source={require('./assets/icons/register.png')} />,
+            title: 'Registrar Equipos'
           }}
         />
         <Drawer.Screen name="RegistroDeportistas" component={RegistroDeportistas}

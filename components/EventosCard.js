@@ -24,48 +24,48 @@ export const EventosCard = ({ props, navigation }) => {
   };
 
   return (
-    <View style={{ paddingLeft: 0 }}>
-      <View>
         <TouchableOpacity
           style={styles.containerCard}
           onPress={() => {
             redirect();
           }}
         >
-          <View style={styles.containerTeam}>
-            <Text style={{ fontSize: 18 / fontScale, fontWeight: "700" }}>
-              {props.EquipoLocal.nombre}
-            </Text>
-          </View>
+          <View style={{flexDirection: 'row', height: 100}}>
+            <View style={styles.containerTeam}>
+              <Text style={{ fontSize: 18 / fontScale, fontWeight: "700" }}>
+                {props.EquipoLocal.nombre}
+              </Text>
+            </View>
 
-          <View style={styles.containerDate}>
-            <Text>{props.fecha}</Text>
-            <Text style={styles.date}>{props.hora}</Text>
-            <Text>{props.canchaJugada}</Text>
-          </View>
+            <View style={styles.containerDate}>
+              <Text>{props.fecha}</Text>
+              <Text style={styles.date}>{props.hora}</Text>
+            </View>
 
-          <View style={styles.containerTeam}>
-            <Text style={{ fontSize: 18 / fontScale, fontWeight: "700" }}>
-              {props.EquipoVisitante.nombre}
-            </Text>
+            <View style={styles.containerTeam}>
+              <Text style={{ fontSize: 18 / fontScale, fontWeight: "700" }}>
+                {props.EquipoVisitante.nombre}
+              </Text>
+            </View>
           </View>
+          <Text>{props.canchaJugada}</Text>
+
+
         </TouchableOpacity>
-      </View>
-    </View>
   );
 };
 
 const styles = StyleSheet.create({
   containerCard: {
     backgroundColor: "#FFF",
-    height: 120,
+    // height: 120,
     width: "100%",
     borderBottomWidth: 1,
     borderColor: "#DDDDDD",
-    paddingBottom: 20,
-    paddingTop: 15,
+    // paddingBottom: 20,
+    // paddingTop: 15,
     paddingHorizontal: 30,
-    flexDirection: "row",
+    // flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     overflow: "hidden",
@@ -78,9 +78,9 @@ const styles = StyleSheet.create({
   containerDate: {
     flex: 1,
     width: "30%",
-    height: "100%",
+    // height: "100%",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
   },
   date: {
     color: "white",
