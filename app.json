@@ -24,16 +24,10 @@
       "adaptiveIcon": {
         "foregroundImage": "./images/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      },
-      "package": "com.danielaros.INDEREQCOACH"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "17e841e5-ca00-4010-b5df-d4bf14c4ec72"
-      }
     }
   }
 }
