@@ -370,16 +370,21 @@ export const RegistroDeportistas = () => {
 							</View>
 						</View>
 						{/* -------------------------------------------------------------------------------------------------------------- */}
-
-						<Text style={styles.campos}>No. Jugador:</Text>
-						<TextInput
-							placeholder='7'
-							style={styles.input}
-							keyboardType='numeric'
-							onChangeText={handleChange('numJugador')}
-							value={values.numJugador}
-						/>
-						<Text style={styles.error}>{touched.numJugador && errors.numJugador}</Text>
+						{
+							values.jugadorSeleccionado ? (
+							<View>
+								<Text style={styles.campos}>No. Jugador:</Text>
+								<TextInput
+									placeholder='7'
+									style={styles.input}
+									keyboardType='numeric'
+									onChangeText={handleChange('numJugador')}
+									value={values.numJugador}
+								/>
+								<Text style={styles.error}>{touched.numJugador && errors.numJugador}</Text>
+							</View>
+							) : ''
+						}
 
 						<Text style={styles.campos}>Deporte:</Text>
 						<Dropdown 
