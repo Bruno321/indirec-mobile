@@ -15,6 +15,7 @@ import {
 import { LoginContext } from "../Context/LoginContext";
 import { login } from "../Service/Api";
 import useKeyboard from "../Hooks/Keyboard.hook";
+import Feather from "react-native-vector-icons/Feather";
 
 const { width, height } = Dimensions.get("window");
 
@@ -31,6 +32,7 @@ export const Login = () => {
   const { iniciarSesion } = useContext(LoginContext);
   const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   const isKeyboardOpen = useKeyboard();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleEmailChange = (email) => {
     setData({
@@ -57,10 +59,12 @@ export const Login = () => {
       if (email !== "" && password !== "") {
         setLoading(true);
         const response = await login(email, password).catch((error) => {
-          console.log(error.response);
+          console.log('error', error.response);
+          Alert.alert("Datos Incorrectos", "Correo o contraseña incorrectos", [  { text: "Aceptar" },]);
+          setLoading(false);
         });
 
-        if (response.data) {
+        if (response?.status == 201) {
           iniciarSesion(response.data.accessToken);
         }
 
@@ -105,7 +109,7 @@ export const Login = () => {
         <View style={styles.rowForm}>
           <Text style={styles.label}>Correo Electronico:</Text>
           <TextInput
-            style={styles.input}
+            style={{...styles.input, margin: height * 0.01,}}
             onChangeText={handleEmailChange}
             keyboardType="email-address"
             placeholder="Usuario"
@@ -117,13 +121,18 @@ export const Login = () => {
         )}
         <View style={styles.rowForm}>
           <Text style={styles.label}>Contraseña:</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={handlePasswordChange}
-            placeholder="Contraseña"
-            secureTextEntry={true}
-            value={data.password}
-          />
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <TextInput
+              style={{...styles.input, ...styles.inputPassword}}
+              onChangeText={handlePasswordChange}
+              placeholder="Contraseña"
+              secureTextEntry={!showPassword}
+              value={data.password}
+            />
+            <View style={{borderBottomWidth: 1, height: 32}}>
+              <Feather name={showPassword ? 'eye' : 'eye-off'} size={25} color={'#000'} onPress={() => setShowPassword(!showPassword)}/>
+            </View>
+          </View>
         </View>
         {data.isValidPassword ? null : (
           <Text style={styles.error}>La contraseña está vacía</Text>
@@ -176,6 +185,7 @@ const styles = StyleSheet.create({
   },
   rowForm: {
     marginTop: 12,
+    width: width * 0.8,
   },
   label: {
     marginLeft: width * 0.02,
@@ -183,15 +193,19 @@ const styles = StyleSheet.create({
     fontSize: width * 0.05,
   },
   input: {
-    width: width * 0.8,
     height: 32,
-    margin: height * 0.01,
     borderBottomWidth: 1,
     borderBottomColor: "black",
     color: "#000000",
     fontFamily: "Fredoka-Light",
     backgroundColor: "#ffffff",
     fontSize: width * 0.04,
+  },
+  inputPassword: {
+    width: width * 0.695, 
+    marginTop: height * 0.01,  
+    marginLeft: height * 0.01, 
+    marginBottom: height * 0.01,
   },
   loginButton: {
     marginTop: 30,

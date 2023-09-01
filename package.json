@@ -34,7 +34,7 @@
     "radio-buttons-react-native": "^1.0.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-native": "0.72.3",
+    "react-native": "^0.72.4",
     "react-native-dotenv": "^3.3.1",
     "react-native-element-dropdown": "^2.3.0",
     "react-native-gesture-handler": "~2.12.0",
