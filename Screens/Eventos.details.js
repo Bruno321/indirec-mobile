@@ -19,6 +19,7 @@ import React, { useState } from "react";
 import { Col, Header, List } from "../components";
 import TouchableCmp from "../assetsUI/TouchableCmp";
 import { useFetchData } from "../Hooks/Fetch.hook";
+import moment from 'moment';
 
 const { fontScale } = Dimensions.get("window");
 
@@ -107,7 +108,7 @@ export const EventosDetails = (props) => {
             >
               <View>
                 <Text style={styles.txtTitulo}>Fecha</Text>
-                <Text style={styles.txtSubtitulo}>{datos.fecha}</Text>
+                <Text style={styles.txtSubtitulo}>{moment(datos.fecha).format('DD-MM-YYYY')}</Text>
               </View>
               <View>
                 <Text style={styles.txtTitulo}>Hora</Text>
@@ -116,7 +117,7 @@ export const EventosDetails = (props) => {
             </View>
 
             <View>
-              <Text style={styles.txtTitulo}>Lugar</Text>
+              <Text style={styles.txtTitulo}>Cancha</Text>
               <Text style={styles.txtSubtitulo}>{datos.canchaJugada}</Text>
             </View>
           </View>
@@ -135,14 +136,20 @@ export const EventosDetails = (props) => {
                 Equipo {datos.EquipoLocal.nombre}
               </Text>
               <View style={styles.inputPuntos}>
-                <TextInput
-                  placeholder='0'
-                  placeholderTextColor="#c5c5c5" 
-                  style={{ fontSize: 22 / fontScale }}
-                  keyboardType='number-pad'
-                  // onChangeText={handleChange('expediente')}
-                  // value={values.expediente}
-                />
+                {datos.puntosLocal?
+                  <Text style={{fontSize: 20 / fontScale}}>
+                    {datos.puntosLocal}
+                  </Text>
+                :
+                  <TextInput
+                    placeholder={"Ingrese\npuntos"} 
+                    placeholderTextColor="#c5c5c5" 
+                    style={{ fontSize: 20 / fontScale, textAlign: "center" }}
+                    keyboardType='number-pad'
+                    // onChangeText={handleChange('expediente')}
+                    // value={values.expediente}
+                  />
+                }
               </View>
             </View>
 
@@ -151,14 +158,20 @@ export const EventosDetails = (props) => {
                 Equipo {datos.EquipoVisitante.nombre}
               </Text>
               <View style={styles.inputPuntos}>
-                <TextInput
-                  placeholder='0'
-                  placeholderTextColor="#c5c5c5" 
-                  style={{ fontSize: 22 / fontScale }}
-                  keyboardType='number-pad'
-                  // onChangeText={handleChange('expediente')}
-                  // value={values.expediente}
-                />
+                {datos.puntosVisitante?
+                  <Text style={{fontSize: 20 / fontScale}}>
+                    {datos.puntosVisitante}
+                  </Text>
+                :
+                  <TextInput
+                    placeholder={"Ingrese\npuntos"} 
+                    placeholderTextColor="#c5c5c5" 
+                    style={{ fontSize: 20 / fontScale, textAlign: "center" }}
+                    keyboardType='number-pad'
+                    // onChangeText={handleChange('expediente')}
+                    // value={values.expediente}
+                  />
+                }
               </View>
             </View>
           </View>
@@ -167,7 +180,8 @@ export const EventosDetails = (props) => {
           {/* <Text style={styles.txtSubtitulo}>{datos.incidentes}</Text> */}
           <View style={{borderColor:"#c5c5c5", borderWidth: 1}}>
             <TextInput
-              editable
+              editable={datos.incidentes?false:true}
+              defaultValue={datos.incidentes&&datos.incidentes}
               multiline
               numberOfLines={10}
               maxLength={40}
@@ -175,18 +189,20 @@ export const EventosDetails = (props) => {
               placeholderTextColor="#c5c5c5" 
               // onChangeText={text => onChangeText(text)}
               // value={value}
-              style={{padding: 10, textAlignVertical:"top", fontSize: 15 / fontScale}}
+              style={{padding: 10, textAlignVertical:"top", fontSize: 15 / fontScale, color: 'black'}}
             />
           </View>
         </View>
-        <View style={styles.boton}>
-          {/* <TouchableCmp onPress={()=>onSubmit(values)}> */}
-          <TouchableCmp style={{borderRadius:15, overflow:"hidden"}}>
-            <View style={styles.btn}>
-              <Text style={styles.txtBtn}>Finalizar Evento</Text>
-            </View>
-          </TouchableCmp>
-        </View>
+        {!datos.puntosLocal&&
+          <View style={styles.boton}>
+            {/* <TouchableCmp onPress={()=>onSubmit(values)}> */}
+            <TouchableCmp style={{borderRadius:15, overflow:"hidden"}}>
+              <View style={styles.btn}>
+                <Text style={styles.txtBtn}>Finalizar Evento</Text>
+              </View>
+            </TouchableCmp>
+          </View>
+        }
       </ScrollView>
     </View>
   );
