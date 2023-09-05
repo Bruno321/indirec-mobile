@@ -7,17 +7,14 @@ const { fontScale, width } = Dimensions.get('window');
 
 export const AsistenciasCard = ({ props }) => {
     var dataProps = props;
-    // const profilePicture = {uri: '../images/ImagenEjemploDeportista.png'};
+    console.log("DATAPROPS> " + JSON.stringify(dataProps));
     const navigation = useNavigation();
-    // console.log("DATAPROP>>>>" + JSON.stringify(dataProps.deportista.foto))
-    // const profilePicture = dataProps.props.foto ? {uri: dataProps.props.foto} : require('../images/ImagenEjemploDeportista.jpg');
     const profilePicture = dataProps.deportista.foto != null ? {uri: dataProps.deportista.foto} : require('../images/ImagenEjemploDeportista.jpg');
-    console.log("PROFILE PICTURE> " + JSON.stringify(profilePicture));
     return (
         <TouchableCmp onPress={() => navigation.navigate("DeportistaAssistance", dataProps)}>
             <View style={styles.main}>
                 <View style={styles.imageView}>
-                    <Image source={profilePicture} style={{backgroundColor:'red', width: "100%", height: "100%",}} />
+                    <Image source={profilePicture} style={{ width: "100%", height: "100%",}} />
                 </View>
                 <View style={styles.even1}>
                     <View>
@@ -30,11 +27,11 @@ export const AsistenciasCard = ({ props }) => {
                     <View style={styles.caja2}>
                         <View style={{flexDirection: 'row',}}>
                             <Text style={styles.cajaText2} numberOfLines={1}>Salida:</Text>
-                            <Text style={styles.cajaText3} numberOfLines={1}>{moment(props.horaSalida).format("h:mm a")}</Text>
+                            <Text style={styles.cajaText3} numberOfLines={1}>{props.horaSalida ? moment(props.horaSalida).format("h:mm a") : "--:-- --"}</Text>
                         </View>
                         <View style={{flexDirection: 'row',}}>
                             <Text style={styles.cajaText2} numberOfLines={1}>Visita:</Text>
-                            <Text style={styles.cajaText3} numberOfLines={1}>{moment.utc(moment(props.horaSalida, 'HH:mm').diff(moment(props.horaEntrada, 'HH:mm'))).format('HH:mm')}</Text>
+                            <Text style={styles.cajaText3} numberOfLines={1}>{props.horaSalida ? moment.utc(moment(props.horaSalida, 'HH:mm').diff(moment(props.horaEntrada, 'HH:mm'))).format('HH:mm') : "--:--"}</Text>
                         </View>
                     </View>
                 </View>
