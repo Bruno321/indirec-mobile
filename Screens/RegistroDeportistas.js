@@ -171,10 +171,11 @@ export const RegistroDeportistas = () => {
 			copyToCacheDirectory: true,
 			multiple:false,
 		});
+		// console.log(result)
   
-		if (result.type=='success') {
-			oSetter[type](result.name);
-			formHandler(type, result);
+		if (result.assets) {
+			oSetter[type](result.assets[0].name);
+			formHandler(type, result.assets[0]);
 			setModBot('');
 			setModal(false);
 		}
@@ -188,10 +189,12 @@ export const RegistroDeportistas = () => {
 			quality:0.5
 		});
 
-		if (!result.cancelled) {
-			let uri = result.uri;
+		// console.log(result)
+
+		if (result.assets) {
+			let uri = result.assets[0].uri;
 			oSetter[type](uri);
-			formHandler(type, result);
+			formHandler(type, result.assets[0]);
 			setModBot('');
 			setModal(false);
 		}
@@ -223,23 +226,26 @@ export const RegistroDeportistas = () => {
 				oSend.append(sKey, values[sKey]);
 			}
 		}
+
+		console.log(oSend)
 		
 		const objStr = JSON.stringify(oSend);
 		// console.log("este es el response" + objStr)
-		let response
 		try{
-			response = await process(SAVE_WITH_FILE, 'deportistas', oSend).catch(e=>console.log(e.response.data))
-			console.log(response)
+			const response = await process(SAVE_WITH_FILE, 'deportistas', oSend).catch(e=>{
+				console.log(e.response.data.message)
+			});
+			console.log(response.data.data)
 		}catch(e){
-			let objErr = JSON.stringify(e.response)
-			console.log("error: " + objErr)
+			// let objErr = JSON.stringify(e)
+			console.log("error: " + e)
 			setLoading(false);
 		}
 		
 		if (response.data) {
 			Alert.alert(
 				'Jugador agregado exitosamente',
-				response.data.message,
+				response.data?.message,
 				[
 					{
 						text:'Okay',
