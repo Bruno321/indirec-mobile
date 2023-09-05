@@ -180,12 +180,12 @@ export const EventosDetails = (props) => {
           {/* <Text style={styles.txtSubtitulo}>{datos.incidentes}</Text> */}
           <View style={{borderColor:"#c5c5c5", borderWidth: 1}}>
             <TextInput
-              editable={datos.incidentes?false:true}
+              editable={datos.puntosLocal?false:true}
               defaultValue={datos.incidentes&&datos.incidentes}
               multiline
               numberOfLines={10}
               maxLength={40}
-              placeholder="Ingrese aquí"
+              placeholder={datos.puntosLocal?"No hubo observaciones":"Ingrese aqui"}
               placeholderTextColor="#c5c5c5" 
               // onChangeText={text => onChangeText(text)}
               // value={value}
