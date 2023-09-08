@@ -11,24 +11,32 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   SafeAreaView,
+  Modal,
+  Alert
 } from "react-native";
 import { ActionButton } from "../components/ActionButton";
 import MarqueeText from "react-native-marquee";
-import Modal from "react-native-modal";
 import React, { useState } from "react";
 import { Col, Header, List } from "../components";
 import TouchableCmp from "../assetsUI/TouchableCmp";
 import { useFetchData } from "../Hooks/Fetch.hook";
 import moment from 'moment';
+import { UPDATE, process } from '../Service/Api';
 
 const { fontScale } = Dimensions.get("window");
 
-export const EventosDetails = (props) => {
+const oInitialState = {
+  incidentes: '',
+  puntosLocal: '',
+  puntosVisitante: ''
+}
+
+export const EventosDetails = (props, {navigation}) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [equipoSelec, setEquipoSelec] = useState();
   let datos = props.route.params.datos; //id, nombre, fecha, hora, equipoloca, etc
-
-  console.log(datos);
+  const [form, setForm] = useState(oInitialState)
+	const [modal, setModal] = useState(false);
 
   const mostrarJugadores = () => {
     if (equipoSelec == "local")
@@ -40,6 +48,40 @@ export const EventosDetails = (props) => {
         (obj) => obj.deportista.equipo.nombre == datos.EquipoVisitante.nombre
       );
   };
+
+  const handleSubmit = async (e) => {
+    const { puntosLocal, puntosVisitante, incidentes } = form;
+    const response = await process(UPDATE, 'eventos', {
+      puntosLocal: puntosLocal || 0,
+      puntosVisitante: puntosVisitante || 0,
+      incidentes: incidentes || '',
+    }, { id: datos.id }).catch(e => {
+      Alert.alert(
+        'Oops...',
+        'Algo salio mal, intenta mas tarde',
+        [
+          { text: 'Okay' },
+        ]
+      )
+      console.log(e);
+    });
+
+    if (response.status === 200) {
+      Alert.alert(
+        'Listo',
+        'Se registraron los resultados',
+        [
+          { 
+            text: 'Okay',
+            onPress: () => {
+              setModal(false)
+              navigation.navigate("Eventos")
+            }
+          },
+        ]
+      )
+    }
+  }
 
   const Item = ({ title, apellido, num }) => (
     <View style={styles.item}>
@@ -136,18 +178,18 @@ export const EventosDetails = (props) => {
                 Equipo {datos.EquipoLocal.nombre}
               </Text>
               <View style={styles.inputPuntos}>
-                {datos.puntosLocal?
-                  <Text style={{fontSize: 20 / fontScale}}>
+                {datos.puntosLocal ?
+                  <Text style={{ fontSize: 20 / fontScale }}>
                     {datos.puntosLocal}
                   </Text>
-                :
+                  :
                   <TextInput
-                    placeholder={"Ingrese\npuntos"} 
-                    placeholderTextColor="#c5c5c5" 
+                    placeholder={"Ingrese\npuntos"}
+                    placeholderTextColor="#c5c5c5"
                     style={{ fontSize: 20 / fontScale, textAlign: "center" }}
                     keyboardType='number-pad'
-                    // onChangeText={handleChange('expediente')}
-                    // value={values.expediente}
+                    onChangeText={e=>setForm({...form, puntosLocal:e})}
+                  // value={values.expediente}
                   />
                 }
               </View>
@@ -158,18 +200,18 @@ export const EventosDetails = (props) => {
                 Equipo {datos.EquipoVisitante.nombre}
               </Text>
               <View style={styles.inputPuntos}>
-                {datos.puntosVisitante?
-                  <Text style={{fontSize: 20 / fontScale}}>
+                {datos.puntosVisitante ?
+                  <Text style={{ fontSize: 20 / fontScale }}>
                     {datos.puntosVisitante}
                   </Text>
-                :
+                  :
                   <TextInput
-                    placeholder={"Ingrese\npuntos"} 
-                    placeholderTextColor="#c5c5c5" 
+                    placeholder={"Ingrese\npuntos"}
+                    placeholderTextColor="#c5c5c5"
                     style={{ fontSize: 20 / fontScale, textAlign: "center" }}
                     keyboardType='number-pad'
-                    // onChangeText={handleChange('expediente')}
-                    // value={values.expediente}
+                    onChangeText={e=>setForm({...form, puntosVisitante:e})}
+                  // value={values.expediente}
                   />
                 }
               </View>
@@ -178,25 +220,25 @@ export const EventosDetails = (props) => {
 
           <Text style={styles.txtTitulo}>Observaciones</Text>
           {/* <Text style={styles.txtSubtitulo}>{datos.incidentes}</Text> */}
-          <View style={{borderColor:"#c5c5c5", borderWidth: 1}}>
+          <View style={{ borderColor: "#c5c5c5", borderWidth: 1 }}>
             <TextInput
-              editable={datos.puntosLocal?false:true}
-              defaultValue={datos.incidentes&&datos.incidentes}
+              editable={datos.puntosLocal ? false : true}
+              defaultValue={datos.incidentes && datos.incidentes}
               multiline
               numberOfLines={10}
               maxLength={40}
-              placeholder={datos.puntosLocal?"No hubo observaciones":"Ingrese aqui"}
-              placeholderTextColor="#c5c5c5" 
-              // onChangeText={text => onChangeText(text)}
+              placeholder={datos.puntosLocal ? "No hubo observaciones" : "Ingrese aqui"}
+              placeholderTextColor="#c5c5c5"
+              onChangeText={e=>setForm({...form, incidentes:e})}
               // value={value}
-              style={{padding: 10, textAlignVertical:"top", fontSize: 15 / fontScale, color: 'black'}}
+              style={{ padding: 10, textAlignVertical: "top", fontSize: 15 / fontScale, color: 'black' }}
             />
           </View>
         </View>
-        {!datos.puntosLocal&&
+        {!datos.puntosLocal &&
           <View style={styles.boton}>
             {/* <TouchableCmp onPress={()=>onSubmit(values)}> */}
-            <TouchableCmp style={{borderRadius:15, overflow:"hidden"}}>
+            <TouchableCmp style={{ borderRadius: 15, overflow: "hidden" }} onPress={()=>{setModal(true)}}>
               <View style={styles.btn}>
                 <Text style={styles.txtBtn}>Finalizar Evento</Text>
               </View>
@@ -204,6 +246,33 @@ export const EventosDetails = (props) => {
           </View>
         }
       </ScrollView>
+      <Modal
+        animationType={'slide'}
+        visible={modal}
+        transparent
+        onRequestClose={() => setModal(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.txtTitulo2}>¿Registrar los resultados?</Text>
+            <Text style={styles.txtSubtitulo}>Puntos local: {form.puntosLocal}</Text>
+            <Text style={styles.txtSubtitulo}>Puntos visitante: {form.puntosVisitante}</Text>
+            <Text style={styles.txtSubtitulo}>Incidentes: {form.incidentes}</Text>
+            <View style={{display:'flex', flexDirection:'row', marginTop:'auto', justifyContent:'space-around'}}>
+              <TouchableCmp onPress={()=>setModal(false)}>
+                <View style={{borderColor:'#003070', borderWidth:1, paddingHorizontal: 20, paddingVertical: 10, borderRadius: 15, overflow:'hidden'}}>
+                  <Text style={styles.txtSubtitulo3}>Cancelar</Text>
+                </View>
+              </TouchableCmp>
+              <TouchableCmp onPress={()=>handleSubmit()}>
+                <View style={{backgroundColor:'#003070', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 15, overflow:'hidden'}}>
+                  <Text style={styles.txtSubtitulo2}>Confirmar</Text>
+                </View>
+              </TouchableCmp>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -261,8 +330,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 12,
   },
+  txtTitulo2: {
+    fontSize: 18 / fontScale,
+    fontWeight: "bold",
+    marginBottom: 12,
+    textAlign: 'center'
+  },
   txtSubtitulo: {
     fontSize: 16 / fontScale,
+  },
+  txtSubtitulo2: {
+    fontSize: 16 / fontScale,
+    color: "white",
+  },
+  txtSubtitulo3: {
+    fontSize: 16 / fontScale,
+    color: "#003070",
   },
   containerPuntosEquipos: {
     width: "100%",
@@ -297,23 +380,45 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   boton: {
-	  marginTop: 40,
-	  alignItems: "flex-end",
-	  overflow: "hidden",
-    marginRight:22,
+    marginTop: 40,
+    alignItems: "flex-end",
+    overflow: "hidden",
+    marginRight: 22,
     borderRadius: 15,
-	},
+  },
   btn: {
     paddingVertical: 10,
-	  width: Dimensions.get("window").width * 0.4,
+    width: Dimensions.get("window").width * 0.4,
     overflow: "hidden",
-	  borderRadius: 15,
-	  backgroundColor: "#003070",
-	},
+    borderRadius: 15,
+    backgroundColor: "#003070",
+  },
   txtBtn: {
-	  fontFamily: "Fredoka-Regular",
-	  fontSize: 17 / fontScale,
-	  color: "white",
-	  textAlign: "center",
-	},
+    fontFamily: "Fredoka-Regular",
+    fontSize: 17 / fontScale,
+    color: "white",
+    textAlign: "center",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    width: '80%', // Ancho del 80%
+    height: '30%', // Alto del 50%
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 30,
+    // alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  }
 });
