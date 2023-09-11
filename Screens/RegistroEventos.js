@@ -33,6 +33,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { Filters } from "../components/Filters";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Feather from 'react-native-vector-icons/Feather';
+import RadioButtonRN from 'radio-buttons-react-native';
 import moment from 'moment';
 
 
@@ -52,6 +53,7 @@ const oInitialState = {
 	directorTecnicoLocal: "",
 	directorTecnicoVisitante: "",
 	canchaJugada: "",
+	categoria: null
 };
 
 const validationSchema = yup.object().shape({
@@ -59,6 +61,7 @@ const validationSchema = yup.object().shape({
 	fecha: yup.date().required("La fecha es requerida"),
 	hora: yup.string()
 		.required("La hora es requerida"),
+	categoria: yup.number().required('La categoria es requerida'),
 	equipo_local_id: yup.string().required("El nombre es requerido"),
 	equipo_visitante_id: yup.string().required("El nombre es requerido"),
 	directorTecnicoLocal: yup.string().required("El nombre es requerido"),
@@ -83,8 +86,8 @@ export const RegistroEventos = ({ navigation }) => {
 	}));
 
 	//Se guarda en un estado el arreglo de los jugadores que corresponden a cada uno de los dos equipos.
-	const [jugadoresLocales, setJugadoresLocales] = useState();
-	const [jugadoresVisitantes, setJugadoresVisitantes] = useState();
+	// const [jugadoresLocales, setJugadoresLocales] = useState();
+	// const [jugadoresVisitantes, setJugadoresVisitantes] = useState();
 
 	const [selected, setSelected] = useState([]);
 
@@ -93,8 +96,11 @@ export const RegistroEventos = ({ navigation }) => {
 	const [equipo_visitante_id, setequipo_visitante_id] = useState();
 
 	//Estados para guardar en arreglos los deportistas que participaran en el evento.
-	const [listaJugadoresLocales, setListaJugadoresLocales] = useState([]);
-	const [listaJugadoresVisitantes, setListaJugadoresVisitantes] = useState([]);
+	// const [listaJugadoresLocales, setListaJugadoresLocales] = useState([]);
+	// const [listaJugadoresVisitantes, setListaJugadoresVisitantes] = useState([]);
+
+	const [listaLocales, setListaLocales] = useState([]);
+	const [listaVisitantes, setListaVisitantes] = useState([]);
 
 	//UseEffect para el equipo local
 	useEffect(() => {
@@ -102,8 +108,12 @@ export const RegistroEventos = ({ navigation }) => {
 			if (equipo_local_id) {
 				try{
 					const response = await process(FIND, `equipos/${equipo_local_id.value}`);
-					setListaJugadoresLocales([]);
-					setJugadoresLocales(response.data.deportistas);
+					// setListaJugadoresLocales([]);
+					// setJugadoresLocales(response.data.deportistas);
+					setListaLocales(response.data.deportistas.map((obj) => ({
+						label: obj.nombres + " " + obj.apellidos,
+						value: obj.id,
+					})));
 				}catch(e){
 					console.log(e)
 				}
@@ -112,51 +122,45 @@ export const RegistroEventos = ({ navigation }) => {
 		fetchequipo_local_id();
 	}, [equipo_local_id]);
 
+
 	//UseEffect para el equipo visitante
 	useEffect(() => {
 		const fetchequipo_visitante_id = async () => {
 			if (equipo_visitante_id) {
 				try {
 					const response = await process(FIND, `equipos/${equipo_visitante_id.value}`);
-					setListaJugadoresVisitantes([]);
-					setJugadoresVisitantes(response.data.deportistas);
+					// setListaJugadoresVisitantes([]);
+					// setJugadoresVisitantes(response.data.deportistas);
+					setListaVisitantes(response.data.deportistas.map((obj) => ({
+						label: obj.nombres + " " + obj.apellidos,
+						value: obj.id,
+					})));
 				} catch (e) {
-					console.log(e)
+					console.log(e);
 				}
 			}
 		};
 		fetchequipo_visitante_id();
 	}, [equipo_visitante_id]);
 
-	const listaLocales =
-		jugadoresLocales &&
-		jugadoresLocales.map((obj) => ({
-			label: obj.nombres + " " + obj.apellidos,
-			value: obj.id,
-		}))
-		;
-		const listaVisitantes =
-		jugadoresVisitantes &&
-		jugadoresVisitantes.map((obj) => ({
-			label: obj.nombres + " " + obj.apellidos,
-			value: obj.id,
-		}))
+	const categoria = [
+		{ label: "Masculino", value: 0 },
+		{ label: "Femenino", value: 1 },
+	];
+
 
 	const onSubmit = async (values, reset) => {
 		if(equipo_local_id.value !== equipo_visitante_id.value){	
 			let data = { ...values };
-			values.hora = moment(values.hora).format("h:mm a")
-			const idJugadoresLocales = jugadoresLocales.map(
-				(jugador) => jugador.id
-			);
-			const idJugadoresVisitantes = jugadoresVisitantes.map(
-				(jugador) => jugador.id
-			);
+			data.hora = moment(values.hora).format("HH:mm");
+			console.log(data.jugadoresLocales);
+			const idJugadoresLocales = data.jugadoresLocales;
+			const idJugadoresVisitantes = data.jugadoresVisitantes;
 			const concatJugadores = idJugadoresLocales.concat(idJugadoresVisitantes);
 			data.jugadores = concatJugadores;
-			console.log(data);
 			try {
-				const response = await process(SAVE, "eventos", values);
+				console.log(data);
+				const response = await process(SAVE, "eventos", data);
 				console.log(JSON.stringify(response))
 				if (response?.status == 201) {
 					Alert.alert("Evento agregado exitosamente", response.data.message, [
@@ -172,7 +176,7 @@ export const RegistroEventos = ({ navigation }) => {
 					]);
 				}
 			} catch (e) {
-				console.log(e);
+				console.log(e.response.data.message);
 				Alert.alert("Hubo un error", "Intente de nuevo", [{ text: "Okay" }]);
 			}
 		}else{
@@ -278,10 +282,23 @@ export const RegistroEventos = ({ navigation }) => {
 							<Text style={styles.error}>
 								{touched.horaEvento && errors.horaEvento}
 							</Text>
+							<Text style={styles.campos}>Categoria</Text>
+							<RadioButtonRN
+									style={styles.radioButtonStyle}
+									data={categoria}
+									textStyle={styles.radioButtonTextStyle}
+									boxStyle={styles.radioButtonBoxStyle}
+									activeColor={!values.categoria ? "#003070" : "#808"}
+									selectedBtn={({ value }) => (
+										setFieldValue('categoria', value)
+									)}
+								/>
+							<Text style={styles.error}>{touched.categoria && errors.categoria}</Text>
+
 							<View style={styles.subtitulo}>
 								<Text style={styles.campos}>Equipo local</Text>
 								<Dropdown
-									data={listaEquipos}
+									data={listaEquipos.filter((obj) => (obj.value != equipo_visitante_id?.value))}
 									labelField="label"
 									valueField="value"
 									placeholder="Selecciona un equipo"
@@ -300,42 +317,52 @@ export const RegistroEventos = ({ navigation }) => {
 							</View>
 							<View style={styles.subtitulo}>
 								<Text style={styles.campos}>Jugadores locales</Text>
-								<MultiSelect
-									data={listaLocales}
-									labelField="label"
-									valueField="value"
-									keyExtractor={(item) => item.value}
-									placeholder="Selecciona un equipo"
-									value={values.jugadoresLocales}
-									style={styles.dropdown1DropdownStyle}
-									containerStyle={styles.dropdown1DropdownStyle}
-									activeColor="rgba(0,48,112,0.25)"
-									search={true}
-									onChange={(value) => {
-										setFieldValue("jugadoresLocales", value);
-									}}
-									renderSelectedItem={(item, unSelect,) => (
-										<TouchableOpacity
-											onPress={() => unSelect && unSelect(item)} key={item.value}
-										>
-											<View style={styles.selectedStyle} id={item.value}>
-												<Text style={styles.textSelectedStyle} id={item.value}>
-													{item.label}
-												</Text>
-												<AntDesign color="black" name="delete" size={17} id={item.value}/>
-											</View>
-										</TouchableOpacity>
-									)}
-									searchPlaceholder="Buscar..."
-								/>
-								<Text style={styles.error}>
-									{touched.jugadoresLocales && errors.jugadoresLocales}
-								</Text>
+								{
+									listaLocales.length > 0 
+									?
+										<View>
+											<MultiSelect
+												confirmSelectItem={false}
+												data={listaLocales}
+												labelField="label"
+												valueField="value"
+												keyExtractor={(item) => item.value}
+												placeholder="Selecciona un equipo"
+												value={values.jugadoresLocales}
+												style={styles.dropdown1DropdownStyle}
+												containerStyle={styles.dropdown1DropdownStyle}
+												activeColor="rgba(0,48,112,0.25)"
+												search={true}
+												onChange={(value) => {
+													setFieldValue("jugadoresLocales", value);
+												}}
+												renderSelectedItem={(item, unSelect,) => (
+													<TouchableOpacity
+														onPress={() => unSelect && unSelect(item)} key={item.value}
+													>
+														<View style={styles.selectedStyle} id={item.value}>
+															<Text style={styles.textSelectedStyle} id={item.value}>
+																{item.label}
+															</Text>
+															<AntDesign color="black" name="delete" size={17} id={item.value}/>
+														</View>
+													</TouchableOpacity>
+												)}
+												searchPlaceholder="Buscar..."
+											/>
+											<Text style={styles.error}>
+												{touched.jugadoresLocales && errors.jugadoresLocales}
+											</Text>
+										</View>
+									: 
+										<Text style={styles.campos}>Seleccione un equipo local</Text>
+								}
+								
 							</View>
 							<View style={styles.subtitulo}>
 								<Text style={styles.campos}>Equipo visitante</Text>
 								<Dropdown
-									data={listaEquipos}
+									data={listaEquipos.filter((obj) => (obj.value != equipo_local_id?.value))}
 									labelField="label"
 									valueField="value"
 									placeholder="Selecciona un equipo"
@@ -354,35 +381,44 @@ export const RegistroEventos = ({ navigation }) => {
 							</View>
 							<View style={styles.subtitulo}>
 								<Text style={styles.campos}>Jugadores visitantes</Text>
-								<MultiSelect
-									data={listaVisitantes}
-									labelField="label"
-									valueField="value"
-									placeholder="Selecciona un equipo"
-									style={styles.dropdown1DropdownStyle}
-									containerStyle={styles.dropdown1DropdownStyle}
-									search={true}
-									searchPlaceholder="Buscar..."
-									onChange={(value) => {
-										setFieldValue("jugadoresVisitantes", value);
-									}}
-									renderSelectedItem={(item, unSelect) => (
-										<TouchableOpacity
-											onPress={() => unSelect && unSelect(item)}
-										>
-											<View style={styles.selectedStyle}>
-												<Text style={styles.textSelectedStyle}>
-													{item.label}
-												</Text>
-												<AntDesign color="black" name="delete" size={17} />
-											</View>
-										</TouchableOpacity>
-									)}
-									value={values.jugadoresVisitantes}
-								/>
-								<Text style={styles.error}>
-									{touched.jugadoresVisitantes && errors.jugadoresVisitantes}
-								</Text>
+								{
+									listaVisitantes.length > 0 
+									? 
+										<View>
+											<MultiSelect
+												data={listaVisitantes}
+												labelField="label"
+												valueField="value"
+												placeholder="Selecciona un equipo"
+												style={styles.dropdown1DropdownStyle}
+												containerStyle={styles.dropdown1DropdownStyle}
+												search={true}
+												searchPlaceholder="Buscar..."
+												onChange={(value) => {
+													setFieldValue("jugadoresVisitantes", value);
+												}}
+												renderSelectedItem={(item, unSelect) => (
+													<TouchableOpacity
+														onPress={() => unSelect && unSelect(item)}
+													>
+														<View style={styles.selectedStyle}>
+															<Text style={styles.textSelectedStyle}>
+																{item.label}
+															</Text>
+															<AntDesign color="black" name="delete" size={17} />
+														</View>
+													</TouchableOpacity>
+												)}
+												value={values.jugadoresVisitantes}
+											/>
+											<Text style={styles.error}>
+												{touched.jugadoresVisitantes && errors.jugadoresVisitantes}
+											</Text>
+										</View>
+									:
+										<Text style={styles.campos}>Seleccione un equipo visitante</Text>
+								}
+								
 							</View>
 							<View style={styles.subtitulo}>
 								<Text style={styles.campos}>Director técnico local</Text>
