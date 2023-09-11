@@ -19,8 +19,8 @@ const LargeText = ({ children, style = {}, numberOfLineas }) => {
 };
 
 export const DeportistaAssistance = ({ navigation, route }) => {
-    var deportistaId = route.params.deportista.id;
-    var deportistaNombre = route.params.deportista.nombres + " " + route.params.deportista.apellidos;
+    const {deportista_id: deportistaId, deportista: {nombres, apellidos}} = route.params;
+    var deportistaNombre = nombres + " " + apellidos;
     const [asistencias, loading, change, update] = useFetchData('asistencias', `deportista_id=${deportistaId}`, 0, 50);
     const [testData, setTestData] = useState([]);
     const [isDark, setIsDark] = useState(false);
