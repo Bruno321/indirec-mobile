@@ -98,6 +98,7 @@ export const RegistroEquipos = () => {
 		if (!loading) {
 			let mutatedDeportistas = []
 			deportistas.data.forEach(deportista => {
+				console.log(deportista.nombres)
 				let newDeportista = {
 					id: deportista.id,
 					num: deportista.numJugador,
@@ -112,9 +113,10 @@ export const RegistroEquipos = () => {
 	const onSubmit = async (values, resetForm) => {
 		setLoading(true);
 
+		let selectedDeportistas = nuevosDeportistas.filter((deportista)=>deportista.isSelected)
 		const oSend = {
 			...values,
-			jugadores: aSelected.map(s => s.id),
+			jugadores: selectedDeportistas.map(selectedDeportista => selectedDeportista.id),
 		};
 
 		const response = await process(SAVE, 'equipos', oSend).catch(e => {
@@ -126,8 +128,7 @@ export const RegistroEquipos = () => {
 				]
 			);
 		});
-
-		if (response?.data?.ok) {
+		if (response?.data) {
 			Alert.alert(
 				'Equipo guardado',
 				response.data.message,
