@@ -107,7 +107,7 @@ export const DeportistaDetails = ({ navigation, route }) => {
           </Row>
           <Row>
             <LargeText style={styles.boldText}>Deporte</LargeText>
-            <LargeText style={styles.dato}>{data.props.deporte}</LargeText>
+            <LargeText style={styles.dato}>{data.props.deporte.nombre}</LargeText>
           </Row>
           <Row>
             <LargeText style={styles.boldText}>Subdivisión</LargeText>

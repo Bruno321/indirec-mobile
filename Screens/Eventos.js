@@ -37,89 +37,90 @@ export const Eventos = ({ navigation }) => {
       <View style={styles.container}>
         <SafeAreaView style={{ backgroundColor: "#003070" }} />
         <Header navigation={navigation} title={"Eventos"} />
-        {!visibilidadEquipos ? (
-          <View>
-            <View style={{ overflow: 'hidden', borderRadius: 10 }}>
-              <TouchableCmp onPress={() => setVisibilidadEquipos(!visibilidadEquipos)}>
-                <View style={[styles.buscarPorEquipoButton, equipoSeleccionado == '' ? { backgroundColor: '#003070' } : { backgroundColor: '#057642' }]}>
-                  <Foundation
-                    name="magnifying-glass"
-                    size={24}
-                    color="white"
-                  />
-                  <Text style={styles.buttonText}>{equipoSeleccionado == '' ? "Buscar por equipo" : equipoSeleccionado}</Text>
-                </View>
-              </TouchableCmp>
-            </View>
-            <View
-              style={{
-                paddingVertical: 12,
-                justifyContent: "space-around",
-                flexDirection: "row",
-              }}
-            >
-              <Filters screen={"Eventos"} updateConcat={setComponentBString} />
-              <View style={{ overflow: 'hidden', borderRadius: 10 }}>
-                <TouchableCmp onPress={() => navigation.navigate("RegistroEventos")}>
+        <View>
+          <View style={{ overflow: 'hidden', borderRadius: 10 }}>
+            <TouchableCmp onPress={() => setVisibilidadEquipos(!visibilidadEquipos)}>
+              <View style={[styles.buscarPorEquipoButton, equipoSeleccionado == '' ? { backgroundColor: '#003070' } : { backgroundColor: '#057642' }]}>
+                <Foundation
+                  name="magnifying-glass"
+                  size={24}
+                  color="white"
+                />
+                <Text style={styles.buttonText}>{equipoSeleccionado == '' ? "Buscar por equipo" : equipoSeleccionado}</Text>
+              </View>
+            </TouchableCmp>
+          </View>
+          {!visibilidadEquipos ? (
+            null
+          ) :
+            <View style={{ alignItems: 'center' }}>
+              <Dropdown
+                data={equiposItems}
+                labelField="label"
+                valueField="value"
+                placeholder='Seleccione un equipo'
+                searchPlaceholder="Buscar un equipo"
+                style={{
+                  marginTop: 28,
+                  backgroundColor: '#FFF',
+                  width: width * 0.95,
+                  borderBottomWidth: 1,
+                  borderBottomColor: 'black',
+                  overflow: 'hidden',
+                }}
+                containerStyle={{
+                  backgroundColor: '#FFF',
+                  width: width * 0.95,
+                  borderBottomWidth: 1,
+                  borderBottomColor: 'black',
+                  overflow: 'hidden',
+                }}
+                // placeholderStyle={styles.dropdown1PlaceholderStyle}
+                onChange={({ value }) => {
+                  setVisibilidadEquipos(!visibilidadEquipos)
+                  setEquipoSeleccionado(value)
+                  setComponentAString(`$or[0][equipoLocal][$iLike]=%${value}%&$or[1][equipoVisitante][$iLike]=%${value}%`)
+                }}
+                search={true}
+              />
+              <View style={{ overflow: 'hidden', borderRadius: 10, marginVertical: 12 }}>
+                <TouchableCmp onPress={() => (
+                  setVisibilidadEquipos(!visibilidadEquipos), setComponentAString(''), setEquipoSeleccionado('')
+                )}>
                   <View style={styles.agregarJugadorButton}>
-                    <MaterialCommunityIcons
-                      name={"clipboard-list-outline"}
+                    <FontAwesome
+                      name="undo"
                       size={24}
-                      color={"white"}
+                      color="white"
                     />
-                    <Text style={styles.buttonText}>Generar Evento</Text>
+                    <Text style={styles.buttonText}>Restablecer</Text>
                   </View>
                 </TouchableCmp>
               </View>
             </View>
-          </View>
-        ) :
-          <View style={{ alignItems: 'center' }}>
-            <Dropdown
-              data={equiposItems}
-              labelField="label"
-              valueField="value"
-              placeholder='Seleccione un equipo'
-              searchPlaceholder="Buscar un equipo"
-              style={{
-                marginTop: 28,
-                backgroundColor: '#FFF',
-                width: width * 0.95,
-                borderBottomWidth: 1,
-                borderBottomColor: 'black',
-                overflow: 'hidden',
-              }}
-              containerStyle={{
-                backgroundColor: '#FFF',
-                width: width * 0.95,
-                borderBottomWidth: 1,
-                borderBottomColor: 'black',
-                overflow: 'hidden',
-              }}
-              // placeholderStyle={styles.dropdown1PlaceholderStyle}
-              onChange={({ value }) => {
-                setVisibilidadEquipos(!visibilidadEquipos)
-                setEquipoSeleccionado(value)
-                setComponentAString(`$or[0][equipoLocal][$iLike]=%${value}%&$or[1][equipoVisitante][$iLike]=%${value}%`)
-              }}
-              search={true}
-            />
-            <View style={{ overflow: 'hidden', borderRadius: 10, marginVertical: 12 }}>
-              <TouchableCmp onPress={() => (
-                setVisibilidadEquipos(!visibilidadEquipos), setComponentAString(''), setEquipoSeleccionado('')
-              )}>
+          }
+          <View
+            style={{
+              paddingVertical: 12,
+              justifyContent: "space-around",
+              flexDirection: "row",
+            }}
+          >
+            <Filters screen={"Eventos"} updateConcat={setComponentBString} />
+            <View style={{ overflow: 'hidden', borderRadius: 10 }}>
+              <TouchableCmp onPress={() => navigation.navigate("RegistroEventos")}>
                 <View style={styles.agregarJugadorButton}>
-                  <FontAwesome
-                    name="undo"
+                  <MaterialCommunityIcons
+                    name={"clipboard-list-outline"}
                     size={24}
-                    color="white"
+                    color={"white"}
                   />
-                  <Text style={styles.buttonText}>Restablecer</Text>
+                  <Text style={styles.buttonText}>Generar Evento</Text>
                 </View>
               </TouchableCmp>
             </View>
           </View>
-        }
+        </View>
         <ButtonsPages numberPage={pagina} setPagina={setPagina} total={eventos.total} />
         <View style={styles.cartas} showsVerticalScrollIndicator={false}>
           <List
