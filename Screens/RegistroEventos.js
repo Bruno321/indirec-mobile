@@ -149,7 +149,7 @@ export const RegistroEventos = ({ navigation }) => {
 					Alert.alert("Evento agregado exitosamente", response.data.message, [
 						{
 							text: "Okay",
-							onPress: () => console.log('OK Pressed')
+							onPress: () => navigation.goBack()
 						},
 					]);
 					reset();

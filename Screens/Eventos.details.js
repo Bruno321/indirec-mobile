@@ -31,10 +31,11 @@ const oInitialState = {
   puntosVisitante: ''
 }
 
-export const EventosDetails = (props, {navigation}) => {
+export const EventosDetails = (props) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [equipoSelec, setEquipoSelec] = useState();
   let datos = props.route.params.datos; //id, nombre, fecha, hora, equipoloca, etc
+  // const navigation = props.route.params.navigation;
   const [form, setForm] = useState(oInitialState)
 	const [modal, setModal] = useState(false);
 
@@ -75,7 +76,7 @@ export const EventosDetails = (props, {navigation}) => {
             text: 'Okay',
             onPress: () => {
               setModal(false)
-              navigation.navigate("Eventos")
+              props.navigation.goBack()
             }
           },
         ]

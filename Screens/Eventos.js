@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Dimensions, SafeAreaView } from "react-native";
 import { EventosCard, Header, List } from "../components";
 import { useFetchData } from "../Hooks/Fetch.hook";
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import TouchableCmp from "../assetsUI/TouchableCmp";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Foundation } from '@expo/vector-icons';
@@ -10,6 +10,7 @@ import { ButtonsPages } from "../components";
 import { Dropdown } from 'react-native-element-dropdown';
 import { Filters } from "../components";
 import { useDidMountEffect } from "../Utils/DidMountEffect";
+import { useIsFocused } from "@react-navigation/native";
 
 const { width, fontScale } = Dimensions.get("window");
 
@@ -21,16 +22,25 @@ export const Eventos = ({ navigation }) => {
   const [equipoSeleccionado, setEquipoSeleccionado] = useState('');
   const [componentAString, setComponentAString] = useState('');
   const [componentBString, setComponentBString] = useState('');
+  const isFocused = useIsFocused();
 
   const equiposItems = equipos.data.map(oEquipo => ({
     label: oEquipo.nombre,
     value: oEquipo.nombre,
   }));
 
+  useEffect(() => {
+    if (isFocused == true) {
+      const concatenatedString = componentAString + componentBString;
+      change(concatenatedString, pagina * 10);
+    }
+  }, [isFocused]);
+
   useDidMountEffect(() => {
     const concatenatedString = componentAString + componentBString;
     change(concatenatedString, pagina * 10);
   }, [componentAString, componentBString, pagina]);
+
 
   return (
     <>
