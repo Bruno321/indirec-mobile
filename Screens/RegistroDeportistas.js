@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	Alert,
 	ActivityIndicator,
@@ -13,7 +13,6 @@ import {
 	TextInput,
 	TouchableWithoutFeedback,
 	View,
-	Image
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
@@ -27,37 +26,13 @@ import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import { process, SAVE_WITH_FILE } from '../Service/Api';
 import QRCode from 'react-native-qrcode-svg';
-import { RotateInUpRight } from 'react-native-reanimated';
+import { useFetchData } from '../Hooks/Fetch.hook';
 
 const { width, height, fontScale } = Dimensions.get('window');
-
-const logoINDEREQ = require('../images/logo.png');
-
-
 
 const sexo = ["Masculino", "Femenino"];
 
 const filePickerText = "Subir archivo";
-
-// ? Testing purposes, check later how to manage this
-const aSports = [
-	{
-		label: 'Futbol',
-		value: 'Futbol',
-	},
-	{
-		label: 'Basquetball',
-		value: 'Basquetball',
-	},
-	{
-		label: 'Volleyball',
-		value: 'Volleyball',
-	},
-	{
-		label: 'Atletismo',
-		value: 'Atletismo',
-	},
-];
 
 const oInitialState = {
 	expediente: '',
@@ -68,7 +43,7 @@ const oInitialState = {
 	jugadorSeleccionado: 0,
 	numSeguroSocial: '',
 	numJugador: '',
-	deporte: '',
+	deporte_id: null,
 	correo: '',
 	telefono: '',
 	telefonoEmergencia: '',
@@ -106,7 +81,7 @@ const validationSchema = yup.object().shape({
 	numJugador: yup
 		.number()
 		.integer('Debe ser un número entero'),
-	deporte: yup
+	deporte_id: yup
 		.string()
 		.required('El deporte es requerido'),
 	correo: yup
@@ -147,6 +122,8 @@ export const RegistroDeportistas = () => {
 		apellidoP: "",
 		idPropio: ""
 	})
+	const [deportes] = useFetchData("deportes", '', 0, 50);
+	const [deportesItems, setDeportesItems] = useState([]);
 
 	const facultitiesItems = aFacultities.map(oFaculty => ({
 		label: `${oFaculty}`,
@@ -163,6 +140,14 @@ export const RegistroDeportistas = () => {
 		'fotoIdentificacionOficial': setIdentificacion,
 		'foto': setFoto,
 	};
+
+	useEffect(() => {
+		if(deportes.data.length == 0) return;
+		setDeportesItems(deportes.data.map((obj) => ({
+			label: obj.nombre,
+			value: obj.id,
+		})));
+	}, [deportes.data])
 
 	const pickFile = async (type, formHandler) => {
 		// No permissions request is necessary for launching the image library
@@ -404,18 +389,18 @@ export const RegistroDeportistas = () => {
 
 								<Text style={styles.campos}>Deporte:</Text>
 								<Dropdown
-									data={aSports}
+									data={deportesItems}
 									labelField="label"
 									valueField="value"
 									placeholder='Seleccione una opción'
 									style={styles.dropdown1DropdownStyle}
 									containerStyle={styles.dropdown1DropdownStyle}
 									onChange={({ value }) => {
-										setFieldValue('deporte', value);
+										setFieldValue('deporte_id', value);
 									}}
-									value={values.deporte}
+									value={values.deporte_id}
 								/>
-								<Text style={styles.error}>{touched.deporte && errors.deporte}</Text>
+								<Text style={styles.error}>{touched.deporte_id && errors.deporte_id}</Text>
 
 								<Text style={styles.campos}>No. Seguro Social:</Text>
 								<TextInput

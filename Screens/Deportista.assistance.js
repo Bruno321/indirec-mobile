@@ -1,15 +1,15 @@
-import { View, Text, ScrollView, StyleSheet, Dimensions, Button, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet, Dimensions, Button, SafeAreaView } from "react-native";
 import { Header, Row, Col, List, AsistenciaIndCard } from '../components';
 import { useFetchData } from '../Hooks/Fetch.hook';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import TouchableCmp from "../assetsUI/TouchableCmp";
-import { process, SAVE, FIND } from "../Service/Api";
+import { process, SAVE } from "../Service/Api";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 
 ///////////////////////////////////////////////////
-const { width, height, fontScale } = Dimensions.get('window');
+const { width, fontScale } = Dimensions.get('window');
 
 const LargeText = ({ children, style = {}, numberOfLineas }) => {
 
@@ -22,15 +22,16 @@ export const DeportistaAssistance = ({ navigation, route }) => {
     const {deportista_id: deportistaId, deportista: {nombres, apellidos}} = route.params;
     var deportistaNombre = nombres + " " + apellidos;
     const [asistencias, loading, change, update] = useFetchData('asistencias', `deportista_id=${deportistaId}`, 0, 50);
-    const [testData, setTestData] = useState([]);
     const [isDark, setIsDark] = useState(false);
     const [datePicker, setDatePicker] = useState(false);
     const [calendario, setCalendario] = useState(1);
 
-    const [dateParams, setDateParams] = useState({
+    const initialDate = {
         fechaFin: null,
         fechaInicio: null,
-    });
+    };
+
+    const [dateParams, setDateParams] = useState(initialDate);
 
     function onDateSelected(event, value) {
         setDatePicker(false);
@@ -82,28 +83,9 @@ export const DeportistaAssistance = ({ navigation, route }) => {
     }, [getTiempoEntrenado]);
     
     useEffect(()=>{
-        if(dateParams.fechaInicio !== null && dateParams.fechaFin !== null){
-            change(`fecha[$gte]=${dateParams.fechaInicio}&fecha[$lte]=${dateParams.fechaFin}`)
-        } else {
-            change();
-        }
+        if(dateParams.fechaInicio === null || dateParams.fechaFin === null) return; 
+        change(`fecha[$gte]=${dateParams.fechaInicio}&fecha[$lte]=${dateParams.fechaFin}`);
     },[dateParams.fechaFin, dateParams.fechaInicio])
-
-    useEffect(() => {
-        if (!loading) {
-            if (!asistencias.data.length) {
-                setTestData([{
-                    deportista: {
-                        nombres: "Juan Perez",
-                    },
-                    // horaEntrada: "2021-05-01T20:00:00.000Z",
-                    // horaSalida: "2021-05-01T20:00:00.000Z",
-                    // fecha: "2021-05-01T20:00:00.000Z",
-                }]);
-            }
-        }
-    }, [loading]);
-
 
     // var datosFiltrados = asistencias.data.filter(objeto => objeto.deportista.id == deportistaId);
     asistencias.data.sort((a, b) => new Date(b.horaEntrada) - new Date(a.horaEntrada));
@@ -131,10 +113,21 @@ export const DeportistaAssistance = ({ navigation, route }) => {
                         <Text style={styles.text}>{`${tiempoEntrenado || `Sin datos`}`}</Text>
                     </Col>
                 </Row>
-                <Row style={{ paddingVertical: 20 / fontScale }}>
+                <Row style={{ paddingVertical: 20 / fontScale, padding: 40 / fontScale }}>
                     <Col style={{ width: "100%", paddingLeft: 25 }}>
                         <Text style={styles.textTitle}>Asistencias</Text>
-                        <Text style={styles.textTitle2}>Puede seleccionar un rango de fechas</Text>
+                        <Text style={styles.textTitle2}>Por rango de fechas</Text>
+                    </Col>
+                    <Col>
+                        <Button 
+                            title="Limpiar" 
+                            color='#f7655f' 
+                            disabled={dateParams.fechaInicio === null || dateParams.fechaFin === null}
+                            onPress={() => {
+                                change(`deportista_id=${deportistaId}`, 0, 50)
+                                setDateParams(initialDate);
+                            }}
+                        />
                     </Col>
                 </Row>
                 <View style={styles.viewSemana}>
@@ -193,12 +186,10 @@ export const DeportistaAssistance = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
     col1: {
-        // backgroundColor: 'pink',
         width: "55%",
         height: 50
     },
     col2: {
-        // backgroundColor: 'red',
         width: "30%",
         height: 50
     },
@@ -223,11 +214,8 @@ const styles = StyleSheet.create({
     datoName: {
         fontSize: 30 / fontScale,
         fontWeight: '600',
-        // fontFamily: "Fredoka-Medium",
-
         textAlign: 'center',
         width: "100%",
-        // backgroundColor: '#003070',
         color: "#003070",
         paddingBottom: 20 / fontScale,
         marginTop: width * 0.05

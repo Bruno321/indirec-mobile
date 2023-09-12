@@ -9,17 +9,8 @@ import {
 	Alert,
 	TouchableOpacity,
 } from "react-native";
-import {
-	ActionButton,
-	EventosCard,
-	FiltersView,
-	Header,
-	List,
-	OrderView,
-} from "../components";
+import {Header} from "../components";
 import { useFetchData } from "../Hooks/Fetch.hook";
-import { Ionicons } from "@expo/vector-icons";
-import Modal from "react-native-modal";
 import React, { useEffect, useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import { MultiSelect } from "react-native-element-dropdown";
@@ -29,8 +20,6 @@ import * as yup from "yup";
 import { Formik } from "formik";
 import { process, SAVE, FIND } from "../Service/Api";
 import { AntDesign } from "@expo/vector-icons";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { Filters } from "../components/Filters";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Feather from 'react-native-vector-icons/Feather';
 import RadioButtonRN from 'radio-buttons-react-native';
@@ -39,7 +28,7 @@ import moment from 'moment';
 
 const { fontScale } = Dimensions.get("window");
 const { width, height } = Dimensions.get("window");
-const horaRegex = /^(0?[1-9]|1[0-2]):[0-5][0-9]$/;
+
 
 const oInitialState = {
 	nombre: "",
@@ -73,8 +62,8 @@ export const RegistroEventos = ({ navigation }) => {
 	const [datePicker, setDatePicker] = useState(false);
 	const [timePicker, setTimePicker] = useState(false);
 	const [equipos, loading2] = useFetchData("equipos");
-	const [form, setForm] = useState(oInitialState);
-	const [time, setTime] = useState("AM");
+	const [deportes] = useFetchData("deportes", '', 0, 50);
+	const [deportesItems, setDeportesItems] = useState([]);
 
 	const listaEquipos = equipos.data.map((obj) => ({
 		label: obj.nombre,
@@ -85,22 +74,20 @@ export const RegistroEventos = ({ navigation }) => {
 		value: oFaculty,
 	}));
 
-	//Se guarda en un estado el arreglo de los jugadores que corresponden a cada uno de los dos equipos.
-	// const [jugadoresLocales, setJugadoresLocales] = useState();
-	// const [jugadoresVisitantes, setJugadoresVisitantes] = useState();
-
-	const [selected, setSelected] = useState([]);
-
 	//Se guarda en un estado el id del equipo que será tanto local como visitante para posteriormente hacer la llamada de lo jugadores que corresponden a cada equipo seleccionado.
 	const [equipo_local_id, setequipo_local_id] = useState();
 	const [equipo_visitante_id, setequipo_visitante_id] = useState();
 
-	//Estados para guardar en arreglos los deportistas que participaran en el evento.
-	// const [listaJugadoresLocales, setListaJugadoresLocales] = useState([]);
-	// const [listaJugadoresVisitantes, setListaJugadoresVisitantes] = useState([]);
-
 	const [listaLocales, setListaLocales] = useState([]);
 	const [listaVisitantes, setListaVisitantes] = useState([]);
+
+	useEffect(() => {
+		if(deportes.data.length == 0) return;
+		setDeportesItems(deportes.data.map((obj) => ({
+			label: obj.nombre,
+			value: obj.id,
+		})));
+	}, [deportes.data])
 
 	//UseEffect para el equipo local
 	useEffect(() => {
@@ -108,8 +95,6 @@ export const RegistroEventos = ({ navigation }) => {
 			if (equipo_local_id) {
 				try{
 					const response = await process(FIND, `equipos/${equipo_local_id.value}`);
-					// setListaJugadoresLocales([]);
-					// setJugadoresLocales(response.data.deportistas);
 					setListaLocales(response.data.deportistas.map((obj) => ({
 						label: obj.nombres + " " + obj.apellidos,
 						value: obj.id,
@@ -129,8 +114,6 @@ export const RegistroEventos = ({ navigation }) => {
 			if (equipo_visitante_id) {
 				try {
 					const response = await process(FIND, `equipos/${equipo_visitante_id.value}`);
-					// setListaJugadoresVisitantes([]);
-					// setJugadoresVisitantes(response.data.deportistas);
 					setListaVisitantes(response.data.deportistas.map((obj) => ({
 						label: obj.nombres + " " + obj.apellidos,
 						value: obj.id,
@@ -282,6 +265,20 @@ export const RegistroEventos = ({ navigation }) => {
 							<Text style={styles.error}>
 								{touched.horaEvento && errors.horaEvento}
 							</Text>
+
+							<Text style={styles.campos}>Deporte:</Text>
+							<Dropdown
+								data={deportesItems}
+								labelField="label"
+								valueField="value"
+								placeholder='Seleccione una opción'
+								onChange={({ value }) => {
+									setFieldValue('deporte_id', value);
+								}}
+								value={values.deporte}
+							/>
+							<Text style={styles.error}>{touched.deporte && errors.deporte}</Text>
+
 							<Text style={styles.campos}>Categoria</Text>
 							<RadioButtonRN
 									style={styles.radioButtonStyle}

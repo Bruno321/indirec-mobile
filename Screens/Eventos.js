@@ -6,7 +6,6 @@ import TouchableCmp from "../assetsUI/TouchableCmp";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useIsFocused } from "@react-navigation/native";
 import { useDidMountEffect } from "../Utils/DidMountEffect";
-import { Filters } from "../components/Filters";
 
 const { width, fontScale } = Dimensions.get("window");
 

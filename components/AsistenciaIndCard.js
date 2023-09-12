@@ -32,7 +32,7 @@ export const AsistenciaIndCard = ({ props, estilo }) => {
                 <Text style={styles.tablaTxt} numberOfLines={1}>{moment(props.fecha).format("DD-MM-YYYY")}</Text>
             </View>
             <View style={styles.entrada}>
-                <Text style={styles.tablaTxt} numberOfLines={1}>{moment(props.horaEntrada).format("hh:mm")}</Text>
+                <Text style={styles.tablaTxt} numberOfLines={1}>{moment(props.horaEntrada).format("HH:mm")}</Text>
             </View>
             <View style={styles.salida}>
                 <Text style={styles.tablaTxt} numberOfLines={1}>{props.horaSalida?moment(props.horaSalida).format("HH:mm"):"Sin datos"}</Text>

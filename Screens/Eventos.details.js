@@ -164,13 +164,13 @@ export const EventosDetails = (props, {navigation}) => {
             </View>
           </View>
 
-          <Text style={styles.txtTitulo}>Director técnico local</Text>
+          {/* <Text style={styles.txtTitulo}>Director técnico local</Text>
           <Text style={styles.txtSubtitulo}>{datos.directorTecnicoLocal}</Text>
 
           <Text style={styles.txtTitulo}>Director técnico visitante</Text>
           <Text style={styles.txtSubtitulo}>
             {datos.directorTecnicoVisitante}
-          </Text>
+          </Text> */}
 
           <View style={styles.containerPuntosEquipos}>
             <View style={styles.containerPuntos}>
