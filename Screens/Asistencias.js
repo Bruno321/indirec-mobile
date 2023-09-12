@@ -41,8 +41,9 @@ export const Asistencias = ({ navigation }) => {
       <View style={{ alignItems: 'center', height: 120, width: width }}>
         <View style={{ flexDirection: 'column', height: "100%", justifyContent: 'space-evenly', width: "95%" }}>
           <SearchInput change={change} setPagina={setPagina} screen={"asistencias"} updateConcat={setComponentAString} />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Filters screen={"deportistas"} updateConcat={setComponentBString} />
+          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+            {/* AGREGAR INPUT DE FECHA Y FILTRAR POR FECHA */}
+            {/* <Filters screen={"Deportistas"} updateConcat={setComponentBString} /> */}
             <TouchableCmp onPress={() => { navigation.navigate("PaseDeLista") }}>
               <View style={styles.agregarJugadorButton}>
                 <MaterialCommunityIcons name={'clipboard-list-outline'} size={24} color={'white'} />

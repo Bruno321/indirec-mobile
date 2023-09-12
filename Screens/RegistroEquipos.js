@@ -23,7 +23,7 @@ const oInitialState = {
 	nombre: '',
 	facultad: '',
 	campus: '',
-	deporte: '',
+	deporte_id: null,
 	categoria: 2,
 	nombreEntrenador: '',
 	apellidoEntrenador: '',
@@ -41,7 +41,7 @@ const validationSchema = yup.object().shape({
 	campus: yup
 		.string()
 		.required('El campus es requerido'),
-	deporte: yup
+	deporte_id: yup
 		.string()
 		.required('El deporte es requerido'),
 	categoria: yup
@@ -67,6 +67,8 @@ export const RegistroEquipos = () => {
 	const navigation = useNavigation();
 	const [loading, setLoading] = useState(false);
 	const [aSelected, setSelected] = useState([]);
+	const [deportes] = useFetchData("deportes", '', 0, 50);
+	const [deportesItems, setDeportesItems] = useState([]);
 
 	// HOOKS PARA EL MANEJO DE BUSQUEDA DE DEPORTISTAS
 	const [categoriaValidation, setCategoriaValidation] = useState();
@@ -98,7 +100,6 @@ export const RegistroEquipos = () => {
 		if (!loading) {
 			let mutatedDeportistas = []
 			deportistas.data.forEach(deportista => {
-				console.log(deportista.nombres)
 				let newDeportista = {
 					id: deportista.id,
 					num: deportista.numJugador,
@@ -113,7 +114,7 @@ export const RegistroEquipos = () => {
 	const onSubmit = async (values, resetForm) => {
 		setLoading(true);
 
-		let selectedDeportistas = nuevosDeportistas.filter((deportista)=>deportista.isSelected)
+		let selectedDeportistas = nuevosDeportistas.filter((deportista) => deportista.isSelected)
 		const oSend = {
 			...values,
 			jugadores: selectedDeportistas.map(selectedDeportista => selectedDeportista.id),
@@ -138,6 +139,7 @@ export const RegistroEquipos = () => {
 			);
 			resetForm();
 			setSelected([]);
+			navigation.navigate("Equipos");
 		}
 		setLoading(false);
 	};
@@ -176,6 +178,13 @@ export const RegistroEquipos = () => {
 			)
 		);
 	};
+	useEffect(() => {
+		if (deportes.data.length == 0) return;
+		setDeportesItems(deportes.data.map((obj) => ({
+			label: obj.nombre,
+			value: obj.id,
+		})));
+	}, [deportes.data])
 	return (
 		<ScrollView style={styles.general} showsVerticalScrollIndicator={false}>
 			<SafeAreaView style={{ backgroundColor: "#003070" }} />
@@ -204,7 +213,7 @@ export const RegistroEquipos = () => {
 								<Text style={styles.campos}>Deporte:</Text>
 								{/* INPUT DEPORTE EQUIPO */}
 								<Dropdown
-									data={sportItems}
+									data={deportesItems}
 									labelField="label"
 									valueField="value"
 									placeholder='Seleccione una opción'
@@ -212,9 +221,9 @@ export const RegistroEquipos = () => {
 									containerStyle={styles.dropdown1DropdownStyle}
 									placeholderStyle={styles.dropdown1PlaceholderStyle}
 									onChange={({ value }) => {
-										setFieldValue('deporte', value);
+										setFieldValue('deporte_id', value);
 									}}
-									value={values.deporte}
+									value={values.deporte_id}
 								/>
 								<Text style={styles.error}>{touched.deporte && errors.deporte}</Text>
 
@@ -246,7 +255,8 @@ export const RegistroEquipos = () => {
 									containerStyle={styles.dropdown1DropdownStyle}
 									onChange={({ value }) => (
 										setFieldValue('facultad', value),
-										setFacultadValidation(value)
+										setFacultadValidation(value),
+										console.log("FACULTAD SELECCIONADA --> ", value)
 									)
 									}
 									value={values.facultad}
@@ -415,12 +425,14 @@ export const RegistroEquipos = () => {
 							}
 
 							{/* BOTON VER RESUMEN */}
-							<View style={styles.viewButton}>
-								<TouchableCmp onPress={() => (setModalVisibility(!modalVisibility))}>
-									<View style={styles.viewRegistrar}>
-										{loading ? <ActivityIndicator color="white" /> : <Text style={styles.registrar}>Ver Resumen</Text>}
-									</View>
-								</TouchableCmp>
+							<View style={{marginVertical: 20,}}>
+								<View style={styles.viewButton}>
+									<TouchableCmp onPress={() => (setModalVisibility(!modalVisibility))}>
+										<View style={styles.viewRegistrar}>
+											{loading ? <ActivityIndicator color="white" /> : <Text style={styles.registrar}>Ver Resumen</Text>}
+										</View>
+									</TouchableCmp>
+								</View>
 							</View>
 							{/* <View style={styles.viewButton}>
 								<TouchableCmp onPress={() => (console.log(validationSchema))}>
@@ -434,67 +446,76 @@ export const RegistroEquipos = () => {
 							<Modal
 								visible={modalVisibility}
 								transparent={true}
-								animationType="fade"
+								animationType="slide"
 								onRequestClose={() => {
 									setModalVisibility(!modalVisibility)
 								}}
 							>
-								<TouchableWithoutFeedback onPress={() => { setModalVisibility(!modalVisibility) }}>
+								{/* <TouchableWithoutFeedback onPress={() => { setModalVisibility(!modalVisibility) }}>
 									<View style={{ backgroundColor: 'rgba(0, 0, 0, 0.25)', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} />
-								</TouchableWithoutFeedback>
-
-								<View style={styles.modalViewCenter}>
-									<Text>RESUMEN</Text>
-									<View style={styles.listadoModalView}>
-										<Text style={styles.listadoModal} numberOfLines={2}>Nombre del equipo: {values.nombre}</Text>
-										<Text style={styles.listadoModal} numberOfLines={2}>Deporte: {values.deporte}</Text>
-										<Text style={styles.listadoModal} numberOfLines={2}>Categoría: {values.categoria == 0 ? "Varoníl" : "Femeníl"}</Text>
-										<Text style={styles.listadoModal} numberOfLines={2}>Facultad: {values.facultad}</Text>
-										<Text style={styles.listadoModal} numberOfLines={2}>Campus: {values.campus}</Text>
-										<Text style={styles.listadoModal} numberOfLines={2}>{Object.keys(nuevosDeportistas.filter(deportista => deportista.isSelected)).length > 0 ? "Lista de Jugadores" : "Primero selecciona jugadores para el equipo"}</Text>
-										{/* LISTA DE JUGADORES SELECCIONADOS */}
-										{nuevosDeportistas.filter(deportista => deportista.isSelected).map((deportista, index) => (
-											<View
-												key={index + "view1"}
-												style={styles.ViewJugador}
-											>
-												<View
-													key={index + "view2"}
-													style={!deportista.isSelected ? styles.celda3a : styles.celda3b}
-												>
-													<Text
-														key={index + "text1"}
-														style={!deportista.isSelected ? styles.celda3y4Texta : styles.celda3y4Textb}
-														numberOfLines={1}
-													>
-														{deportista.num}
-													</Text>
-												</View>
-												<View
-													key={index + "view3"}
-													style={styles.celda4bb}
-												>
-													<Text
-														key={index + "text2"}
-														style={!deportista.isSelected ? styles.celda3y4Texta : styles.celda3y4Textb}
-														numberOfLines={2}
-													>
-														{deportista.nombreCompleto}
-													</Text>
-												</View>
+								</TouchableWithoutFeedback> */}
+								<View style={{ display: 'flex', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center' }}>
+									<View style={styles.modalViewCenter}>
+										<Text>RESUMEN</Text>
+										<View style={styles.listadoModalView}>
+											<View style={{ marginTop: 20, }}>
+												<Text style={[styles.listadoModal, { fontWeight: 'bold', }]} numberOfLines={2}>Nombre del equipo:</Text>
+												<Text style={styles.listadoModal} numberOfLines={2}>{values.nombre ? values.nombre : "SIN NOMBRE"}</Text>
+												<Text style={[styles.listadoModal, { fontWeight: 'bold', }]} numberOfLines={2}>Deporte:</Text>
+												<Text style={styles.listadoModal}>{values.deporte_id ? deportesItems.filter(item => item.value === values.deporte_id)[0].label : "SIN DEPORTE"}</Text>
+												<Text style={[styles.listadoModal, { fontWeight: 'bold', }]} numberOfLines={2}>Categoría:</Text>
+												<Text style={styles.listadoModal} numberOfLines={2}>{values.categoria == 2 ? "SIN CATEGORIA" : (values.categoria == 0 ? "Varoníl" : "Femeníl")}</Text>
+												<Text style={[styles.listadoModal, { fontWeight: 'bold', }]} numberOfLines={2}>Facultad:</Text>
+												<Text style={styles.listadoModal} numberOfLines={2}>{values.facultad ? values.facultad : "SIN FACULTAD"}</Text>
+												<Text style={[styles.listadoModal, { fontWeight: 'bold', }]} numberOfLines={2}>Campus:</Text>
+												<Text style={styles.listadoModal} numberOfLines={2}>{values.campus ? values.campus : "SIN CAMPUS"}</Text>
+												<Text style={[styles.listadoModal, { fontWeight: 'bold', }]} numberOfLines={2}>Lista de Jugadores</Text>
+												<Text style={styles.listadoModal} numberOfLines={2}>{Object.keys(nuevosDeportistas.filter(deportista => deportista.isSelected)).length > 0 ? "" : "EQUIPO SIN JUGADORES!"}</Text>
 											</View>
-										)
-										)
-										}
-									</View>
-									{/* BOTON REGISTRAR EQUIPO */}
-									<View style={styles.viewButton}>
-										<TouchableCmp onPress={handleSubmit}>
-											{/* <TouchableCmp onPress={() => (setModalVisibility(!modalVisibility))}> */}
-											<View style={styles.viewRegistrar}>
-												{loading ? <ActivityIndicator color="white" /> : <Text style={styles.registrar}>Registrar Equipo</Text>}
-											</View>
-										</TouchableCmp>
+											{/* LISTA DE JUGADORES SELECCIONADOS */}
+											{nuevosDeportistas.filter(deportista => deportista.isSelected).map((deportista, index) => (
+												<View
+													key={index + "view1"}
+													style={styles.ViewJugador}
+												>
+													<View
+														key={index + "view2"}
+														style={!deportista.isSelected ? styles.celda3a : styles.celda3b}
+													>
+														<Text
+															key={index + "text1"}
+															style={!deportista.isSelected ? styles.celda3y4Texta : styles.celda3y4Textb}
+															numberOfLines={1}
+														>
+															{deportista.num}
+														</Text>
+													</View>
+													<View
+														key={index + "view3"}
+														style={styles.celda4bb}
+													>
+														<Text
+															key={index + "text2"}
+															style={!deportista.isSelected ? styles.celda3y4Texta : styles.celda3y4Textb}
+															numberOfLines={2}
+														>
+															{deportista.nombreCompleto}
+														</Text>
+													</View>
+												</View>
+											)
+											)
+											}
+										</View>
+										{/* BOTON REGISTRAR EQUIPO */}
+										<View style={[styles.viewButton, {marginTop: 20,}]}>
+											<TouchableCmp onPress={handleSubmit}>
+												{/* <TouchableCmp onPress={() => (setModalVisibility(!modalVisibility))}> */}
+												<View style={styles.viewRegistrar}>
+													{loading ? <ActivityIndicator color="white" /> : <Text style={styles.registrar}>Registrar Equipo</Text>}
+												</View>
+											</TouchableCmp>
+										</View>
 									</View>
 								</View>
 							</Modal>
@@ -571,8 +592,6 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		backgroundColor: '#003070',
 		justifyContent: 'center',
-		marginTop: 40,
-		marginBottom: 30,
 		overflow: 'hidden',
 		shadowColor: "#000",
 		shadowOffset: {
@@ -582,7 +601,6 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.23,
 		shadowRadius: 2.62,
 		elevation: 4,
-		backgroundColor: 'red',
 	},
 	radioButtonStyle: {
 		flexDirection: 'row',
@@ -620,6 +638,7 @@ const styles = StyleSheet.create({
 		borderTopWidth: 1,
 		borderTopColor: "#C0C0C0",
 		height: 41,
+		// marginBottom: 20,
 	},
 	celda3a: {
 		backgroundColor: '#FFF',
@@ -739,6 +758,8 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		alignSelf: 'center',
 		elevation: 5,
+		paddingVertical: 20,
+		// backgroundColor: 'red',
 	},
 	listadoModalView: {
 		width: "80%",

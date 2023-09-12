@@ -96,7 +96,7 @@ export const EquiposDetails = ({ navigation, route }) => {
                 <View style={styles.equipoInfo}>
                     <Row>
                         <LargeText style={styles.boldText}>Deporte</LargeText>
-                        <LargeText style={styles.dato}>{data.deporte}</LargeText>
+                        <LargeText style={styles.dato}>{data.deporte?.nombre}</LargeText>
                     </Row>
                     <Row>
                         <LargeText style={styles.boldText}>Categoria</LargeText>

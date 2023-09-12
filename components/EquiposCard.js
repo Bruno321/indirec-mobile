@@ -20,7 +20,7 @@ export const EquiposCard = ({ props }) => {
                     >
                         {props.nombre}
                     </MarqueeText>
-                    <Text style={styles.textBlack} numberOfLines={1}>{props.deporte}</Text>
+                    <Text style={styles.textBlack} numberOfLines={1}>{props.deporte?.nombre}</Text>
                     <Text style={styles.textGray} numberOfLines={2}>{props.facultad}</Text>
                     <Text style={styles.textGray} numberOfLines={1}>{props.campus}</Text>
                 </View>
