@@ -139,7 +139,7 @@ export const DeportistaDetails = ({ navigation, route }) => {
                 color="#FFF"
                 icon="clock-o"
                 style={{ width: "100%", alignSelf: 'center', height: 60, borderRadius: 18 }}
-                handler={() => { navigation.navigate("DeportistaAssistance", { deportista: { nombres: data.props.nombres, apellidos: data.props.apellidos, id: data.props.id } }) }}
+                handler={() => { navigation.navigate("DeportistaAssistance", { deportista: { nombres: data.props.nombres, apellidos: data.props.apellidos }, deportista_id: data.props.id }) }}
               />
             </View>
           </Col>
