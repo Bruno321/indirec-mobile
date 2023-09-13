@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Dimensions, Modal, TouchableWithoutFeedback, FlatList } from "react-native";
 import { aFacultities, aSports } from '../Utils/Constants';
 import { ActionButton } from './ActionButton';
+import { useFetchData } from '../Hooks/Fetch.hook';
 import Feather from 'react-native-vector-icons/Feather';
 import TouchableCmp from '../assetsUI/TouchableCmp';
 
@@ -16,14 +17,10 @@ export const Filters = ({ screen, updateConcat }) => {
   const [ordenActual, setOrdenActual] = useState("Predeterminado");
   const [selActual, setSelActual] = useState("Todos");
   const [sexoActual, setSexoActual] = useState("Todos");
+	const [deportes] = useFetchData("deportes", '', 0, 50);
+	const [deportesItems, setDeportesItems] = useState([]);
 
-  const sportItems = [
-    { label: 'Todos', value: 'Todos' },
-    ...aSports.map(oSport => ({
-      label: oSport,
-      value: oSport,
-    }))
-  ]
+
 
   const facultitiesItems = [
     { label: 'Todas', value: 'Todas' },
@@ -81,22 +78,12 @@ export const Filters = ({ screen, updateConcat }) => {
     var concat = "";
 
     /* DEPORTE */
-    switch (depActual) {
-      case "Fútbol":
-        concat = concat + "&deporte=Futbol"
-        break;
-      case "Baloncesto":
-        concat = concat + "&deporte=Basquetball"
-        break;
-      case "Voleibol":
-        concat = concat + "&deporte=Volleyball"
-        break;
-      case "Atletismo":
-        concat = concat + "&deporte=Atletismo"
-        break;
-      default:
-        break;
-    }
+    // console.log("DEBUG --> " + JSON.stringify(deportesItems))
+    // console.log("deporte seleccionado --> " + deportesItems.filter(item => item.value === depActual)[0].label)
+    depActual != "Todos" ? concat = concat + "deporte_id=" + depActual : null;
+    // console.log("Concat --> " + concat);
+
+
     /* FACULTAD */
 
     const findTerm = (term) => {
@@ -204,6 +191,24 @@ export const Filters = ({ screen, updateConcat }) => {
     updateConcat(concat)
   };
 
+  const sportItems = [
+    { label: 'Todos', value: 'Todos' },
+    ...aSports.map(oSport => ({
+      label: oSport,
+      value: oSport,
+    }))
+  ]
+
+  useEffect(() => {
+		if (deportes.data.length == 0) return;
+		setDeportesItems([{ label: 'Todos', value: 'Todos' }, ...deportes.data.map((obj) => (
+      
+      {
+			label: obj.nombre,
+			value: obj.id,
+      }
+    ))]);
+	}, [deportes.data])
   return (
     <>
       <Modal
@@ -279,7 +284,7 @@ export const Filters = ({ screen, updateConcat }) => {
                   <View style={{ flexDirection: 'row', }}>
                     <View style={styles.filterItem}>
                       <Text style={styles.filterText}>Deporte</Text>
-                      <Text style={styles.filterTextSelect}>{depActual}</Text>
+                      <Text style={styles.filterTextSelect}>{depActual != "Todos" ? deportesItems.filter(item => item.value === depActual)[0].label : "Todos"}</Text>
                     </View>
                     <View style={{ width: '10%' }}>
                       <Feather name={'chevron-right'} size={35} color={'grey'} />
@@ -389,9 +394,9 @@ export const Filters = ({ screen, updateConcat }) => {
             </View>
             <View style={styles.flatContainer}>
               <FlatList
-                data={sportItems}
+                data={deportesItems}
                 renderItem={({ item }) =>
-                  <TouchableCmp onPress={() => setDepActual(item.label)}>
+                  <TouchableCmp onPress={() => setDepActual(item.value)}>
                     <View style={styles.containerItem}>
                       <View style={{ flexDirection: 'row', }}>
                         <View style={styles.filterItem}>
