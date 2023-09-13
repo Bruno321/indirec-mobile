@@ -14,8 +14,8 @@ export const SearchInput = ({ setPagina, screen, updateConcat}) => {
       case "deportistas":
         if (search?.length >= 1) {
           if (isNaN(search)) {
-            concat = `$or[0][nombres][$like]=%${search}%&$or[1][apellidos][$like]=%${search}%`
-            // console.log(`Searching for nombres or apellidos: ${search}`);
+            concat = `$or[0][nombres][$iLike]=%${search.toLowerCase()}%&$or[1][apellidos][$iLike]=%${search.toLowerCase()}%`
+            // console.log(`Searching for nombres or apellidos: ${search.toLowerCase()}`);
             updateConcat(concat);
             setPagina(0);
           } else {
@@ -47,7 +47,7 @@ export const SearchInput = ({ setPagina, screen, updateConcat}) => {
         break;
       case "asistencias":
         if (search?.length >= 1) {
-          concat = `$or[0][nombres][$like]=%${search}%&$or[1][apellidos][$like]=%${search}%`
+          concat = `$or[0][nombres][$iLike]=%${search.toLowerCase()}%&$or[1][apellidos][$iLike]=%${search.toLowerCase()}%`
             updateConcat(concat);
             setPagina(0);
         }
