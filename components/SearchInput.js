@@ -34,7 +34,7 @@ export const SearchInput = ({ setPagina, screen, updateConcat}) => {
         break;
       case "equipos":
         if (search?.length >= 1) {
-          concat = `nombre[$like]=%${search}%`;
+          concat = `nombre[$iLike]=%${search.toLowerCase()}%`;
           // console.log(`Searching for nombres or apellidos: ${search}`);
             updateConcat(concat);
             setPagina(0);
